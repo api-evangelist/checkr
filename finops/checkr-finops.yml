@@ -1,0 +1,111 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Checkr
+providerId: checkr
+created: '2026-07-03'
+modified: '2026-07-03'
+reconciled: false
+tags:
+- Background Checks
+- Employment Screening
+- Compliance
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Checkr spend. Checkr bills on a per-check basis by package
+  tier rather than by API call - the dominant cost driver is the number of
+  reports / screenings ordered and which package each uses (Basic+, Essential,
+  Professional, or a custom package). On top of the package price, certain
+  screenings incur pass-through third-party fees (county/state court access,
+  DMV/MVR access, education and employment verification, international fees)
+  that Checkr invoices at cost without markup, making some report costs variable
+  and jurisdiction-dependent. High-volume programs are governed by custom /
+  enterprise agreements with negotiated volume pricing. Cost control centers on
+  choosing the right package per role, scoping screenings to what compliance
+  requires, and allocating spend across nodes in the account hierarchy.
+notes: >-
+  Per-check package prices and pass-through fees vary and are not fully
+  reconciled here; verify on the Checkr pricing page and account invoices. The
+  API itself carries no separate metered fee - you pay for the background checks
+  you order.
+sources:
+- https://checkr.com/pricing
+- https://docs.checkr.com/
+- https://help.checkr.com/s/article/115001342747-FAQs-about-Checkr-charges-fees
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Checkr
+serviceCategory: Background Screening and Compliance
+billingModel:
+  pricingCategory: Usage-Based
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Usage
+  - Purchase
+  - Adjustment
+focusColumns:
+  ServiceName: Checkr Background Checks
+  ServiceCategory: Background Screening and Compliance
+  ProviderName: Checkr
+  PublisherName: Checkr
+  InvoiceIssuerName: Checkr
+  BillingCurrency: USD
+  ChargeCategory: Usage
+  PricingCategory: Usage-Based
+meters:
+- name: reports
+  description: Background check reports ordered, billed per check by package tier.
+  unit: reports
+  aggregation: sum
+  dimensions:
+  - account
+  - node
+  - package
+- name: package_price
+  description: The base price of the package a report uses (Basic+, Essential, Professional, or custom).
+  unit: usd
+  aggregation: sum
+  dimensions:
+  - account
+  - package
+- name: court_access_fees
+  description: Pass-through county/state court access fees on criminal searches, billed at cost.
+  unit: usd
+  aggregation: sum
+  dimensions:
+  - account
+  - jurisdiction
+- name: dmv_access_fees
+  description: Pass-through DMV/MVR access fees on motor vehicle report screenings, billed at cost.
+  unit: usd
+  aggregation: sum
+  dimensions:
+  - account
+  - state
+- name: verification_fees
+  description: Pass-through education, employment, and international verification fees, billed at cost.
+  unit: usd
+  aggregation: sum
+  dimensions:
+  - account
+  - screening_type
+principles:
+- name: Visibility
+  description: Track report volume and cost per package and per node; separate base package price from variable pass-through court/DMV/verification fees.
+- name: Allocation
+  description: Use the account hierarchy (nodes) and report tags to map background-check spend to locations, departments, or hiring teams.
+- name: Optimization
+  description: Match each role to the least-expensive package that meets compliance needs; avoid over-screening; use continuous checks/subscriptions only where ongoing monitoring is justified.
+- name: Accountability
+  description: Assign report ordering to specific nodes/programs and review monthly invoices, including pass-through fees, against hiring budgets.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

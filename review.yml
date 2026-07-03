@@ -1,0 +1,122 @@
+aid: checkr
+name: Checkr
+review:
+  question: Does Checkr expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-03'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. Checkr's public API surface is
+    request/response REST over HTTPS. Asynchronous, long-running screening
+    results are delivered through webhooks - Checkr POSTs event notifications
+    (report.completed, candidate.created, invitation.completed, etc.) to a
+    subscriber-configured HTTPS endpoint or Amazon SNS topic. Webhooks are
+    server-to-endpoint HTTP callbacks, not a server-push streaming transport
+    (WebSocket or SSE) on Checkr's own API, so there is no realtime channel to
+    model in AsyncAPI at the review date.
+findings:
+  summary: |
+    Checkr does not publish a documented public WebSocket API. Checkr is an
+    employment background check platform. Its public API is a RESTful HTTPS
+    interface at https://api.checkr.com/v1 (staging at
+    https://api.checkr-staging.com/v1), authenticated with HTTP Basic auth
+    using a secret API key as the username and an empty password; Checkr
+    Partner integrations authenticate via OAuth. The API is pure
+    request/response REST returning JSON. Because background checks are
+    long-running, Checkr delivers status updates asynchronously through
+    webhooks (HTTP POST callbacks to a configured HTTPS endpoint or Amazon
+    SNS), not through a persistent WebSocket. No realtime, bidirectional, or
+    streaming WebSocket (ws:// or wss://) endpoint is documented anywhere in
+    Checkr's API reference.
+  authentication: |
+    HTTP Basic auth with the secret API key as username and an empty password.
+    Publishable keys exist for the client-side JS API only. Checkr Partners use
+    OAuth to act on behalf of customer accounts (partner developer guides at
+    docs.checkr.com/partners).
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.checkr.com/v1
+      documented: true
+      note: Primary API surface. Staging base is https://api.checkr-staging.com/v1.
+    - protocol: Webhook
+      scheme: https
+      documented: true
+      note: Checkr POSTs event notifications to a subscriber HTTPS endpoint or Amazon SNS topic. Server-to-endpoint HTTP, not WebSocket.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented anywhere in Checkr's API reference as of the review date.
+  endpointsConfirmedRest:
+    - GET    https://api.checkr.com/v1/candidates
+    - POST   https://api.checkr.com/v1/candidates
+    - GET    https://api.checkr.com/v1/candidates/{id}
+    - POST   https://api.checkr.com/v1/candidates/{id}
+    - DELETE https://api.checkr.com/v1/candidates/{id}
+    - GET    https://api.checkr.com/v1/candidates/{id}/documents
+    - POST   https://api.checkr.com/v1/candidates/{id}/documents
+    - GET    https://api.checkr.com/v1/invitations
+    - POST   https://api.checkr.com/v1/invitations
+    - GET    https://api.checkr.com/v1/invitations/{id}
+    - DELETE https://api.checkr.com/v1/invitations/{id}
+    - POST   https://api.checkr.com/v1/reports
+    - GET    https://api.checkr.com/v1/reports/{id}
+    - POST   https://api.checkr.com/v1/reports/{id}
+    - POST   https://api.checkr.com/v1/reports/{id}/complete
+    - GET    https://api.checkr.com/v1/reports/{id}/eta
+    - GET    https://api.checkr.com/v1/reports/{report_id}/ssn_trace/{id}
+    - GET    https://api.checkr.com/v1/reports/{report_id}/county_criminal_searches/{id}
+    - GET    https://api.checkr.com/v1/reports/{report_id}/national_criminal_search/{id}
+    - GET    https://api.checkr.com/v1/reports/{report_id}/federal_criminal_search/{id}
+    - GET    https://api.checkr.com/v1/reports/{report_id}/sex_offender_search/{id}
+    - GET    https://api.checkr.com/v1/reports/{report_id}/motor_vehicle_report/{id}
+    - GET    https://api.checkr.com/v1/reports/{report_id}/verifications
+    - GET    https://api.checkr.com/v1/reports/{report_id}/verifications/{id}
+    - GET    https://api.checkr.com/v1/packages
+    - GET    https://api.checkr.com/v1/packages/{id}
+    - GET    https://api.checkr.com/v1/programs
+    - POST   https://api.checkr.com/v1/reports/{id}/adverse_actions
+    - GET    https://api.checkr.com/v1/adverse_actions/{id}
+    - DELETE https://api.checkr.com/v1/adverse_actions/{id}
+    - GET    https://api.checkr.com/v1/subscriptions
+    - POST   https://api.checkr.com/v1/subscriptions
+    - GET    https://api.checkr.com/v1/continuous_checks
+    - POST   https://api.checkr.com/v1/continuous_checks
+    - POST   https://api.checkr.com/v1/hierarchy/nodes
+    - GET    https://api.checkr.com/v1/hierarchy/status
+    - GET    https://api.checkr.com/v1/nodes
+    - GET    https://api.checkr.com/v1/nodes/{id}
+    - PATCH  https://api.checkr.com/v1/nodes/{id}
+    - GET    https://api.checkr.com/v1/geos
+    - POST   https://api.checkr.com/v1/geos
+    - GET    https://api.checkr.com/v1/webhooks
+    - POST   https://api.checkr.com/v1/webhooks
+    - DELETE https://api.checkr.com/v1/webhooks/{id}
+    - GET    https://api.checkr.com/v1/account
+    - GET    https://api.checkr.com/v1/users
+  endpointsModeled:
+    - Individual screening subtypes beyond those confirmed (e.g. state_criminal_searches, global_watchlist_search, international variants) follow the same /reports/{report_id}/{screening_type}/{id} pattern and are represented generically in the OpenAPI Screening schema.
+    - Node/geo update and delete verbs and the Form I-9 (/i9/forms_i9, /i9/worksites) surface are documented by Checkr but only a representative subset is modeled in this repo's OpenAPI.
+sources:
+  - url: https://docs.checkr.com/
+    type: Documentation
+    note: API reference. Base URL https://api.checkr.com/v1, Basic auth with secret key, 1200 req/min rate limit, webhooks. No WebSocket mentioned.
+  - url: https://docs.checkr.com/partners/
+    type: Documentation
+    note: Checkr Partner developer guides describing OAuth-based partner integrations.
+  - url: https://checkr.com/pricing
+    type: Pricing
+    note: Per-check package pricing (Basic+, Essential, Professional) plus pass-through third-party fees.
+  - url: https://help.checkr.com/s/article/115001342747-FAQs-about-Checkr-charges-fees
+    type: Support
+    note: Explains at-cost pass-through court, DMV, and verification access fees.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. Checkr's own public API is
+    request/response REST, and asynchronous screening results are delivered via
+    webhooks (HTTP POST callbacks over HTTPS or Amazon SNS), which are not a
+    WebSocket or SSE server-push transport. No AsyncAPI document was created
+    because there is no realtime streaming channel on Checkr's API to model.

@@ -1,0 +1,350 @@
+{
+  "info": {
+    "_postman_id": "b3c1e4a7-checkr-0001-4a2b-9c1d-checkrcollection",
+    "name": "Checkr API",
+    "description": "Postman collection for the Checkr background check API (https://api.checkr.com/v1). Authenticate with HTTP Basic auth using your secret API key as the username and an empty password.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      { "key": "username", "value": "{{apiKey}}", "type": "string" },
+      { "key": "password", "value": "", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api.checkr.com/v1", "type": "string" },
+    { "key": "apiKey", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Candidates",
+      "item": [
+        {
+          "name": "List candidates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/candidates", "host": ["{{baseUrl}}"], "path": ["candidates"] }
+          }
+        },
+        {
+          "name": "Create a candidate",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"first_name\": \"\",\n  \"last_name\": \"\",\n  \"email\": \"\",\n  \"dob\": \"\",\n  \"ssn\": \"\",\n  \"zipcode\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/candidates", "host": ["{{baseUrl}}"], "path": ["candidates"] }
+          }
+        },
+        {
+          "name": "Retrieve a candidate",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/candidates/:id", "host": ["{{baseUrl}}"], "path": ["candidates", ":id"], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        },
+        {
+          "name": "Update a candidate",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/candidates/:id", "host": ["{{baseUrl}}"], "path": ["candidates", ":id"], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        },
+        {
+          "name": "Request PII removal",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/candidates/:id", "host": ["{{baseUrl}}"], "path": ["candidates", ":id"], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invitations",
+      "item": [
+        {
+          "name": "List invitations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/invitations", "host": ["{{baseUrl}}"], "path": ["invitations"] }
+          }
+        },
+        {
+          "name": "Create an invitation",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"candidate_id\": \"\",\n  \"package\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/invitations", "host": ["{{baseUrl}}"], "path": ["invitations"] }
+          }
+        },
+        {
+          "name": "Retrieve an invitation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/invitations/:id", "host": ["{{baseUrl}}"], "path": ["invitations", ":id"], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        },
+        {
+          "name": "Cancel an invitation",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/invitations/:id", "host": ["{{baseUrl}}"], "path": ["invitations", ":id"], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Create a report",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"candidate_id\": \"\",\n  \"package\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/reports", "host": ["{{baseUrl}}"], "path": ["reports"] }
+          }
+        },
+        {
+          "name": "Retrieve a report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/reports/:id", "host": ["{{baseUrl}}"], "path": ["reports", ":id"], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        },
+        {
+          "name": "Update or upgrade a report",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"package\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/reports/:id", "host": ["{{baseUrl}}"], "path": ["reports", ":id"], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        },
+        {
+          "name": "Complete a report",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/reports/:id/complete", "host": ["{{baseUrl}}"], "path": ["reports", ":id", "complete"], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        },
+        {
+          "name": "Retrieve a report ETA",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/reports/:id/eta", "host": ["{{baseUrl}}"], "path": ["reports", ":id", "eta"], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Screenings",
+      "item": [
+        {
+          "name": "Retrieve an SSN trace",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/reports/:report_id/ssn_trace/:id", "host": ["{{baseUrl}}"], "path": ["reports", ":report_id", "ssn_trace", ":id"], "variable": [ { "key": "report_id", "value": "" }, { "key": "id", "value": "" } ] }
+          }
+        },
+        {
+          "name": "Retrieve a county criminal search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/reports/:report_id/county_criminal_searches/:id", "host": ["{{baseUrl}}"], "path": ["reports", ":report_id", "county_criminal_searches", ":id"], "variable": [ { "key": "report_id", "value": "" }, { "key": "id", "value": "" } ] }
+          }
+        },
+        {
+          "name": "Retrieve a national criminal search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/reports/:report_id/national_criminal_search/:id", "host": ["{{baseUrl}}"], "path": ["reports", ":report_id", "national_criminal_search", ":id"], "variable": [ { "key": "report_id", "value": "" }, { "key": "id", "value": "" } ] }
+          }
+        },
+        {
+          "name": "Retrieve a motor vehicle report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/reports/:report_id/motor_vehicle_report/:id", "host": ["{{baseUrl}}"], "path": ["reports", ":report_id", "motor_vehicle_report", ":id"], "variable": [ { "key": "report_id", "value": "" }, { "key": "id", "value": "" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Packages",
+      "item": [
+        {
+          "name": "List packages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/packages", "host": ["{{baseUrl}}"], "path": ["packages"] }
+          }
+        },
+        {
+          "name": "Retrieve a package",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/packages/:id", "host": ["{{baseUrl}}"], "path": ["packages", ":id"], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subscriptions",
+      "item": [
+        {
+          "name": "Create a subscription",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"candidate_id\": \"\",\n  \"package\": \"\",\n  \"interval_count\": 1,\n  \"interval_unit\": \"year\"\n}" },
+            "url": { "raw": "{{baseUrl}}/subscriptions", "host": ["{{baseUrl}}"], "path": ["subscriptions"] }
+          }
+        },
+        {
+          "name": "List subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/subscriptions", "host": ["{{baseUrl}}"], "path": ["subscriptions"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Continuous Checks",
+      "item": [
+        {
+          "name": "Create a continuous check",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"candidate_id\": \"\",\n  \"type\": \"criminal\"\n}" },
+            "url": { "raw": "{{baseUrl}}/continuous_checks", "host": ["{{baseUrl}}"], "path": ["continuous_checks"] }
+          }
+        },
+        {
+          "name": "List continuous checks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/continuous_checks", "host": ["{{baseUrl}}"], "path": ["continuous_checks"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nodes and Hierarchy",
+      "item": [
+        {
+          "name": "List nodes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/nodes", "host": ["{{baseUrl}}"], "path": ["nodes"] }
+          }
+        },
+        {
+          "name": "Add hierarchy nodes",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"nodes\": []\n}" },
+            "url": { "raw": "{{baseUrl}}/hierarchy/nodes", "host": ["{{baseUrl}}"], "path": ["hierarchy", "nodes"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Geos",
+      "item": [
+        {
+          "name": "List geos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/geos", "host": ["{{baseUrl}}"], "path": ["geos"] }
+          }
+        },
+        {
+          "name": "Create a geo",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"\",\n  \"state\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/geos", "host": ["{{baseUrl}}"], "path": ["geos"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "List webhooks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/webhooks", "host": ["{{baseUrl}}"], "path": ["webhooks"] }
+          }
+        },
+        {
+          "name": "Create a webhook",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"webhook_url\": \"\",\n  \"included_object_types\": []\n}" },
+            "url": { "raw": "{{baseUrl}}/webhooks", "host": ["{{baseUrl}}"], "path": ["webhooks"] }
+          }
+        },
+        {
+          "name": "Delete a webhook",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/webhooks/:id", "host": ["{{baseUrl}}"], "path": ["webhooks", ":id"], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Account",
+      "item": [
+        {
+          "name": "Retrieve account details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/account", "host": ["{{baseUrl}}"], "path": ["account"] }
+          }
+        },
+        {
+          "name": "List users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] }
+          }
+        }
+      ]
+    }
+  ]
+}

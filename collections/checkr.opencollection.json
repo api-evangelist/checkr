@@ -1,0 +1,331 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Checkr API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{apiKey}}",
+      "password": ""
+    }
+  },
+  "items": [
+    {
+      "info": { "name": "Candidates", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List candidates", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.checkr.com/v1/candidates" },
+          "docs": "List candidates."
+        },
+        {
+          "info": { "name": "Create a candidate", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/candidates",
+            "body": { "type": "json", "data": "{\n  \"first_name\": \"\",\n  \"last_name\": \"\",\n  \"email\": \"\",\n  \"dob\": \"\",\n  \"ssn\": \"\",\n  \"zipcode\": \"\"\n}" }
+          },
+          "docs": "Create a candidate."
+        },
+        {
+          "info": { "name": "Retrieve a candidate", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/candidates/:id",
+            "params": [ { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Retrieve a candidate."
+        },
+        {
+          "info": { "name": "Update a candidate", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/candidates/:id",
+            "params": [ { "name": "id", "value": "", "type": "path" } ],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Update a candidate."
+        },
+        {
+          "info": { "name": "Request PII removal", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.checkr.com/v1/candidates/:id",
+            "params": [ { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Request PII removal for a candidate."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Invitations", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List invitations", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.checkr.com/v1/invitations" },
+          "docs": "List invitations."
+        },
+        {
+          "info": { "name": "Create an invitation", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/invitations",
+            "body": { "type": "json", "data": "{\n  \"candidate_id\": \"\",\n  \"package\": \"\"\n}" }
+          },
+          "docs": "Create an invitation."
+        },
+        {
+          "info": { "name": "Retrieve an invitation", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/invitations/:id",
+            "params": [ { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Retrieve an invitation."
+        },
+        {
+          "info": { "name": "Cancel an invitation", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.checkr.com/v1/invitations/:id",
+            "params": [ { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Cancel an invitation."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Reports", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Create a report", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/reports",
+            "body": { "type": "json", "data": "{\n  \"candidate_id\": \"\",\n  \"package\": \"\"\n}" }
+          },
+          "docs": "Create a report."
+        },
+        {
+          "info": { "name": "Retrieve a report", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:id",
+            "params": [ { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Retrieve a report."
+        },
+        {
+          "info": { "name": "Update or upgrade a report", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/reports/:id",
+            "params": [ { "name": "id", "value": "", "type": "path" } ],
+            "body": { "type": "json", "data": "{\n  \"package\": \"\"\n}" }
+          },
+          "docs": "Update or upgrade a report."
+        },
+        {
+          "info": { "name": "Complete a report", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/reports/:id/complete",
+            "params": [ { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Complete a report."
+        },
+        {
+          "info": { "name": "Retrieve a report ETA", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:id/eta",
+            "params": [ { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Retrieve a report ETA."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Screenings", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Retrieve an SSN trace", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:report_id/ssn_trace/:id",
+            "params": [ { "name": "report_id", "value": "", "type": "path" }, { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Retrieve an SSN trace screening."
+        },
+        {
+          "info": { "name": "Retrieve a county criminal search", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:report_id/county_criminal_searches/:id",
+            "params": [ { "name": "report_id", "value": "", "type": "path" }, { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Retrieve a county criminal search screening."
+        },
+        {
+          "info": { "name": "Retrieve a national criminal search", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:report_id/national_criminal_search/:id",
+            "params": [ { "name": "report_id", "value": "", "type": "path" }, { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Retrieve a national criminal search screening."
+        },
+        {
+          "info": { "name": "Retrieve a motor vehicle report", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:report_id/motor_vehicle_report/:id",
+            "params": [ { "name": "report_id", "value": "", "type": "path" }, { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Retrieve a motor vehicle report screening."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Packages", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List packages", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.checkr.com/v1/packages" },
+          "docs": "List packages."
+        },
+        {
+          "info": { "name": "Retrieve a package", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/packages/:id",
+            "params": [ { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Retrieve a package."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Subscriptions", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Create a subscription", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/subscriptions",
+            "body": { "type": "json", "data": "{\n  \"candidate_id\": \"\",\n  \"package\": \"\",\n  \"interval_count\": 1,\n  \"interval_unit\": \"year\"\n}" }
+          },
+          "docs": "Create a subscription."
+        },
+        {
+          "info": { "name": "List subscriptions", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.checkr.com/v1/subscriptions" },
+          "docs": "List subscriptions."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Continuous Checks", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Create a continuous check", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/continuous_checks",
+            "body": { "type": "json", "data": "{\n  \"candidate_id\": \"\",\n  \"type\": \"criminal\"\n}" }
+          },
+          "docs": "Create a continuous check."
+        },
+        {
+          "info": { "name": "List continuous checks", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.checkr.com/v1/continuous_checks" },
+          "docs": "List continuous checks."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Nodes and Hierarchy", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List nodes", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.checkr.com/v1/nodes" },
+          "docs": "List nodes."
+        },
+        {
+          "info": { "name": "Add hierarchy nodes", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/hierarchy/nodes",
+            "body": { "type": "json", "data": "{\n  \"nodes\": []\n}" }
+          },
+          "docs": "Add nodes to the hierarchy."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Geos", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List geos", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.checkr.com/v1/geos" },
+          "docs": "List geos."
+        },
+        {
+          "info": { "name": "Create a geo", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/geos",
+            "body": { "type": "json", "data": "{\n  \"name\": \"\",\n  \"state\": \"\"\n}" }
+          },
+          "docs": "Create a geo."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Webhooks", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List webhooks", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.checkr.com/v1/webhooks" },
+          "docs": "List webhooks."
+        },
+        {
+          "info": { "name": "Create a webhook", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/webhooks",
+            "body": { "type": "json", "data": "{\n  \"webhook_url\": \"\",\n  \"included_object_types\": []\n}" }
+          },
+          "docs": "Create a webhook subscription."
+        },
+        {
+          "info": { "name": "Delete a webhook", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.checkr.com/v1/webhooks/:id",
+            "params": [ { "name": "id", "value": "", "type": "path" } ]
+          },
+          "docs": "Delete a webhook."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Account", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Retrieve account details", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.checkr.com/v1/account" },
+          "docs": "Retrieve account details."
+        },
+        {
+          "info": { "name": "List users", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.checkr.com/v1/users" },
+          "docs": "List users on the account."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

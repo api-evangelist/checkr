@@ -1,0 +1,175 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Checkr
+providerId: checkr
+created: '2026-07-03'
+modified: '2026-07-03'
+reconciled: false
+tags:
+- Background Checks
+- Employment Screening
+- Compliance
+- Pricing
+- Plans
+description: >-
+  Checkr prices background checks primarily on a per-check basis by package
+  tier, not on a per-API-call basis. The API itself is free to use with a
+  Checkr account; you pay for each report / screening you order. Published
+  self-serve package tiers are Basic+ (~$29.99/check: SSN trace, national
+  criminal search, sex offender registry), Essential (~$54.99/check: adds a
+  7-year county criminal search and motor vehicle records), and Professional
+  (~$79.99/check: adds federal criminal search plus education and employment
+  verification). Higher-volume and specialized needs (staffing, healthcare,
+  gig/marketplace, international) are handled through custom/enterprise
+  agreements with volume pricing and account management. Certain screenings
+  incur pass-through third-party fees (county/state court access, DMV/MVR
+  access, verification fees) that Checkr invoices at cost without markup.
+notes: >-
+  Per-check package prices reflect Checkr's published self-serve pricing at the
+  review date and can change; enterprise/custom pricing is negotiated. Verify
+  current rates on the Checkr pricing page during reconciliation. Prices are in
+  USD.
+sources:
+- https://checkr.com/pricing
+- https://checkr.com/pricing/plans
+- https://docs.checkr.com/
+- https://help.checkr.com/s/article/115001342747-FAQs-about-Checkr-charges-fees
+plans:
+- id: checkr-basic-plus
+  name: Basic+
+  type: paid
+  description: >-
+    Entry package covering an SSN trace, national criminal records search, and
+    sex offender registry search. Suited to lower-risk roles.
+  entries:
+  - label: Per Background Check
+    name: basic_plus_check
+    type: usage
+    metric: reports
+    limit: -1
+    timeFrame: month
+    geo: us
+    unit: 1
+    price: '29.99'
+    userMultiplied: false
+  elements:
+  - name: SSN Trace
+  - name: National Criminal Records Search
+  - name: Sex Offender Registry Search
+  - name: API Access
+  - name: Webhooks
+- id: checkr-essential
+  name: Essential
+  type: paid
+  description: >-
+    Mid-tier package that adds a 7-year county criminal records search and a
+    motor vehicle records (MVR) search on top of Basic+, for roles that involve
+    driving or need deeper county-level coverage.
+  entries:
+  - label: Per Background Check
+    name: essential_check
+    type: usage
+    metric: reports
+    limit: -1
+    timeFrame: month
+    geo: us
+    unit: 1
+    price: '54.99'
+    userMultiplied: false
+  elements:
+  - name: Everything in Basic+
+  - name: 7-Year County Criminal Records Search
+  - name: Motor Vehicle Records (MVR)
+- id: checkr-professional
+  name: Professional
+  type: paid
+  description: >-
+    Comprehensive package that adds a federal criminal records search plus
+    education and employment verification on top of Essential, for higher-trust
+    or regulated roles.
+  entries:
+  - label: Per Background Check
+    name: professional_check
+    type: usage
+    metric: reports
+    limit: -1
+    timeFrame: month
+    geo: us
+    unit: 1
+    price: '79.99'
+    userMultiplied: false
+  elements:
+  - name: Everything in Essential
+  - name: Federal Criminal Records Search
+  - name: Education Verification
+  - name: Employment Verification
+- id: checkr-third-party-fees
+  name: Third-Party Pass-Through Fees
+  type: usage
+  description: >-
+    Add-on court, DMV, and verification access fees passed through at cost on
+    top of the package price. Charged only when the underlying screening incurs
+    them; Checkr does not mark these up.
+  entries:
+  - label: County / State Court Access Fee
+    name: court_access_fee
+    type: usage
+    metric: screenings
+    limit: -1
+    timeFrame: month
+    geo: us
+    unit: 1
+    price: pass-through at cost (varies by jurisdiction)
+    userMultiplied: false
+  - label: DMV / MVR Access Fee
+    name: dmv_access_fee
+    type: usage
+    metric: screenings
+    limit: -1
+    timeFrame: month
+    geo: us
+    unit: 1
+    price: pass-through at cost (varies by state)
+    userMultiplied: false
+  - label: Verification Fee
+    name: verification_fee
+    type: usage
+    metric: screenings
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: pass-through at cost (education / employment / international)
+    userMultiplied: false
+  elements:
+  - name: At-Cost Billing
+  - name: No Markup
+- id: checkr-enterprise
+  name: Custom / Enterprise
+  type: enterprise
+  description: >-
+    Negotiated agreements for high-volume, staffing, healthcare, gig/marketplace,
+    and international programs. Includes custom packages, volume pricing,
+    dedicated support, hierarchy/node account structure, and partner/OAuth
+    integrations.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Custom Packages and Volume Pricing
+  - name: Dedicated Support and Account Management
+  - name: Hierarchy and Node Account Structure
+  - name: Partner / OAuth Integrations
+  - name: International Screenings
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

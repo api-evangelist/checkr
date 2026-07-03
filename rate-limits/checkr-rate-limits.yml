@@ -1,0 +1,60 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Checkr
+providerId: checkr
+created: '2026-07-03'
+modified: '2026-07-03'
+reconciled: false
+tags:
+- Background Checks
+- Employment Screening
+- Rate Limiting
+- Quotas
+description: >-
+  The Checkr API applies a documented account-wide rate limit of 1200 requests
+  per minute across all endpoints. Each response includes X-Ratelimit-Limit,
+  X-Ratelimit-Remaining, and X-Ratelimit-Reset headers so clients can track
+  their remaining budget and the reset time. Requests that exceed the limit
+  return HTTP 429 with the reset timestamp. Checkr also supports idempotent POST
+  requests via an Idempotency-Key header, so retries after a 429 do not create
+  duplicate resources. List endpoints are paginated with page and per_page
+  parameters (default 25 records per page).
+notes: >-
+  The 1200 requests/minute limit is documented at the review date and may be
+  adjusted per account. Honor the X-Ratelimit-Reset header and use an
+  Idempotency-Key on writes when implementing backoff. Verify current limits in
+  the Checkr API documentation during reconciliation.
+sources:
+- https://docs.checkr.com/
+- https://docs.checkr.com/#section/Getting-Started/Rate-Limits
+responseCodes:
+  throttled: 429
+limits:
+- name: API Requests
+  scope: account
+  metric: requests
+  limit: 1200 per minute
+  notes: Documented account-wide limit across all endpoints; returns 429 when exceeded.
+- name: Pagination Page Size
+  scope: request
+  metric: records
+  limit: 25 default per page
+  notes: Controlled via the per_page query parameter on list endpoints.
+headers:
+- name: X-Ratelimit-Limit
+  description: The number of requests allowed per minute.
+- name: X-Ratelimit-Remaining
+  description: The number of requests remaining in the current window.
+- name: X-Ratelimit-Reset
+  description: The time at which the current rate limit window resets.
+policies:
+- name: Throttling
+  description: Requests beyond 1200/minute receive HTTP 429 with a reset timestamp; clients should back off until the window resets.
+- name: Idempotency
+  description: POST requests accept an Idempotency-Key header so retries (including after a 429) do not create duplicate candidates, reports, or invitations.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor the X-Ratelimit-Reset header on 429 responses.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
