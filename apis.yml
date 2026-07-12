@@ -308,6 +308,12 @@ apis:
     more) over HTTPS or Amazon SNS, giving event-driven updates on long-running
     screening workflows.
 common:
+- type: TrustCenter
+  url: security/checkr-trust-center.yml
+- type: DomainSecurity
+  url: security/checkr-domain-security.yml
+- type: Authentication
+  url: authentication/checkr-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/checkr
 - type: LinkedIn

@@ -1,0 +1,14 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/checkr-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: basicAuth
+  type: http
+  scheme: basic
+  description: HTTP Basic auth with your secret API key as the username and an empty password.
+    Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.
+  sources:
+  - openapi/checkr-openapi.yml

@@ -1,0 +1,29 @@
+generated: '2026-07-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: checkr.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Aug 16 21:14:21 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: docs.checkr.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 18 07:19:28 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: api.checkr.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 30 21:19:13 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+domains:
+- domain: checkr.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject
