@@ -308,6 +308,8 @@ apis:
     more) over HTTPS or Amazon SNS, giving event-driven updates on long-running
     screening workflows.
 common:
+- type: AgenticAccess
+  url: agentic-access/checkr-agentic-access.yml
 - type: TrustCenter
   url: security/checkr-trust-center.yml
 - type: DomainSecurity
