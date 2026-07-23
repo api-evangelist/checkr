@@ -1,0 +1,138 @@
+openapi: 3.0.3
+info:
+  title: Checkr Account Continuous Checks API
+  description: The Checkr API is a RESTful interface for running compliant employment background checks. Employers, staffing firms, and platform partners create candidates, send invitations, order packages, and retrieve reports composed of individual screenings - SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education / employment verifications. The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with your secret API key as the username and an empty password; Checkr Partner integrations use OAuth. All responses are JSON. This document models the widely used, publicly documented endpoints; it is not exhaustive of every screening type Checkr offers.
+  version: '1.0'
+  contact:
+    name: Checkr
+    url: https://checkr.com
+  termsOfService: https://checkr.com/terms-of-service
+servers:
+- url: https://api.checkr.com/v1
+  description: Production
+- url: https://api.checkr-staging.com/v1
+  description: Staging
+security:
+- basicAuth: []
+tags:
+- name: Continuous Checks
+  description: Ongoing monitoring for new records.
+paths:
+  /continuous_checks:
+    get:
+      operationId: listContinuousChecks
+      tags:
+      - Continuous Checks
+      summary: List continuous checks
+      responses:
+        '200':
+          description: A list of continuous checks.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ContinuousCheck'
+    post:
+      operationId: createContinuousCheck
+      tags:
+      - Continuous Checks
+      summary: Create a continuous check
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContinuousCheckCreate'
+      responses:
+        '201':
+          description: The created continuous check.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContinuousCheck'
+  /continuous_checks/{id}:
+    parameters:
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getContinuousCheck
+      tags:
+      - Continuous Checks
+      summary: Retrieve a continuous check
+      responses:
+        '200':
+          description: The continuous check.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContinuousCheck'
+    delete:
+      operationId: cancelContinuousCheck
+      tags:
+      - Continuous Checks
+      summary: Cancel a continuous check
+      responses:
+        '200':
+          description: The cancelled continuous check.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContinuousCheck'
+components:
+  schemas:
+    ContinuousCheck:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          example: continuous_check
+        type:
+          type: string
+          enum:
+          - criminal
+          - mvr
+        status:
+          type: string
+          enum:
+          - active
+          - canceled
+        candidate_id:
+          type: string
+        node:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    ContinuousCheckCreate:
+      type: object
+      required:
+      - candidate_id
+      - type
+      properties:
+        candidate_id:
+          type: string
+        type:
+          type: string
+          enum:
+          - criminal
+          - mvr
+        node:
+          type: string
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.

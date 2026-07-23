@@ -1,0 +1,129 @@
+openapi: 3.0.3
+info:
+  title: Checkr Account Geos API
+  description: The Checkr API is a RESTful interface for running compliant employment background checks. Employers, staffing firms, and platform partners create candidates, send invitations, order packages, and retrieve reports composed of individual screenings - SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education / employment verifications. The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with your secret API key as the username and an empty password; Checkr Partner integrations use OAuth. All responses are JSON. This document models the widely used, publicly documented endpoints; it is not exhaustive of every screening type Checkr offers.
+  version: '1.0'
+  contact:
+    name: Checkr
+    url: https://checkr.com
+  termsOfService: https://checkr.com/terms-of-service
+servers:
+- url: https://api.checkr.com/v1
+  description: Production
+- url: https://api.checkr-staging.com/v1
+  description: Staging
+security:
+- basicAuth: []
+tags:
+- name: Geos
+  description: State/locale definitions scoping pricing and compliance.
+paths:
+  /geos:
+    get:
+      operationId: listGeos
+      tags:
+      - Geos
+      summary: List geos
+      responses:
+        '200':
+          description: A list of geos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Geo'
+    post:
+      operationId: createGeo
+      tags:
+      - Geos
+      summary: Create a geo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Geo'
+      responses:
+        '201':
+          description: The created geo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Geo'
+  /geos/{id}:
+    parameters:
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getGeo
+      tags:
+      - Geos
+      summary: Retrieve a geo
+      responses:
+        '200':
+          description: The geo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Geo'
+    post:
+      operationId: updateGeo
+      tags:
+      - Geos
+      summary: Update a geo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Geo'
+      responses:
+        '200':
+          description: The updated geo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Geo'
+    delete:
+      operationId: deleteGeo
+      tags:
+      - Geos
+      summary: Delete a geo
+      responses:
+        '200':
+          description: The geo was deleted.
+components:
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+  schemas:
+    Geo:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          example: geo
+        name:
+          type: string
+        state:
+          type: string
+        city:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.

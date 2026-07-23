@@ -1,0 +1,245 @@
+openapi: 3.0.3
+info:
+  title: Checkr Account Candidates API
+  description: The Checkr API is a RESTful interface for running compliant employment background checks. Employers, staffing firms, and platform partners create candidates, send invitations, order packages, and retrieve reports composed of individual screenings - SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education / employment verifications. The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with your secret API key as the username and an empty password; Checkr Partner integrations use OAuth. All responses are JSON. This document models the widely used, publicly documented endpoints; it is not exhaustive of every screening type Checkr offers.
+  version: '1.0'
+  contact:
+    name: Checkr
+    url: https://checkr.com
+  termsOfService: https://checkr.com/terms-of-service
+servers:
+- url: https://api.checkr.com/v1
+  description: Production
+- url: https://api.checkr-staging.com/v1
+  description: Staging
+security:
+- basicAuth: []
+tags:
+- name: Candidates
+  description: Candidate records that background checks are run against.
+paths:
+  /candidates:
+    get:
+      operationId: listCandidates
+      tags:
+      - Candidates
+      summary: List candidates
+      parameters:
+      - $ref: '#/components/parameters/Page'
+      - $ref: '#/components/parameters/PerPage'
+      responses:
+        '200':
+          description: A paginated list of candidates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createCandidate
+      tags:
+      - Candidates
+      summary: Create a candidate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateCreate'
+      responses:
+        '201':
+          description: The created candidate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /candidates/{id}:
+    parameters:
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getCandidate
+      tags:
+      - Candidates
+      summary: Retrieve a candidate
+      responses:
+        '200':
+          description: The candidate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      operationId: updateCandidate
+      tags:
+      - Candidates
+      summary: Update a candidate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateCreate'
+      responses:
+        '200':
+          description: The updated candidate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+    delete:
+      operationId: deleteCandidatePII
+      tags:
+      - Candidates
+      summary: Request PII removal for a candidate
+      responses:
+        '200':
+          description: PII removal requested.
+components:
+  parameters:
+    Page:
+      name: page
+      in: query
+      description: The page of results to return.
+      schema:
+        type: integer
+        default: 1
+    PerPage:
+      name: per_page
+      in: query
+      description: The number of results per page (default 25).
+      schema:
+        type: integer
+        default: 25
+        maximum: 100
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Authentication failed or was missing.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: The request was invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    CandidateCreate:
+      type: object
+      required:
+      - email
+      properties:
+        first_name:
+          type: string
+        middle_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        dob:
+          type: string
+          format: date
+        ssn:
+          type: string
+        zipcode:
+          type: string
+        work_locations:
+          type: array
+          items:
+            type: object
+            properties:
+              country:
+                type: string
+              state:
+                type: string
+              city:
+                type: string
+    Candidate:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          example: candidate
+        first_name:
+          type: string
+        middle_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        dob:
+          type: string
+          format: date
+        ssn:
+          type: string
+          description: May be returned masked (XXX-XX-1234).
+        zipcode:
+          type: string
+        driver_license_number:
+          type: string
+        driver_license_state:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    CandidateList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Candidate'
+        object:
+          type: string
+          example: list
+        count:
+          type: integer
+        next_href:
+          type: string
+        previous_href:
+          type: string
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.

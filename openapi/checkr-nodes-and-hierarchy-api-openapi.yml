@@ -1,0 +1,173 @@
+openapi: 3.0.3
+info:
+  title: Checkr Account Nodes and Hierarchy API
+  description: The Checkr API is a RESTful interface for running compliant employment background checks. Employers, staffing firms, and platform partners create candidates, send invitations, order packages, and retrieve reports composed of individual screenings - SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education / employment verifications. The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with your secret API key as the username and an empty password; Checkr Partner integrations use OAuth. All responses are JSON. This document models the widely used, publicly documented endpoints; it is not exhaustive of every screening type Checkr offers.
+  version: '1.0'
+  contact:
+    name: Checkr
+    url: https://checkr.com
+  termsOfService: https://checkr.com/terms-of-service
+servers:
+- url: https://api.checkr.com/v1
+  description: Production
+- url: https://api.checkr-staging.com/v1
+  description: Staging
+security:
+- basicAuth: []
+tags:
+- name: Nodes and Hierarchy
+  description: Tree of nodes modeling account/organization structure.
+paths:
+  /hierarchy:
+    post:
+      operationId: createHierarchy
+      tags:
+      - Nodes and Hierarchy
+      summary: Create a hierarchy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nodes:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Node'
+      responses:
+        '200':
+          description: The hierarchy update status.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+  /hierarchy/nodes:
+    post:
+      operationId: addHierarchyNodes
+      tags:
+      - Nodes and Hierarchy
+      summary: Add nodes to the hierarchy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nodes:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Node'
+      responses:
+        '200':
+          description: The hierarchy update status.
+  /hierarchy/status:
+    get:
+      operationId: getHierarchyStatus
+      tags:
+      - Nodes and Hierarchy
+      summary: Retrieve hierarchy update status
+      responses:
+        '200':
+          description: The status of the most recent hierarchy update.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+  /nodes:
+    get:
+      operationId: listNodes
+      tags:
+      - Nodes and Hierarchy
+      summary: List nodes
+      responses:
+        '200':
+          description: A list of nodes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Node'
+  /nodes/{id}:
+    parameters:
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getNode
+      tags:
+      - Nodes and Hierarchy
+      summary: Retrieve a node
+      responses:
+        '200':
+          description: The node.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+    patch:
+      operationId: updateNode
+      tags:
+      - Nodes and Hierarchy
+      summary: Update a node
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Node'
+      responses:
+        '200':
+          description: The updated node.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+    delete:
+      operationId: deleteNode
+      tags:
+      - Nodes and Hierarchy
+      summary: Delete a node
+      responses:
+        '200':
+          description: The node was deleted.
+components:
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+  schemas:
+    Node:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          example: node
+        custom_id:
+          type: string
+        name:
+          type: string
+        parent_id:
+          type: string
+        tier:
+          type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.

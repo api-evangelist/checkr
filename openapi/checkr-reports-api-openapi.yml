@@ -1,0 +1,198 @@
+openapi: 3.0.3
+info:
+  title: Checkr Account Reports API
+  description: The Checkr API is a RESTful interface for running compliant employment background checks. Employers, staffing firms, and platform partners create candidates, send invitations, order packages, and retrieve reports composed of individual screenings - SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education / employment verifications. The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with your secret API key as the username and an empty password; Checkr Partner integrations use OAuth. All responses are JSON. This document models the widely used, publicly documented endpoints; it is not exhaustive of every screening type Checkr offers.
+  version: '1.0'
+  contact:
+    name: Checkr
+    url: https://checkr.com
+  termsOfService: https://checkr.com/terms-of-service
+servers:
+- url: https://api.checkr.com/v1
+  description: Production
+- url: https://api.checkr-staging.com/v1
+  description: Staging
+security:
+- basicAuth: []
+tags:
+- name: Reports
+  description: The container aggregating a candidate's screenings and result.
+paths:
+  /reports:
+    post:
+      operationId: createReport
+      tags:
+      - Reports
+      summary: Create a report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportCreate'
+      responses:
+        '201':
+          description: The created report.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+  /reports/{id}:
+    parameters:
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getReport
+      tags:
+      - Reports
+      summary: Retrieve a report
+      parameters:
+      - name: include
+        in: query
+        description: Comma-separated related resources to embed (e.g. documents,geos).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The report.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+    post:
+      operationId: updateReport
+      tags:
+      - Reports
+      summary: Update or upgrade a report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                package:
+                  type: string
+                  description: A package slug to upgrade the report to.
+      responses:
+        '200':
+          description: The updated report.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+  /reports/{id}/complete:
+    parameters:
+    - $ref: '#/components/parameters/ResourceId'
+    post:
+      operationId: completeReport
+      tags:
+      - Reports
+      summary: Complete a report
+      responses:
+        '200':
+          description: The completed report.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+  /reports/{id}/eta:
+    parameters:
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getReportEta
+      tags:
+      - Reports
+      summary: Retrieve a report ETA
+      responses:
+        '200':
+          description: The estimated completion time for the report.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  estimated_completion_time:
+                    type: string
+                    format: date-time
+components:
+  schemas:
+    Report:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          example: report
+        status:
+          type: string
+          enum:
+          - pending
+          - consider
+          - clear
+          - suspended
+          - dispute
+          - complete
+        result:
+          type: string
+          enum:
+          - clear
+          - consider
+        candidate_id:
+          type: string
+        package:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+        ssn_trace_id:
+          type: string
+        county_criminal_search_ids:
+          type: array
+          items:
+            type: string
+        national_criminal_search_id:
+          type: string
+        federal_criminal_search_id:
+          type: string
+        sex_offender_search_id:
+          type: string
+        motor_vehicle_report_id:
+          type: string
+    ReportCreate:
+      type: object
+      required:
+      - candidate_id
+      - package
+      properties:
+        candidate_id:
+          type: string
+        package:
+          type: string
+        node:
+          type: string
+        work_locations:
+          type: array
+          items:
+            type: object
+            properties:
+              country:
+                type: string
+              state:
+                type: string
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.

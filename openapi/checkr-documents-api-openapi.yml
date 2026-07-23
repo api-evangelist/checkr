@@ -1,0 +1,124 @@
+openapi: 3.0.3
+info:
+  title: Checkr Account Documents API
+  description: The Checkr API is a RESTful interface for running compliant employment background checks. Employers, staffing firms, and platform partners create candidates, send invitations, order packages, and retrieve reports composed of individual screenings - SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education / employment verifications. The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with your secret API key as the username and an empty password; Checkr Partner integrations use OAuth. All responses are JSON. This document models the widely used, publicly documented endpoints; it is not exhaustive of every screening type Checkr offers.
+  version: '1.0'
+  contact:
+    name: Checkr
+    url: https://checkr.com
+  termsOfService: https://checkr.com/terms-of-service
+servers:
+- url: https://api.checkr.com/v1
+  description: Production
+- url: https://api.checkr-staging.com/v1
+  description: Staging
+security:
+- basicAuth: []
+tags:
+- name: Documents
+  description: Files attached to a candidate.
+paths:
+  /candidates/{id}/documents:
+    parameters:
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: listCandidateDocuments
+      tags:
+      - Documents
+      summary: List candidate documents
+      responses:
+        '200':
+          description: A list of documents.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentList'
+    post:
+      operationId: uploadCandidateDocument
+      tags:
+      - Documents
+      summary: Upload a candidate document
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                type:
+                  type: string
+                  description: The document type, e.g. driver_license or motor_vehicle_report.
+      responses:
+        '201':
+          description: The uploaded document.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+  /candidates/{id}/documents/{document_id}:
+    parameters:
+    - $ref: '#/components/parameters/ResourceId'
+    - name: document_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      operationId: getCandidateDocument
+      tags:
+      - Documents
+      summary: Retrieve a candidate document
+      responses:
+        '200':
+          description: The document.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+components:
+  schemas:
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          example: document
+        filename:
+          type: string
+        content_type:
+          type: string
+        type:
+          type: string
+        download_uri:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    DocumentList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+        object:
+          type: string
+          example: list
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.

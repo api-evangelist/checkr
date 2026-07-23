@@ -1,0 +1,131 @@
+openapi: 3.0.3
+info:
+  title: Checkr Account Adverse Actions API
+  description: The Checkr API is a RESTful interface for running compliant employment background checks. Employers, staffing firms, and platform partners create candidates, send invitations, order packages, and retrieve reports composed of individual screenings - SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education / employment verifications. The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with your secret API key as the username and an empty password; Checkr Partner integrations use OAuth. All responses are JSON. This document models the widely used, publicly documented endpoints; it is not exhaustive of every screening type Checkr offers.
+  version: '1.0'
+  contact:
+    name: Checkr
+    url: https://checkr.com
+  termsOfService: https://checkr.com/terms-of-service
+servers:
+- url: https://api.checkr.com/v1
+  description: Production
+- url: https://api.checkr-staging.com/v1
+  description: Staging
+security:
+- basicAuth: []
+tags:
+- name: Adverse Actions
+  description: FCRA adverse action workflows against a report.
+paths:
+  /reports/{id}/adverse_actions:
+    parameters:
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: listAdverseActions
+      tags:
+      - Adverse Actions
+      summary: List adverse actions for a report
+      responses:
+        '200':
+          description: A list of adverse actions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AdverseAction'
+    post:
+      operationId: createAdverseAction
+      tags:
+      - Adverse Actions
+      summary: Create an adverse action
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                adverse_item_ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: The created adverse action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdverseAction'
+  /adverse_actions/{id}:
+    parameters:
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getAdverseAction
+      tags:
+      - Adverse Actions
+      summary: Retrieve an adverse action
+      responses:
+        '200':
+          description: The adverse action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdverseAction'
+    delete:
+      operationId: cancelAdverseAction
+      tags:
+      - Adverse Actions
+      summary: Cancel an adverse action
+      responses:
+        '200':
+          description: The cancelled adverse action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdverseAction'
+components:
+  schemas:
+    AdverseAction:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          example: adverse_action
+        status:
+          type: string
+          enum:
+          - pending
+          - dispute
+          - complete
+          - canceled
+        report_id:
+          type: string
+        pre_notice_date:
+          type: string
+          format: date-time
+        post_notice_date:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.

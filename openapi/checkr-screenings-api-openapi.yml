@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: Checkr Account Screenings API
+  description: The Checkr API is a RESTful interface for running compliant employment background checks. Employers, staffing firms, and platform partners create candidates, send invitations, order packages, and retrieve reports composed of individual screenings - SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education / employment verifications. The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with your secret API key as the username and an empty password; Checkr Partner integrations use OAuth. All responses are JSON. This document models the widely used, publicly documented endpoints; it is not exhaustive of every screening type Checkr offers.
+  version: '1.0'
+  contact:
+    name: Checkr
+    url: https://checkr.com
+  termsOfService: https://checkr.com/terms-of-service
+servers:
+- url: https://api.checkr.com/v1
+  description: Production
+- url: https://api.checkr-staging.com/v1
+  description: Staging
+security:
+- basicAuth: []
+tags:
+- name: Screenings
+  description: Individual screening components nested under a report.
+paths:
+  /reports/{report_id}/ssn_trace/{id}:
+    parameters:
+    - name: report_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getSsnTrace
+      tags:
+      - Screenings
+      summary: Retrieve an SSN trace
+      responses:
+        '200':
+          description: The SSN trace screening.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Screening'
+  /reports/{report_id}/county_criminal_searches/{id}:
+    parameters:
+    - name: report_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getCountyCriminalSearch
+      tags:
+      - Screenings
+      summary: Retrieve a county criminal search
+      responses:
+        '200':
+          description: The county criminal search screening.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Screening'
+  /reports/{report_id}/national_criminal_search/{id}:
+    parameters:
+    - name: report_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getNationalCriminalSearch
+      tags:
+      - Screenings
+      summary: Retrieve a national criminal search
+      responses:
+        '200':
+          description: The national criminal search screening.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Screening'
+  /reports/{report_id}/federal_criminal_search/{id}:
+    parameters:
+    - name: report_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getFederalCriminalSearch
+      tags:
+      - Screenings
+      summary: Retrieve a federal criminal search
+      responses:
+        '200':
+          description: The federal criminal search screening.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Screening'
+  /reports/{report_id}/sex_offender_search/{id}:
+    parameters:
+    - name: report_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getSexOffenderSearch
+      tags:
+      - Screenings
+      summary: Retrieve a sex offender registry search
+      responses:
+        '200':
+          description: The sex offender search screening.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Screening'
+  /reports/{report_id}/motor_vehicle_report/{id}:
+    parameters:
+    - name: report_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getMotorVehicleReport
+      tags:
+      - Screenings
+      summary: Retrieve a motor vehicle report
+      responses:
+        '200':
+          description: The motor vehicle report screening.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Screening'
+components:
+  schemas:
+    Screening:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - clear
+          - consider
+          - suspended
+          - dispute
+          - complete
+        result:
+          type: string
+        completed_at:
+          type: string
+          format: date-time
+        turnaround_time:
+          type: integer
+        records:
+          type: array
+          items:
+            type: object
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.

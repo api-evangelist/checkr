@@ -1,0 +1,168 @@
+openapi: 3.0.3
+info:
+  title: Checkr Account Subscriptions API
+  description: The Checkr API is a RESTful interface for running compliant employment background checks. Employers, staffing firms, and platform partners create candidates, send invitations, order packages, and retrieve reports composed of individual screenings - SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education / employment verifications. The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with your secret API key as the username and an empty password; Checkr Partner integrations use OAuth. All responses are JSON. This document models the widely used, publicly documented endpoints; it is not exhaustive of every screening type Checkr offers.
+  version: '1.0'
+  contact:
+    name: Checkr
+    url: https://checkr.com
+  termsOfService: https://checkr.com/terms-of-service
+servers:
+- url: https://api.checkr.com/v1
+  description: Production
+- url: https://api.checkr-staging.com/v1
+  description: Staging
+security:
+- basicAuth: []
+tags:
+- name: Subscriptions
+  description: Recurring re-runs of a package for a candidate.
+paths:
+  /subscriptions:
+    get:
+      operationId: listSubscriptions
+      tags:
+      - Subscriptions
+      summary: List subscriptions
+      responses:
+        '200':
+          description: A list of subscriptions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subscription'
+    post:
+      operationId: createSubscription
+      tags:
+      - Subscriptions
+      summary: Create a subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionCreate'
+      responses:
+        '201':
+          description: The created subscription.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+  /subscriptions/{id}:
+    parameters:
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getSubscription
+      tags:
+      - Subscriptions
+      summary: Retrieve a subscription
+      responses:
+        '200':
+          description: The subscription.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+    post:
+      operationId: updateSubscription
+      tags:
+      - Subscriptions
+      summary: Update a subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionCreate'
+      responses:
+        '200':
+          description: The updated subscription.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+    delete:
+      operationId: cancelSubscription
+      tags:
+      - Subscriptions
+      summary: Cancel a subscription
+      responses:
+        '200':
+          description: The cancelled subscription.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+components:
+  schemas:
+    SubscriptionCreate:
+      type: object
+      required:
+      - candidate_id
+      - package
+      properties:
+        candidate_id:
+          type: string
+        package:
+          type: string
+        interval_count:
+          type: integer
+        interval_unit:
+          type: string
+          enum:
+          - month
+          - year
+        start_date:
+          type: string
+          format: date
+        node:
+          type: string
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          example: subscription
+        status:
+          type: string
+          enum:
+          - active
+          - canceled
+        candidate_id:
+          type: string
+        package:
+          type: string
+        interval_count:
+          type: integer
+        interval_unit:
+          type: string
+          enum:
+          - month
+          - year
+        start_date:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date-time
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.

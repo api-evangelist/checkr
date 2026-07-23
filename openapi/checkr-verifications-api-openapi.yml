@@ -1,0 +1,106 @@
+openapi: 3.0.3
+info:
+  title: Checkr Account Verifications API
+  description: The Checkr API is a RESTful interface for running compliant employment background checks. Employers, staffing firms, and platform partners create candidates, send invitations, order packages, and retrieve reports composed of individual screenings - SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education / employment verifications. The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with your secret API key as the username and an empty password; Checkr Partner integrations use OAuth. All responses are JSON. This document models the widely used, publicly documented endpoints; it is not exhaustive of every screening type Checkr offers.
+  version: '1.0'
+  contact:
+    name: Checkr
+    url: https://checkr.com
+  termsOfService: https://checkr.com/terms-of-service
+servers:
+- url: https://api.checkr.com/v1
+  description: Production
+- url: https://api.checkr-staging.com/v1
+  description: Staging
+security:
+- basicAuth: []
+tags:
+- name: Verifications
+  description: Education and employment verification screenings.
+paths:
+  /reports/{report_id}/verifications:
+    parameters:
+    - name: report_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      operationId: listVerifications
+      tags:
+      - Verifications
+      summary: List verifications for a report
+      responses:
+        '200':
+          description: A list of verifications.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Screening'
+  /reports/{report_id}/verifications/{id}:
+    parameters:
+    - name: report_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - $ref: '#/components/parameters/ResourceId'
+    get:
+      operationId: getVerification
+      tags:
+      - Verifications
+      summary: Retrieve a verification
+      responses:
+        '200':
+          description: The verification screening.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Screening'
+components:
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+  schemas:
+    Screening:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - clear
+          - consider
+          - suspended
+          - dispute
+          - complete
+        result:
+          type: string
+        completed_at:
+          type: string
+          format: date-time
+        turnaround_time:
+          type: integer
+        records:
+          type: array
+          items:
+            type: object
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.
