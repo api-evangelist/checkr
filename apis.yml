@@ -12,7 +12,20 @@ description: Checkr is a technology-driven background check platform for employm
   subscriptions, node/hierarchy and geo account structure, Form I-9, documents, and
   webhooks for event-driven report status updates. Authentication is HTTP Basic auth
   with a secret API key, with OAuth for Checkr Partner integrations.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: paid
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Paid · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/checkr.png
 tags:
 - Background Checks
 - Employment Screening
@@ -24,289 +37,258 @@ created: '2026-07-03'
 modified: '2026-07-03'
 specificationVersion: '0.19'
 apis:
-- aid: checkr:checkr-candidates-api
-  name: Checkr Candidates API
-  tags:
-  - Candidates
-  - PII
-  - Screening
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+- aid: checkr:checkr-account-api
+  name: Checkr Account API
+  description: Account and user metadata.
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
-  properties:
-  - url: https://docs.checkr.com/
-    type: Documentation
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: Create, list, retrieve, and update the candidate records that
-    background checks are run against, and request PII removal. Candidates hold the
-    personal information (name, DOB, SSN, addresses, driver license, work
-    authorization) used to order reports and screenings.
-- aid: checkr:checkr-invitations-api
-  name: Checkr Invitations API
   tags:
-  - Invitations
-  - Candidate Experience
-  - Onboarding
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.checkr.com/
-  baseURL: https://api.checkr.com/v1
+  - Account
   properties:
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: Send candidates a hosted invitation to submit their own information and
-    consent, then create, list, retrieve, and cancel those invitations. Invitations
-    order a package once the candidate completes the flow, removing the need to
-    collect PII directly.
-- aid: checkr:checkr-reports-api
-  name: Checkr Reports API
-  tags:
-  - Reports
-  - Screening
-  - Adjudication
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.checkr.com/
-  baseURL: https://api.checkr.com/v1
-  properties:
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: Create, retrieve, update/upgrade, complete, and review reports - the
-    top-level container for a candidate's background check that aggregates individual
-    screenings, addresses, documents, an ETA, and an overall assessment result
-    (clear/consider).
-- aid: checkr:checkr-screenings-api
-  name: Checkr Screenings API
-  tags:
-  - Screenings
-  - Criminal Records
-  - MVR
-  - SSN Trace
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.checkr.com/
-  baseURL: https://api.checkr.com/v1
-  properties:
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: Retrieve the individual screening components nested under a report -
-    SSN trace, county/state/national/federal criminal searches, sex offender registry
-    search, global watchlist, and motor vehicle report - each with its own status and
-    records.
-- aid: checkr:checkr-verifications-api
-  name: Checkr Verifications API
-  tags:
-  - Verifications
-  - Education
-  - Employment
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.checkr.com/
-  baseURL: https://api.checkr.com/v1
-  properties:
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: List and retrieve education and employment verification screenings for
-    a report, plus manage the supporting candidate-provided schools, employers,
-    driver licenses, and professional licenses used to verify history.
-- aid: checkr:checkr-packages-api
-  name: Checkr Packages API
-  tags:
-  - Packages
-  - Programs
-  - Pricing
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.checkr.com/
-  baseURL: https://api.checkr.com/v1
-  properties:
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: List and retrieve the packages (bundles of screenings such as Basic+,
-    Essential, and Professional) and programs configured on your account that
-    determine which screenings a report includes and what it costs.
-- aid: checkr:checkr-documents-api
-  name: Checkr Documents API
-  tags:
-  - Documents
-  - Uploads
-  - Compliance
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.checkr.com/
-  baseURL: https://api.checkr.com/v1
-  properties:
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: Upload, list, and retrieve documents attached to a candidate - driver
-    license images, motor vehicle records, and other supporting files required to
-    process or dispute a screening.
+  - type: OpenAPI
+    url: openapi/checkr-account-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
 - aid: checkr:checkr-adverse-actions-api
   name: Checkr Adverse Actions API
+  description: FCRA adverse action workflows against a report.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
   tags:
   - Adverse Actions
-  - FCRA
-  - Compliance
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-adverse-actions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-candidates-api
+  name: Checkr Candidates API
+  description: Candidate records that background checks are run against.
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
-  properties:
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: Create, list, retrieve, and cancel FCRA-compliant adverse action
-    workflows against a report, including the pre-adverse and post-adverse notice
-    timing required when a hiring decision is based on a background check.
-- aid: checkr:checkr-subscriptions-api
-  name: Checkr Subscriptions API
   tags:
-  - Subscriptions
-  - Recurring
-  - Automation
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.checkr.com/
-  baseURL: https://api.checkr.com/v1
+  - Candidates
   properties:
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: Create, list, retrieve, update, and cancel subscriptions that
-    automatically re-run a package for a candidate on a recurring schedule (for
-    example annual re-screening).
+  - type: OpenAPI
+    url: openapi/checkr-candidates-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
 - aid: checkr:checkr-continuous-checks-api
   name: Checkr Continuous Checks API
+  description: Ongoing monitoring for new records.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
   tags:
   - Continuous Checks
-  - Monitoring
-  - Criminal Records
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-continuous-checks-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-documents-api
+  name: Checkr Documents API
+  description: Files attached to a candidate.
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
-  properties:
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: Create, list, retrieve, update, and cancel continuous checks that
-    monitor a candidate on an ongoing basis and surface new criminal or MVR records
-    as they appear, rather than as a one-time point-in-time report.
-- aid: checkr:checkr-nodes-hierarchy-api
-  name: Checkr Nodes and Hierarchy API
   tags:
-  - Nodes
-  - Hierarchy
-  - Account Structure
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.checkr.com/
-  baseURL: https://api.checkr.com/v1
+  - Documents
   properties:
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: Model your organization as a tree of nodes (locations, departments,
-    franchises) via the hierarchy and nodes endpoints, so reports and billing can be
-    segmented and access controlled across a large account.
+  - type: OpenAPI
+    url: openapi/checkr-documents-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
 - aid: checkr:checkr-geos-api
   name: Checkr Geos API
+  description: State/locale definitions scoping pricing and compliance.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
   tags:
   - Geos
-  - Localization
-  - Compliance
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-geos-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-invitations-api
+  name: Checkr Invitations API
+  description: Hosted invitations for candidates to submit their own information.
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
+  tags:
+  - Invitations
   properties:
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: Create, list, retrieve, update, and delete geos - the state/locale
-    definitions that scope package pricing and localized compliance requirements so
-    reports follow the rules of the candidate's work location.
+  - type: OpenAPI
+    url: openapi/checkr-invitations-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-nodes-and-hierarchy-api
+  name: Checkr Nodes and Hierarchy API
+  description: Tree of nodes modeling account/organization structure.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Nodes and Hierarchy
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-nodes-and-hierarchy-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-packages-api
+  name: Checkr Packages API
+  description: Bundles of screenings and the programs that group them.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Packages
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-packages-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-reports-api
+  name: Checkr Reports API
+  description: The container aggregating a candidate's screenings and result.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Reports
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-reports-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-screenings-api
+  name: Checkr Screenings API
+  description: Individual screening components nested under a report.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Screenings
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-screenings-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-subscriptions-api
+  name: Checkr Subscriptions API
+  description: Recurring re-runs of a package for a candidate.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Subscriptions
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-subscriptions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-verifications-api
+  name: Checkr Verifications API
+  description: Education and employment verification screenings.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Verifications
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-verifications-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
 - aid: checkr:checkr-webhooks-api
   name: Checkr Webhooks API
-  tags:
-  - Webhooks
-  - Events
-  - Notifications
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  description: Event notification subscriptions.
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
+  tags:
+  - Webhooks
   properties:
-  - url: https://docs.checkr.com/
-    type: Documentation
-  - url: https://docs.checkr.com/
-    type: APIReference
-  - url: openapi/checkr-openapi.yml
-    type: OpenAPI
-  - url: collections/checkr.postman_collection.json
-    type: PostmanCollection
-  - url: collections/checkr.opencollection.json
-    type: OpenCollection
-  description: Register and manage webhook subscriptions that Checkr POSTs event
-    notifications to (report.completed, candidate.created, invitation.completed, and
-    more) over HTTPS or Amazon SNS, giving event-driven updates on long-running
-    screening workflows.
+  - type: OpenAPI
+    url: openapi/checkr-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
 common:
 - type: AgenticAccess
   url: agentic-access/checkr-agentic-access.yml
