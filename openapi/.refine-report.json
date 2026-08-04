@@ -1,0 +1,40 @@
+{
+  "provider": "checkr",
+  "sources": [
+    "checkr-account-api-openapi.yml",
+    "checkr-adverse-actions-api-openapi.yml",
+    "checkr-candidates-api-openapi.yml",
+    "checkr-continuous-checks-api-openapi.yml",
+    "checkr-documents-api-openapi.yml",
+    "checkr-geos-api-openapi.yml",
+    "checkr-invitations-api-openapi.yml",
+    "checkr-nodes-and-hierarchy-api-openapi.yml",
+    "checkr-packages-api-openapi.yml",
+    "checkr-reports-api-openapi.yml",
+    "checkr-screenings-api-openapi.yml",
+    "checkr-subscriptions-api-openapi.yml",
+    "checkr-verifications-api-openapi.yml",
+    "checkr-webhooks-api-openapi.yml"
+  ],
+  "outputs": [
+    "checkr-account-api-openapi.yml",
+    "checkr-adverse-actions-api-openapi.yml",
+    "checkr-candidates-api-openapi.yml",
+    "checkr-continuous-checks-api-openapi.yml",
+    "checkr-documents-api-openapi.yml",
+    "checkr-geos-api-openapi.yml",
+    "checkr-invitations-api-openapi.yml",
+    "checkr-nodes-and-hierarchy-api-openapi.yml",
+    "checkr-packages-api-openapi.yml",
+    "checkr-reports-api-openapi.yml",
+    "checkr-screenings-api-openapi.yml",
+    "checkr-subscriptions-api-openapi.yml",
+    "checkr-verifications-api-openapi.yml",
+    "checkr-webhooks-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
