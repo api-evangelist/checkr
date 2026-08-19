@@ -1,0 +1,67 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Checkr Account Verifications API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Verifications",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List verifications for a report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:report_id/verifications",
+            "params": [
+              {
+                "name": "report_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List verifications for a report"
+        },
+        {
+          "info": {
+            "name": "Retrieve a verification",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:report_id/verifications/:id",
+            "params": [
+              {
+                "name": "report_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Retrieve a verification"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

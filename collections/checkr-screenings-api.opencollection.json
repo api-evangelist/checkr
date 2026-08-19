@@ -1,0 +1,169 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Checkr Account Screenings API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Screenings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve an SSN trace",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:report_id/ssn_trace/:id",
+            "params": [
+              {
+                "name": "report_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Retrieve an SSN trace"
+        },
+        {
+          "info": {
+            "name": "Retrieve a county criminal search",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:report_id/county_criminal_searches/:id",
+            "params": [
+              {
+                "name": "report_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Retrieve a county criminal search"
+        },
+        {
+          "info": {
+            "name": "Retrieve a national criminal search",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:report_id/national_criminal_search/:id",
+            "params": [
+              {
+                "name": "report_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Retrieve a national criminal search"
+        },
+        {
+          "info": {
+            "name": "Retrieve a federal criminal search",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:report_id/federal_criminal_search/:id",
+            "params": [
+              {
+                "name": "report_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Retrieve a federal criminal search"
+        },
+        {
+          "info": {
+            "name": "Retrieve a sex offender registry search",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:report_id/sex_offender_search/:id",
+            "params": [
+              {
+                "name": "report_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Retrieve a sex offender registry search"
+        },
+        {
+          "info": {
+            "name": "Retrieve a motor vehicle report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:report_id/motor_vehicle_report/:id",
+            "params": [
+              {
+                "name": "report_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Retrieve a motor vehicle report"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

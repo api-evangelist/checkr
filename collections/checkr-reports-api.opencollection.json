@@ -1,0 +1,126 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Checkr Account Reports API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Reports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a report",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/reports",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a report"
+        },
+        {
+          "info": {
+            "name": "Retrieve a report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated related resources to embed (e.g. documents,geos)."
+              }
+            ]
+          },
+          "docs": "Retrieve a report"
+        },
+        {
+          "info": {
+            "name": "Update or upgrade a report",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/reports/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update or upgrade a report"
+        },
+        {
+          "info": {
+            "name": "Complete a report",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/reports/:id/complete",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Complete a report"
+        },
+        {
+          "info": {
+            "name": "Retrieve a report ETA",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:id/eta",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Retrieve a report ETA"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,105 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Checkr Account Adverse Actions API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Adverse Actions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List adverse actions for a report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/reports/:id/adverse_actions",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "List adverse actions for a report"
+        },
+        {
+          "info": {
+            "name": "Create an adverse action",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/reports/:id/adverse_actions",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create an adverse action"
+        },
+        {
+          "info": {
+            "name": "Retrieve an adverse action",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/adverse_actions/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Retrieve an adverse action"
+        },
+        {
+          "info": {
+            "name": "Cancel an adverse action",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.checkr.com/v1/adverse_actions/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Cancel an adverse action"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

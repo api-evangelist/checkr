@@ -1,0 +1,402 @@
+{
+  "item": [
+    {
+      "id": "6e5733c0-a8f2-43f8-a9ed-63ccac5dbb43",
+      "name": "Continuous Checks",
+      "description": {
+        "content": "Ongoing monitoring for new records.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "4bcd1ef0-241d-4b8e-b616-ef6fb2f70fff",
+          "name": "List continuous checks",
+          "request": {
+            "name": "List continuous checks",
+            "description": {},
+            "url": {
+              "path": [
+                "continuous_checks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ff08b80e-6b9d-4fe3-8aae-beebe6ae5833",
+              "name": "A list of continuous checks.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "continuous_checks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"object\": \"continuous_check\",\n      \"type\": \"mvr\",\n      \"status\": \"canceled\",\n      \"candidate_id\": \"string\",\n      \"node\": \"string\",\n      \"created_at\": \"1947-12-03T08:42:27.574Z\"\n    },\n    {\n      \"id\": \"string\",\n      \"object\": \"continuous_check\",\n      \"type\": \"mvr\",\n      \"status\": \"active\",\n      \"candidate_id\": \"string\",\n      \"node\": \"string\",\n      \"created_at\": \"2001-11-21T03:16:26.666Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "15a05a06-199a-45fd-9e37-9bb9b2b2b8f5",
+          "name": "Create a continuous check",
+          "request": {
+            "name": "Create a continuous check",
+            "description": {},
+            "url": {
+              "path": [
+                "continuous_checks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"candidate_id\": \"<string>\",\n  \"type\": \"<string>\",\n  \"node\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "12ebcebe-dea8-4b97-9aa3-03905514cfac",
+              "name": "The created continuous check.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "continuous_checks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"candidate_id\": \"<string>\",\n  \"type\": \"<string>\",\n  \"node\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"continuous_check\",\n  \"type\": \"mvr\",\n  \"status\": \"canceled\",\n  \"candidate_id\": \"string\",\n  \"node\": \"string\",\n  \"created_at\": \"2010-11-25T11:37:59.174Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5bef81d1-f27f-48dd-9361-77b0844a3bde",
+          "name": "Retrieve a continuous check",
+          "request": {
+            "name": "Retrieve a continuous check",
+            "description": {},
+            "url": {
+              "path": [
+                "continuous_checks",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The unique identifier of the resource."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "318cfa2e-6c6b-4922-b90e-56d8b284dcc5",
+              "name": "The continuous check.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "continuous_checks",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The unique identifier of the resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"continuous_check\",\n  \"type\": \"mvr\",\n  \"status\": \"canceled\",\n  \"candidate_id\": \"string\",\n  \"node\": \"string\",\n  \"created_at\": \"2010-11-25T11:37:59.174Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "981835e5-d9de-4fa3-bf24-06c73e89087c",
+          "name": "Cancel a continuous check",
+          "request": {
+            "name": "Cancel a continuous check",
+            "description": {},
+            "url": {
+              "path": [
+                "continuous_checks",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The unique identifier of the resource."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "19542516-15ff-426d-8e0a-b3bace830818",
+              "name": "The cancelled continuous check.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "continuous_checks",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The unique identifier of the resource."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"continuous_check\",\n  \"type\": \"mvr\",\n  \"status\": \"canceled\",\n  \"candidate_id\": \"string\",\n  \"node\": \"string\",\n  \"created_at\": \"2010-11-25T11:37:59.174Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.checkr.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{basicAuthUsername}}"
+      },
+      {
+        "key": "password",
+        "value": "{{basicAuthPassword}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "960b29b1-bc24-4bd3-a3bd-55cb84727e32",
+    "name": "Checkr Account Continuous Checks API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Checkr API is a RESTful interface for running compliant employment background checks. Employers, staffing firms, and platform partners create candidates, send invitations, order packages, and retrieve reports composed of individual screenings - SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education / employment verifications. The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with your secret API key as the username and an empty password; Checkr Partner integrations use OAuth. All responses are JSON. This document models the widely used, publicly documented endpoints; it is not exhaustive of every screening type Checkr offers.\n\nContact Support:\n Name: Checkr",
+      "type": "text/plain"
+    }
+  }
+}

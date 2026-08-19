@@ -1,0 +1,89 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Checkr Account Continuous Checks API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Continuous Checks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List continuous checks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/continuous_checks"
+          },
+          "docs": "List continuous checks"
+        },
+        {
+          "info": {
+            "name": "Create a continuous check",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/continuous_checks",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a continuous check"
+        },
+        {
+          "info": {
+            "name": "Retrieve a continuous check",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/continuous_checks/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Retrieve a continuous check"
+        },
+        {
+          "info": {
+            "name": "Cancel a continuous check",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.checkr.com/v1/continuous_checks/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Cancel a continuous check"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

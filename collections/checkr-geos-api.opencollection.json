@@ -1,0 +1,112 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Checkr Account Geos API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Geos",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List geos",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/geos"
+          },
+          "docs": "List geos"
+        },
+        {
+          "info": {
+            "name": "Create a geo",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/geos",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a geo"
+        },
+        {
+          "info": {
+            "name": "Retrieve a geo",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.checkr.com/v1/geos/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Retrieve a geo"
+        },
+        {
+          "info": {
+            "name": "Update a geo",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.checkr.com/v1/geos/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a geo"
+        },
+        {
+          "info": {
+            "name": "Delete a geo",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.checkr.com/v1/geos/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the resource."
+              }
+            ]
+          },
+          "docs": "Delete a geo"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
