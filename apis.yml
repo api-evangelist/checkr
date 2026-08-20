@@ -241,6 +241,8 @@ apis:
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
   tags:
+  - Subscription
+  tags_raw:
   - Subscriptions
   properties:
   - type: OpenAPI
@@ -259,6 +261,8 @@ apis:
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
   tags:
+  - Verification
+  tags_raw:
   - Verifications
   properties:
   - type: OpenAPI
@@ -277,6 +281,8 @@ apis:
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
