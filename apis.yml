@@ -12,6 +12,18 @@ description: Checkr is a technology-driven background check platform for employm
   subscriptions, node/hierarchy and geo account structure, Form I-9, documents, and
   webhooks for event-driven report status updates. Authentication is HTTP Basic auth
   with a secret API key, with OAuth for Checkr Partner integrations.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: self-serve
