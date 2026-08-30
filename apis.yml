@@ -273,7 +273,7 @@ apis:
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
   tags:
-  - Verification
+  - Verifications
   tags_raw:
   - Verifications
   properties:
