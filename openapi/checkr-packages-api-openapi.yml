@@ -1,7 +1,7 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Checkr Account Packages API
-  description: The Checkr API is a RESTful interface for running compliant employment background checks. Employers, staffing firms, and platform partners create candidates, send invitations, order packages, and retrieve reports composed of individual screenings - SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education / employment verifications. The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with your secret API key as the username and an empty password; Checkr Partner integrations use OAuth. All responses are JSON. This document models the widely used, publicly documented endpoints; it is not exhaustive of every screening type Checkr offers.
+  title: Checkr Packages API
+  description: The Checkr API is a RESTful interface for running compliant employment background checks.
   version: '1.0'
   contact:
     name: Checkr
@@ -84,13 +84,13 @@ paths:
                 $ref: '#/components/schemas/Program'
 components:
   parameters:
-    Page:
-      name: page
-      in: query
-      description: The page of results to return.
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
       schema:
-        type: integer
-        default: 1
+        type: string
     PerPage:
       name: per_page
       in: query
@@ -99,14 +99,26 @@ components:
         type: integer
         default: 25
         maximum: 100
-    ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
+    Page:
+      name: page
+      in: query
+      description: The page of results to return.
       schema:
-        type: string
+        type: integer
+        default: 1
   schemas:
+    PackageList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Package'
+        object:
+          type: string
+          example: list
+        count:
+          type: integer
     Program:
       type: object
       properties:
@@ -149,18 +161,6 @@ components:
         created_at:
           type: string
           format: date-time
-    PackageList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Package'
-        object:
-          type: string
-          example: list
-        count:
-          type: integer
   securitySchemes:
     basicAuth:
       type: http
