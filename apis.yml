@@ -49,6 +49,7 @@ tags:
 - Human Resources
 - Identity Verification
 - Criminal Records
+- Recruiting
 tags_raw:
 - Background Checks
 - Employment Screening
@@ -56,6 +57,7 @@ tags_raw:
 - HR Tech
 - Identity Verification
 - Criminal Records
+- Recruiting
 created: '2026-07-03'
 modified: '2026-07-03'
 specificationVersion: '0.23'

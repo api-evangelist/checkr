@@ -89,41 +89,6 @@ paths:
                 $ref: '#/components/schemas/Invitation'
 components:
   schemas:
-    InvitationCreate:
-      type: object
-      required:
-      - candidate_id
-      - package
-      properties:
-        candidate_id:
-          type: string
-        package:
-          type: string
-        work_locations:
-          type: array
-          items:
-            type: object
-            properties:
-              country:
-                type: string
-              state:
-                type: string
-              city:
-                type: string
-        node:
-          type: string
-    InvitationList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Invitation'
-        object:
-          type: string
-          example: list
-        count:
-          type: integer
     Invitation:
       type: object
       properties:
@@ -150,6 +115,41 @@ components:
         created_at:
           type: string
           format: date-time
+    InvitationList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invitation'
+        object:
+          type: string
+          example: list
+        count:
+          type: integer
+    InvitationCreate:
+      type: object
+      required:
+      - candidate_id
+      - package
+      properties:
+        candidate_id:
+          type: string
+        package:
+          type: string
+        work_locations:
+          type: array
+          items:
+            type: object
+            properties:
+              country:
+                type: string
+              state:
+                type: string
+              city:
+                type: string
+        node:
+          type: string
   parameters:
     ResourceId:
       name: id

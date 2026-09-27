@@ -103,65 +103,6 @@ paths:
           description: PII removal requested.
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-        errors:
-          type: array
-          items:
-            type: string
-    CandidateCreate:
-      type: object
-      required:
-      - email
-      properties:
-        first_name:
-          type: string
-        middle_name:
-          type: string
-        last_name:
-          type: string
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        dob:
-          type: string
-          format: date
-        ssn:
-          type: string
-        zipcode:
-          type: string
-        work_locations:
-          type: array
-          items:
-            type: object
-            properties:
-              country:
-                type: string
-              state:
-                type: string
-              city:
-                type: string
-    CandidateList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Candidate'
-        object:
-          type: string
-          example: list
-        count:
-          type: integer
-        next_href:
-          type: string
-        previous_href:
-          type: string
     Candidate:
       type: object
       properties:
@@ -196,25 +137,65 @@ components:
         created_at:
           type: string
           format: date-time
-  responses:
-    BadRequest:
-      description: The request was invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Authentication failed or was missing.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    CandidateCreate:
+      type: object
+      required:
+      - email
+      properties:
+        first_name:
+          type: string
+        middle_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        dob:
+          type: string
+          format: date
+        ssn:
+          type: string
+        zipcode:
+          type: string
+        work_locations:
+          type: array
+          items:
+            type: object
+            properties:
+              country:
+                type: string
+              state:
+                type: string
+              city:
+                type: string
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string
+    CandidateList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Candidate'
+        object:
+          type: string
+          example: list
+        count:
+          type: integer
+        next_href:
+          type: string
+        previous_href:
+          type: string
   parameters:
     ResourceId:
       name: id
@@ -238,6 +219,25 @@ components:
       schema:
         type: integer
         default: 1
+  responses:
+    NotFound:
+      description: The resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication failed or was missing.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: The request was invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     basicAuth:
       type: http
