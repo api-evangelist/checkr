@@ -78,6 +78,14 @@ paths:
         '200':
           description: The webhook was deleted.
 components:
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
   schemas:
     Webhook:
       type: object
@@ -111,14 +119,6 @@ components:
           type: array
           items:
             type: string
-  parameters:
-    ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
   securitySchemes:
     basicAuth:
       type: http

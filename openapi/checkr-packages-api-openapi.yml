@@ -99,18 +99,6 @@ components:
         created_at:
           type: string
           format: date-time
-    PackageList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Package'
-        object:
-          type: string
-          example: list
-        count:
-          type: integer
     Package:
       type: object
       properties:
@@ -138,14 +126,19 @@ components:
         created_at:
           type: string
           format: date-time
+    PackageList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Package'
+        object:
+          type: string
+          example: list
+        count:
+          type: integer
   parameters:
-    ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
     PerPage:
       name: per_page
       in: query
@@ -154,6 +147,13 @@ components:
         type: integer
         default: 25
         maximum: 100
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
     Page:
       name: page
       in: query

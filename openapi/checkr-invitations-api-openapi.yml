@@ -88,7 +88,53 @@ paths:
               schema:
                 $ref: '#/components/schemas/Invitation'
 components:
+  parameters:
+    PerPage:
+      name: per_page
+      in: query
+      description: The number of results per page (default 25).
+      schema:
+        type: integer
+        default: 25
+        maximum: 100
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+    Page:
+      name: page
+      in: query
+      description: The page of results to return.
+      schema:
+        type: integer
+        default: 1
   schemas:
+    InvitationCreate:
+      type: object
+      required:
+      - candidate_id
+      - package
+      properties:
+        candidate_id:
+          type: string
+        package:
+          type: string
+        work_locations:
+          type: array
+          items:
+            type: object
+            properties:
+              country:
+                type: string
+              state:
+                type: string
+              city:
+                type: string
+        node:
+          type: string
     Invitation:
       type: object
       properties:
@@ -127,52 +173,6 @@ components:
           example: list
         count:
           type: integer
-    InvitationCreate:
-      type: object
-      required:
-      - candidate_id
-      - package
-      properties:
-        candidate_id:
-          type: string
-        package:
-          type: string
-        work_locations:
-          type: array
-          items:
-            type: object
-            properties:
-              country:
-                type: string
-              state:
-                type: string
-              city:
-                type: string
-        node:
-          type: string
-  parameters:
-    ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
-    PerPage:
-      name: per_page
-      in: query
-      description: The number of results per page (default 25).
-      schema:
-        type: integer
-        default: 25
-        maximum: 100
-    Page:
-      name: page
-      in: query
-      description: The page of results to return.
-      schema:
-        type: integer
-        default: 1
   securitySchemes:
     basicAuth:
       type: http

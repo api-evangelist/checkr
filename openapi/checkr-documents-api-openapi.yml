@@ -79,25 +79,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Document'
 components:
-  parameters:
-    ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
   schemas:
-    DocumentList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Document'
-        object:
-          type: string
-          example: list
     Document:
       type: object
       properties:
@@ -117,6 +99,24 @@ components:
         created_at:
           type: string
           format: date-time
+    DocumentList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+        object:
+          type: string
+          example: list
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
   securitySchemes:
     basicAuth:
       type: http

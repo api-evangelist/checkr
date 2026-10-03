@@ -96,6 +96,14 @@ paths:
         '200':
           description: The geo was deleted.
 components:
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
   schemas:
     Geo:
       type: object
@@ -114,14 +122,6 @@ components:
         created_at:
           type: string
           format: date-time
-  parameters:
-    ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
   securitySchemes:
     basicAuth:
       type: http

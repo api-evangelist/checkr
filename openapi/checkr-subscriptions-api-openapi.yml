@@ -100,14 +100,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Subscription'
 components:
-  parameters:
-    ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
   schemas:
     Subscription:
       type: object
@@ -161,6 +153,14 @@ components:
           format: date
         node:
           type: string
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
   securitySchemes:
     basicAuth:
       type: http
