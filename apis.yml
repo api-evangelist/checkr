@@ -321,6 +321,9 @@ apis:
   - type: OpenCollection
     url: collections/checkr.opencollection.json
 common:
+- type: CapabilityMap
+  url: capabilities/checkr-capability-edges.yml
+  name: Checkr Business Capability Map
 - type: AgenticAccess
   url: agentic-access/checkr-agentic-access.yml
 - type: TrustCenter

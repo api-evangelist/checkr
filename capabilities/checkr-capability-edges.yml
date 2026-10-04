@@ -1,0 +1,73 @@
+slug: checkr
+provider: Checkr
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 6
+edges:
+- tag: Candidates
+  spec_file: checkr-candidates-api-openapi.yml
+  capability_id: BC-300.10
+  capability_id_l1: BC-300
+  capability_name: Talent Acquisition Management
+  confidence: 0.8
+  evidence: POST /candidates createCandidate Create a candidate; DELETE /candidates/{id} deleteCandidatePII
+    Request PII removal for a candidate
+  reason: Candidate records created for employment background screening — pre-employment screening sits
+    in sourcing/recruiting/hiring.
+- tag: Screenings
+  spec_file: checkr-screenings-api-openapi.yml
+  capability_id: BC-300.10
+  capability_id_l1: BC-300
+  capability_name: Talent Acquisition Management
+  confidence: 0.8
+  evidence: getCountyCriminalSearch Retrieve a county criminal search; getSexOffenderSearch Retrieve a
+    sex offender registry search
+  reason: Individual employment screenings (SSN trace, criminal searches, MVR) constitute pre-employment
+    vetting, a talent acquisition activity.
+- tag: Reports
+  spec_file: checkr-reports-api-openapi.yml
+  capability_id: BC-300.10
+  capability_id_l1: BC-300
+  capability_name: Talent Acquisition Management
+  confidence: 0.78
+  evidence: POST /reports createReport Create a report; GET /reports/{id}/eta Retrieve a report ETA
+  reason: Background-check reports ordered on candidates — the core pre-employment screening deliverable
+    within hiring.
+- tag: Verifications
+  spec_file: checkr-verifications-api-openapi.yml
+  capability_id: BC-300.10
+  capability_id_l1: BC-300
+  capability_name: Talent Acquisition Management
+  confidence: 0.75
+  evidence: 'GET /reports/{report_id}/verifications — ''List verifications for a report''; vendor: ''background
+    check platform for employment screening'''
+  reason: Checkr's verifications are screening components of an employment background check, which supports
+    pre-hire screening within Talent Acquisition. Some ambiguity remains about the sub-capability, but
+    employment screening sits in the hiring/onboarding flow.
+- tag: Adverse Actions
+  spec_file: checkr-adverse-actions-api-openapi.yml
+  capability_id: BC-300.10
+  capability_id_l1: BC-300
+  capability_name: Talent Acquisition Management
+  confidence: 0.72
+  evidence: POST /reports/{id}/adverse_actions createAdverseAction Create an adverse action
+  reason: Adverse action notices are the FCRA-governed step when a background-check report leads to not
+    hiring a candidate, i.e. part of the hiring/screening process within talent acquisition.
+- tag: Invitations
+  spec_file: checkr-invitations-api-openapi.yml
+  capability_id: BC-300.10
+  capability_id_l1: BC-300
+  capability_name: Talent Acquisition Management
+  confidence: 0.72
+  evidence: POST /invitations createInvitation Create an invitation
+  reason: Invitations ask candidates to complete the background check application, a step in the hiring/screening
+    workflow.
