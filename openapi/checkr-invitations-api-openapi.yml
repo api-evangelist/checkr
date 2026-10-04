@@ -89,6 +89,13 @@ paths:
                 $ref: '#/components/schemas/Invitation'
 components:
   parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
     PerPage:
       name: per_page
       in: query
@@ -97,13 +104,6 @@ components:
         type: integer
         default: 25
         maximum: 100
-    ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
     Page:
       name: page
       in: query

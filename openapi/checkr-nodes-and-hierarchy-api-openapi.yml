@@ -141,6 +141,14 @@ paths:
         '200':
           description: The node was deleted.
 components:
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
   schemas:
     Node:
       type: object
@@ -158,14 +166,6 @@ components:
           type: string
         tier:
           type: string
-  parameters:
-    ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
   securitySchemes:
     basicAuth:
       type: http

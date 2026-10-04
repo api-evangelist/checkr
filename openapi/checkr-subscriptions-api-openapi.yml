@@ -100,7 +100,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/Subscription'
 components:
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
   schemas:
+    SubscriptionCreate:
+      type: object
+      required:
+      - candidate_id
+      - package
+      properties:
+        candidate_id:
+          type: string
+        package:
+          type: string
+        interval_count:
+          type: integer
+        interval_unit:
+          type: string
+          enum:
+          - month
+          - year
+        start_date:
+          type: string
+          format: date
+        node:
+          type: string
     Subscription:
       type: object
       properties:
@@ -131,36 +161,6 @@ components:
         created_at:
           type: string
           format: date-time
-    SubscriptionCreate:
-      type: object
-      required:
-      - candidate_id
-      - package
-      properties:
-        candidate_id:
-          type: string
-        package:
-          type: string
-        interval_count:
-          type: integer
-        interval_unit:
-          type: string
-          enum:
-          - month
-          - year
-        start_date:
-          type: string
-          format: date
-        node:
-          type: string
-  parameters:
-    ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
   securitySchemes:
     basicAuth:
       type: http

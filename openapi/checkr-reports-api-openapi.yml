@@ -124,6 +124,27 @@ components:
       schema:
         type: string
   schemas:
+    ReportCreate:
+      type: object
+      required:
+      - candidate_id
+      - package
+      properties:
+        candidate_id:
+          type: string
+        package:
+          type: string
+        node:
+          type: string
+        work_locations:
+          type: array
+          items:
+            type: object
+            properties:
+              country:
+                type: string
+              state:
+                type: string
     Report:
       type: object
       properties:
@@ -170,27 +191,6 @@ components:
           type: string
         motor_vehicle_report_id:
           type: string
-    ReportCreate:
-      type: object
-      required:
-      - candidate_id
-      - package
-      properties:
-        candidate_id:
-          type: string
-        package:
-          type: string
-        node:
-          type: string
-        work_locations:
-          type: array
-          items:
-            type: object
-            properties:
-              country:
-                type: string
-              state:
-                type: string
   securitySchemes:
     basicAuth:
       type: http
