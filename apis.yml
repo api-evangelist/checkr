@@ -59,7 +59,7 @@ tags_raw:
 - Criminal Records
 - Recruiting
 created: '2026-07-03'
-modified: '2026-07-03'
+modified: '2026-10-06'
 specificationVersion: '0.23'
 apis:
 - aid: checkr:checkr-account-api
@@ -321,6 +321,8 @@ apis:
   - type: OpenCollection
     url: collections/checkr.opencollection.json
 common:
+- url: https://checkr.com/blog
+  type: Blog
 - type: CapabilityMap
   url: capabilities/checkr-capability-edges.yml
   name: Checkr Business Capability Map
