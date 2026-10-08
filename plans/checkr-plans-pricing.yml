@@ -178,3 +178,53 @@ plans:
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - metered
+  - subscription
+  units:
+  - negotiated
+  - object
+  plans:
+  - name: Basic+
+    access: paid
+    model: metered
+    model_how: derived
+    units:
+    - object
+    periods:
+    - month
+  - name: Essential
+    access: paid
+    model: metered
+    model_how: derived
+    units:
+    - object
+    periods:
+    - month
+  - name: Professional
+    access: paid
+    model: metered
+    model_how: derived
+    units:
+    - object
+    periods:
+    - month
+  - name: Third-Party Pass-Through Fees
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - other
+    periods:
+    - month
+  - name: Custom / Enterprise
+    access: enterprise
+    model: subscription
+    model_how: derived
+    units:
+    - negotiated
+    periods:
+    - year
