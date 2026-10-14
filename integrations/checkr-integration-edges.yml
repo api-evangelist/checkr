@@ -1,0 +1,67 @@
+generated: '2026-10-14'
+method: searched
+checked:
+- bamboohr/integrations/bamboohr-integration-edges.yml
+- paychex-developer/integrations/paychex-developer-integration-edges.yml
+- workday/integrations/workday-integration-edges.yml
+source:
+- bamboohr/integrations/bamboohr-integration-edges.yml
+- paychex-developer/integrations/paychex-developer-integration-edges.yml
+- workday/integrations/workday-integration-edges.yml
+edges:
+- partner_name: BambooHR (own)
+  partner: bamboohr
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://www.bamboohr.com/integrations/listings/checkr
+  mirror_of: bamboohr/integrations/bamboohr-integration-edges.yml
+  apps:
+  - Checkr
+  listing_count: 1
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Background Checks
+- partner_name: Paychex (own)
+  partner: paychex-developer
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://marketplace.paychex.com/apps/803891/checkr
+  mirror_of: paychex-developer/integrations/paychex-developer-integration-edges.yml
+  apps:
+  - Checkr
+  - Checkr Integration for Paychex Flex® Hiring
+  listing_count: 2
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Paychex Platform
+  badges:
+  - AI-Enabled
+- partner_name: Workday (own)
+  partner: workday
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://marketplace.workday.com/apps/446018/checkr-streamline-your-background-checks-with-checkr-in-workday
+  mirror_of: workday/integrations/workday-integration-edges.yml
+  apps:
+  - 'Checkr: Streamline your background checks with Checkr in Workday'
+  listing_count: 1
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Region & Country
+  badges:
+  - Design Approved
