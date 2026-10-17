@@ -91,21 +91,6 @@ components:
       schema:
         type: string
   schemas:
-    ContinuousCheckCreate:
-      type: object
-      required:
-      - candidate_id
-      - type
-      properties:
-        candidate_id:
-          type: string
-        type:
-          type: string
-          enum:
-          - criminal
-          - mvr
-        node:
-          type: string
     ContinuousCheck:
       type: object
       properties:
@@ -131,6 +116,21 @@ components:
         created_at:
           type: string
           format: date-time
+    ContinuousCheckCreate:
+      type: object
+      required:
+      - candidate_id
+      - type
+      properties:
+        candidate_id:
+          type: string
+        type:
+          type: string
+          enum:
+          - criminal
+          - mvr
+        node:
+          type: string
   securitySchemes:
     basicAuth:
       type: http

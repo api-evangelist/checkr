@@ -87,6 +87,19 @@ components:
       schema:
         type: string
   schemas:
+    WebhookCreate:
+      type: object
+      required:
+      - webhook_url
+      properties:
+        webhook_url:
+          type: string
+        live:
+          type: boolean
+        included_object_types:
+          type: array
+          items:
+            type: string
     Webhook:
       type: object
       properties:
@@ -106,19 +119,6 @@ components:
         created_at:
           type: string
           format: date-time
-    WebhookCreate:
-      type: object
-      required:
-      - webhook_url
-      properties:
-        webhook_url:
-          type: string
-        live:
-          type: boolean
-        included_object_types:
-          type: array
-          items:
-            type: string
   securitySchemes:
     basicAuth:
       type: http

@@ -139,14 +139,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Screening'
 components:
-  parameters:
-    ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
   schemas:
     Screening:
       type: object
@@ -175,6 +167,14 @@ components:
           type: array
           items:
             type: object
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
   securitySchemes:
     basicAuth:
       type: http
