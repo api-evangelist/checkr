@@ -1,0 +1,462 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Checkr.com API Docs Worksites API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
+  contact:
+    name: Checkr
+    email: clients@checkr.com
+    url: https://checkr.com
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
+servers:
+- url: https://api.checkr.com/v1
+  description: Main server
+tags:
+- name: Worksites
+  description: The User resource includes user information and role assignments. Users can be invited and assigned roles from the Dashboard.
+paths:
+  /i9/worksites:
+    get:
+      tags:
+      - Worksites
+      summary: List existing Worksites
+      description: Returns a list with all existing Worksites for the authenticated Checkr account.
+      operationId: worksitesList
+      security:
+      - basic_auth: []
+      parameters:
+      - name: order_by
+        in: query
+        description: 'Returns records ordered by `field`.
+
+
+          If neither is specified, records will not be ordered.
+
+          '
+        required: false
+        example: street_line1
+        schema:
+          type: string
+          enum:
+          - name
+          - street_line1
+          - street_line2
+          - city
+          - state
+          - zip_code
+      - name: order
+        in: query
+        description: 'Returns records listed in ascending or descending order of the order_by parameter. If neither is specified, records will be listed in descending order.
+
+          '
+        required: false
+        example: desc
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      responses:
+        '200':
+          $ref: '#/components/responses/WorksitesList'
+        '400':
+          $ref: '#/components/responses/BadFormI9RequestError'
+        '401':
+          $ref: '#/components/responses/I9UnauthorizedError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/i9/worksites?order_by=state&order=desc \\ \n       -U YOUR_SECRET_API_KEY:\n"
+    post:
+      tags:
+      - Worksites
+      summary: Create new Worksite
+      description: Create new Worksites for the authenticated account.
+      operationId: worksitesCreate
+      security:
+      - basic_auth: []
+      requestBody:
+        $ref: '#/components/requestBodies/WorksiteCreate'
+      responses:
+        '201':
+          $ref: '#/components/responses/WorksiteCreated'
+        '400':
+          $ref: '#/components/responses/BadWorksiteRequiredFieldError'
+        '401':
+          $ref: '#/components/responses/I9UnauthorizedError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/i9/worksites \\\n       -U YOUR_SECRET_API_KEY: \\\n       -H \"Content-Type: application/json\" \\\n       -H \"Accept: application/json\" \\\n       -d '{        \n               \"name\": \"Head Office\",\n               \"street_line1\": \"Some Rd\",\n               \"street_line2\": \"Some Rd 2\",\n               \"city\": \"San Francisco\",\n               \"state\": \"California\",\n               \"zip_code\": \"66554\"\n\t}'\n"
+  /i9/worksites/{id}:
+    parameters:
+    - name: id
+      in: path
+      description: Worksite resource Id
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - Worksites
+      summary: Retrieve a Worksite
+      description: Returns a specified Worksite for the authenticated Checkr account.
+      operationId: getWorksites
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Worksite'
+        '401':
+          $ref: '#/components/responses/I9UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/WorksiteNotFoundError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/i9/worksites/8046067e32ad6b25a9078735 \\ \n       -U YOUR_SECRET_API_KEY:\n"
+    put:
+      tags:
+      - Worksites
+      summary: Update Worksite information
+      operationId: updateWorksites
+      security:
+      - basic_auth: []
+      requestBody:
+        $ref: '#/components/requestBodies/WorksiteUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/WorksiteUpdated'
+        '400':
+          $ref: '#/components/responses/BadWorksiteUpdateRequestError'
+        '401':
+          $ref: '#/components/responses/I9UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/WorksiteNotFoundError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X PUT https://api.checkr.com/v1/i9/worksites/79265751d363a140106fec15 \\ \n    -U YOUR_SECRET_API_KEY: \\\n    -H \"Content-Type: application/json\" \\\n    -H \"Accept: application/json\" \\\n    -d '{        \n            \"name\": \"Updated Worksite\",\n            \"street_line1\": \"Some Rd first\",\n            \"street_line2\": \"Some Rd second\",\n            \"city\": \"San Francisco\",\n            \"state\": \"California\",\n            \"zip_code\": \"66554\",\n            \"everify_status\": \"inactive\"\n\t}'\n"
+    delete:
+      tags:
+      - Worksites
+      summary: Delete a Worksite
+      description: 'Deletes specified Worksite. If there are at least one Form I-9 associated
+
+        with a Worksite, this Worksite cannot be deleted.'
+      operationId: deleteWorksites
+      security:
+      - basic_auth: []
+      responses:
+        '204':
+          $ref: '#/components/responses/WorksiteDeleted'
+        '400':
+          $ref: '#/components/responses/BadWorksiteDeleteRequestError'
+        '401':
+          $ref: '#/components/responses/I9UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/WorksiteNotFoundError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X DELETE https://api.checkr.com/v1/i9/worksites/8046067e32ad6b25a9078735  \\\n       -U YOUR_SECRET_API_KEY:\n"
+components:
+  responses:
+    WorksiteUpdated:
+      description: Worksite successfully updated
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                id:
+                  type: string
+                  description: Worksite Id.
+                  example: 79265751d363a140106fec15
+            - $ref: '#/components/schemas/Worksite'
+            - type: object
+              properties:
+                everify_status:
+                  type: string
+                  description: Worksite E-Verify Status.
+                  enum:
+                  - active
+                  - inactive
+            example:
+              id: 79265751d363a140106fec15
+              name: Updated Worksite
+              street_line1: Some Rd first
+              street_line2: Some Rd second
+              city: San Francisco
+              state: California
+              zip_code: '66554'
+              everify_status: inactive
+    BadWorksiteUpdateRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: '''foo'' is not a valid value for the everify_status field.'
+    WorksiteCreated:
+      description: Resource created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WorksiteDetailed'
+    BadFormI9RequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Attribute 'foo' cannot be used for sorting.
+    BadWorksiteDeleteRequestError:
+      description: Worksite with Form I-9 associated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Unable to delete worksite with forms I9 associated.
+    BadWorksiteRequiredFieldError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Worksite <field> is a required field.
+    WorksiteNotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Could not find worksite with given <worksite_id>
+    Worksite:
+      description: Worksite details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WorksiteDetailed'
+    I9UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: The account is not authorized to use I9 endpoints
+    WorksitesList:
+      description: List of Worksites
+      content:
+        application/json:
+          schema:
+            properties:
+              object:
+                type: string
+                description: A list
+                enum:
+                - list
+              next_href:
+                type: string
+                format: uri
+              previous_href:
+                type: string
+                format: uri
+              count:
+                type: integer
+                example: 1
+              data:
+                type: array
+                description: Array of objects (Worksites)
+                items:
+                  $ref: '#/components/schemas/WorksiteDetailed'
+    WorksiteDeleted:
+      description: Worksite successfully deleted
+      content:
+        application/json:
+          schema:
+            type: 'null'
+  requestBodies:
+    WorksiteCreate:
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/Worksite'
+            - type: object
+              required:
+              - name
+              - street_line1
+              - city
+              - state
+              - zip_code
+      required: true
+    WorksiteUpdate:
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/Worksite'
+            - type: object
+              properties:
+                everify_status:
+                  type: string
+                  description: Worksite E-Verify Status.
+                  enum:
+                  - active
+                  - inactive
+                  example: inactive
+      required: true
+  schemas:
+    WorksiteDetailed:
+      type: object
+      allOf:
+      - type: object
+        properties:
+          id:
+            type: string
+            description: Worksite resource Id.
+            example: 8046067e32ad6b25a9078735
+      - $ref: '#/components/schemas/Worksite'
+      - type: object
+        properties:
+          everify_status:
+            type: string
+            description: Worksite E-Verify Status.
+            enum:
+            - active
+            - inactive
+            - not_determined
+            example: not_determined
+    Worksite:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Worksite name.
+          example: Head Office
+        street_line1:
+          type: string
+          description: Line one of Worksite address.
+          example: Some Rd
+        street_line2:
+          type: string
+          description: Line two of Worksite address.
+          example: Some Rd 2
+        city:
+          type: string
+          description: City of Worksite.
+          example: San Francisco
+        state:
+          type: string
+          description: State of Worksite.
+          example: CA
+        zip_code:
+          type: string
+          description: ZIP Code of Worksite.
+          example: '66554'
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

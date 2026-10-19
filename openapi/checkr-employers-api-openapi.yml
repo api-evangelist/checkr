@@ -1,0 +1,568 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Checkr.com API Docs Employers API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
+  contact:
+    name: Checkr
+    email: clients@checkr.com
+    url: https://checkr.com
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
+servers:
+- url: https://api.checkr.com/v1
+  description: Main server
+tags:
+- name: Employers
+  description: 'The Employers resource includes all relevant employer information for the specified Candidate.
+
+    Employer resources are tied to the specified candidate, and do not transfer to other employees within the system.
+
+    Once attached to a candidate, all employers are retained when running subsequent employment verifications. For example, if multiple employment verifications are run for an existing candidate, each report will use all employers attached to that candidate for the verification.'
+paths:
+  /candidates/{candidate_id}/employers:
+    post:
+      tags:
+      - Employers
+      summary: Create a new Employer
+      description: 'Creates a new Employer resource.
+
+
+        If the country is not US, the following parameters will be required in addition to those marked as required in the table below:
+
+
+        - salary
+
+        - address:
+
+        - street
+
+        - country
+
+        - zipcode
+
+        - manager:
+
+        - name
+
+        - title
+
+
+        Validation for `start_date` and `end_date` is performed to ensure logical dates are provided. `end_date` must be after `start_date`, and both dates must be after 1900-01-01.'
+      operationId: createEmployer
+      security:
+      - basic_auth: []
+      parameters:
+      - name: candidate_id
+        in: path
+        required: true
+        description: Create an employer for the input `candidate_id`.
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/EmployerCreate'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmployerCreated'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/candidates/e44aa283528e6fde7d542194/employers \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9: \\\n    -d name=Checkr \\\n    -d position=Engineer \\\n    -d salary=10000 \\\n    -d address\\[street\\]=123+Main+St. \\\n    -d address\\[city\\]=San+Francisco \\\n    -d address\\[state\\]=CA \\\n    -d address\\[zipcode\\]=94108 \\\n    -d address\\[country\\]=US \\\n    -d contract_type=full_time \\\n    -d start_date=2016-01-22 \\\n    -d end_date=2017-01-22 \\\n    -d manager\\[name\\]=Joe \\\n    -d manager\\[title\\]=Manager \\\n    -d employer_url=www.employer.com\n"
+    get:
+      tags:
+      - Employers
+      summary: List existing Employers
+      description: Returns a list of existing Employers for the input `candidate_id`.
+      operationId: employersListByCandidate
+      security:
+      - basic_auth: []
+      parameters:
+      - name: candidate_id
+        in: path
+        required: true
+        description: Returns the list of employers for the input `candidate_id`.
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Specifies the page number to retrieve.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
+      - name: per_page
+        in: query
+        description: Indicates how many records each page should contain. The default value is 25 records.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmployersList'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com//v1/candidates/e44aa283528e6fde7d542194/employers \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+  /candidates/{candidate_id}/employers/{employer_id}:
+    parameters:
+    - name: employer_id
+      in: path
+      description: The Employer's ID.
+      required: true
+      schema:
+        type: string
+    - name: candidate_id
+      description: The Candidate's ID.
+      in: path
+      required: true
+      schema:
+        type: string
+    delete:
+      tags:
+      - Employers
+      summary: Delete an existing Employer
+      description: Deletes an existing Employer with the input `id`.
+      operationId: employerDelete
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/EmployerDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X DELETE https://api.checkr.com/v1/candidates/e44aa283528e6fde7d542194/employers/95a95172bb81143ed44e403c \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+    get:
+      tags:
+      - Employers
+      summary: Retrieve an existing Employer
+      description: Returns an existing Employer with the input `candidate_id` or `employer_id`.
+      operationId: getEmployer
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Employer'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/candidates/e44aa283528e6fde7d542194/employers/ca27df84be5b50dfa7ee1cda \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+components:
+  schemas:
+    ResourceURI:
+      type: string
+      description: URI of the resource.
+      readOnly: true
+    BadRequestError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Dl number 'F211165' does not match the license number format in CA
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You do not have permission to access the requested resource
+    ResourceId:
+      type: string
+      example: e44aa283528e6fde7d542194
+      readOnly: true
+      description: ID of the resource.
+    Employer:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ResourceId'
+        object:
+          type: string
+          enum:
+          - employer
+          readOnly: true
+        uri:
+          allOf:
+          - $ref: '#/components/schemas/ResourceURI'
+          example: /v1/candidates/e44aa283528e6fde7d542194/employers/ca27df84be5b50dfa7ee1cda
+        candidate_id:
+          type: string
+          description: ID of the Candidate being screened.
+          pattern: '[a-zA-Z0-9 -''.,]*'
+          example: xxx
+          minLength: 1
+        name:
+          type: string
+          pattern: '[a-zA-Z0-9 -''.,]*'
+          description: Candidate’s employer’s name.
+          example: Checkr
+          minLength: 1
+        position:
+          type: string
+          description: Candidate’s position or title.
+          example: Software Engineer
+        salary:
+          type: integer
+          description: Candidate’s gross salary in dollars annually.
+          example: 10000
+        contract_type:
+          type: string
+          description: Candidate’s contract type.
+          enum:
+          - full_time
+          - part_time
+          - contract
+          - internship
+          example: full_time
+        do_not_contact:
+          type: boolean
+          default: false
+          description: If `true`, the employer will not be contacted about the Candidate.
+          example: false
+        start_date:
+          type: string
+          description: Candidate’s start date with the employer.
+          format: date
+          example: '2016-06-01'
+        end_date:
+          type: string
+          description: Candidate’s end date with the employer.
+          format: date
+          example: '2017-05-01'
+        employer_url:
+          type: string
+          description: Employer’s website.
+          example: www.employer.com
+        address:
+          $ref: '#/components/schemas/Address'
+        manager:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Candidate's manager's name.
+              example: Joe Smith
+            title:
+              type: string
+              description: Candidate's manager's title.
+              example: Engineering Manager
+            email:
+              type: string
+              description: Candidate's manager's email address.
+              example: joesmith@checkr.co
+            phone:
+              type: string
+              description: Candidate's manager's phone number.
+              example: 212-555-1234
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+          pattern: '[a-zA-Z0-9 -''.,]*'
+          description: Street address.
+          example: 123 Main St.
+        unit:
+          type: string
+          pattern: '[a-zA-Z0-9 -''.,]*'
+          description: House, building or apartment number.
+          example: 2000
+        city:
+          type: string
+          pattern: '[a-zA-Z0-9 -''.,]*'
+          description: City.
+          example: San Francisco
+        state:
+          type: string
+          description: State.
+          example: CA
+        zipcode:
+          type: string
+          description: 5-digit zip code.
+          example: '90401'
+        country:
+          type: string
+          description: 'Country.
+
+
+            Format: `ISO 3166-1 alpha-2`
+
+            '
+          example: US
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
+  responses:
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    EmployerDeleted:
+      description: Employer was successfully deleted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Employer'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    Employer:
+      description: Employer details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Employer'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+    EmployersList:
+      description: List of Employers
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employer'
+              object:
+                type: string
+                description: A list
+                enum:
+                - list
+              count:
+                type: integer
+                example: 2
+    EmployerCreated:
+      description: Employer was successfully created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Employer'
+  requestBodies:
+    EmployerCreate:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - name
+            - position
+            - contract_type
+            - start_date
+            - address
+            properties:
+              id:
+                $ref: '#/components/schemas/ResourceId'
+              object:
+                type: string
+                enum:
+                - employer
+                readOnly: true
+              candidate_id:
+                type: string
+                description: ID of the Candidate being screened.
+                pattern: '[a-zA-Z0-9 -''.,]*'
+                example: xxx
+                minLength: 1
+              type:
+                type: string
+                description: 'Type of employment history to be created.
+
+
+                  If type is set to `gap` only `start_date` is required, and only `start_date`, `end_date`, and `note` will be recorded.
+
+                  '
+                enum:
+                - employer
+                - gap
+                default: employer
+              name:
+                type: string
+                pattern: '[a-zA-Z0-9 -''.,]*'
+                description: Candidate’s employer’s name.
+                example: Checkr
+                minLength: 1
+              position:
+                type: string
+                description: Candidate’s position or title.
+                example: Software Engineer
+              salary:
+                type: integer
+                description: Candidate’s gross salary in dollars annually.
+                example: 10000
+              contract_type:
+                type: string
+                description: Candidate’s contract type.
+                enum:
+                - full_time
+                - part_time
+                - contract
+                - internship
+                example: full_time
+              do_not_contact:
+                type: boolean
+                default: false
+                description: If `true`, the employer will not be contacted about the Candidate.
+                example: false
+              start_date:
+                type: string
+                description: Candidate’s start date with the employer.
+                format: date
+                example: '2016-06-01'
+              end_date:
+                type: string
+                description: Candidate’s end date with the employer.
+                format: date
+                example: '2017-05-01'
+              employer_url:
+                type: string
+                description: Employer’s website.
+                example: www.employer.com
+              address:
+                $ref: '#/components/schemas/Address'
+              manager:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Candidate's manager's name.
+                    example: Joe Smith
+                  title:
+                    type: string
+                    description: Candidate's manager's title.
+                    example: Engineering Manager
+                  email:
+                    type: string
+                    description: Candidate's manager's email address.
+                    example: joesmith@checkr.co
+                  phone:
+                    type: string
+                    description: Candidate's manager's phone number.
+                    example: 212-555-1234
+              note:
+                type: string
+                description: A text note used to add context for an employment gap.
+                example: Took time off to travel abroad.
+                maxLength: 65535
+      required: true
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

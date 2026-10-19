@@ -1,131 +1,175 @@
 openapi: 3.2.0
 info:
-  title: Checkr Packages API
-  description: The Checkr API is a RESTful interface for running compliant employment background checks.
-  version: '1.0'
+  version: v1
+  title: Checkr.com API Docs Packages API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
   contact:
     name: Checkr
+    email: clients@checkr.com
     url: https://checkr.com
-  termsOfService: https://checkr.com/terms-of-service
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
 servers:
 - url: https://api.checkr.com/v1
-  description: Production
-- url: https://api.checkr-staging.com/v1
-  description: Staging
-security:
-- basicAuth: []
+  description: Main server
 tags:
 - name: Packages
-  description: Bundles of screenings and the programs that group them.
+  description: 'Packages are a list of screenings to be run for a report.
+
+    Work with your Checkr Customer Success representative to define Packages that will best serve
+
+    your business needs.'
 paths:
   /packages:
     get:
-      operationId: listPackages
       tags:
       - Packages
-      summary: List packages
+      summary: List existing Packages
+      description: Returns a list of all existing Packages.
+      operationId: packagesList
+      security:
+      - basic_auth: []
       parameters:
-      - $ref: '#/components/parameters/Page'
-      - $ref: '#/components/parameters/PerPage'
+      - name: page
+        in: query
+        description: Specifies the page number to retrieve.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
+      - name: per_page
+        in: query
+        description: Indicates how many records each page should contain. The default value is 25 records.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
       responses:
         '200':
-          description: A paginated list of packages.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PackageList'
+          $ref: '#/components/responses/PackagesList'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/packages \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
   /packages/{id}:
     parameters:
-    - $ref: '#/components/parameters/ResourceId'
+    - name: id
+      description: ID of the Package to retrieve.
+      in: path
+      required: true
+      schema:
+        type: string
     get:
+      tags:
+      - Packages
+      summary: Retrieve an existing Package
+      description: Returns an existing Package with the input ID.
       operationId: getPackage
-      tags:
-      - Packages
-      summary: Retrieve a package
+      security:
+      - basic_auth: []
       responses:
         '200':
-          description: The package.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Package'
-  /programs:
-    get:
-      operationId: listPrograms
+          $ref: '#/components/responses/Package'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/packages \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+    delete:
       tags:
       - Packages
-      summary: List programs
+      summary: Delete an existing Package
+      description: Deletes an existing Package.
+      operationId: deletePackage
+      security:
+      - basic_auth: []
       responses:
         '200':
-          description: A list of programs.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Program'
-  /programs/{id}:
-    parameters:
-    - $ref: '#/components/parameters/ResourceId'
-    get:
-      operationId: getProgram
-      tags:
-      - Packages
-      summary: Retrieve a program
-      responses:
-        '200':
-          description: The program.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Program'
+          $ref: '#/components/responses/PackageDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X DELETE https://api.checkr.com/v1/packages/e44aa283528e6fde7d542194 \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
 components:
   schemas:
-    PackageList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Package'
-        object:
-          type: string
-          example: list
-        count:
-          type: integer
-    Program:
-      type: object
-      properties:
-        id:
-          type: string
-        object:
-          type: string
-          example: program
-        name:
-          type: string
-        default_package:
-          type: string
-        created_at:
-          type: string
-          format: date-time
+    ResourceURI:
+      type: string
+      description: URI of the resource.
+      readOnly: true
     Package:
       type: object
       properties:
         id:
-          type: string
+          $ref: '#/components/schemas/ResourceId'
         object:
           type: string
-          example: package
+          enum:
+          - package
+          readOnly: true
+        uri:
+          allOf:
+          - $ref: '#/components/schemas/ResourceURI'
+          example: /v1/packages/e44aa283528e6fde7d542194
+        apply_url:
+          type: string
+          description: URL at which candidates may apply for a background check with this Package.
+          example: https://apply.checkr.com/apply/customer-services-inc/532c20ea819b
+        created_at:
+          type: string
+          description: Time at which the Package was created.
+          format: date-time
+          example: '2014-01-18T12:34:00Z'
+        deleted_at:
+          type: string
+          description: Time at which the Package was deleted.
+          format: date-time
+          example: '2014-01-18T12:34:00Z'
         name:
           type: string
+          description: Human-readable name of the Package.
+          example: Criminal Pro
         slug:
           type: string
+          description: Unique key identifier of the Package.
+          example: criminal_pro
         price:
           type: integer
-          description: Package price in US cents.
+          description: Package price in USD cents.
+          example: 6500
         screenings:
           type: array
           items:
@@ -133,36 +177,177 @@ components:
             properties:
               type:
                 type: string
+                enum:
+                - ssn_trace
+                - sex_offender_search
+                - global_watchlist_search
+                - national_criminal_search
+                - municipal_criminal_search
+                - county_criminal_search
+                - state_criminal_search
+                - federal_criminal_search
+                - county_civil_search
+                - federal_civil_search
+                - personal_reference_verification
+                - professional_license_verification
+                - professional_reference_verification
+                - education_verification
+                - employment_verification
+                - drug_screening
+                - international_criminal_search
+                - motor_vehicle_report
+                - eviction_search
+                - credit_report
+                - facis_search
+                example: ssn_trace
               subtype:
-                type: string
-        created_at:
+                type:
+                - string
+                - 'null'
+                example: null
+    BadRequestError:
+      type: object
+      properties:
+        error:
           type: string
-          format: date-time
-  parameters:
+          example: Dl number 'F211165' does not match the license number format in CA
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You do not have permission to access the requested resource
     ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
-    PerPage:
-      name: per_page
-      in: query
-      description: The number of results per page (default 25).
-      schema:
-        type: integer
-        default: 25
-        maximum: 100
-    Page:
-      name: page
-      in: query
-      description: The page of results to return.
-      schema:
-        type: integer
-        default: 1
+      type: string
+      example: e44aa283528e6fde7d542194
+      readOnly: true
+      description: ID of the resource.
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
+  responses:
+    PackageDeleted:
+      description: Package was successfully deleted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Package'
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    Package:
+      description: Package details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Package'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+    PackagesList:
+      description: List of Packages
+      content:
+        application/json:
+          schema:
+            properties:
+              object:
+                type: string
+                description: A list
+                enum:
+                - list
+              next_href:
+                type: string
+                format: uri
+              previous_href:
+                type: string
+                format: uri
+              count:
+                type: integer
+                example: 2
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Package'
   securitySchemes:
-    basicAuth:
+    basic_auth:
       type: http
       scheme: basic
-      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

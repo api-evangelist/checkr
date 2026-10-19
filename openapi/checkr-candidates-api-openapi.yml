@@ -1,245 +1,871 @@
 openapi: 3.2.0
 info:
-  title: Checkr Candidates API
-  description: The Checkr API is a RESTful interface for running compliant employment background checks.
-  version: '1.0'
+  version: v1
+  title: Checkr.com API Docs Candidates API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
   contact:
     name: Checkr
+    email: clients@checkr.com
     url: https://checkr.com
-  termsOfService: https://checkr.com/terms-of-service
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
 servers:
 - url: https://api.checkr.com/v1
-  description: Production
-- url: https://api.checkr-staging.com/v1
-  description: Staging
-security:
-- basicAuth: []
+  description: Main server
 tags:
 - name: Candidates
-  description: Candidate records that background checks are run against.
+  description: 'Candidates represent people who have applied for positions within your company,
+
+    and have agreed to a background check. Use the Candidate object
+
+    to collect all Personally Identifiable Information (PII) for a candidate,
+
+    and all relevant Checkr information, including any generated Reports, or attached Geos.'
 paths:
   /candidates:
-    get:
-      operationId: listCandidates
-      tags:
-      - Candidates
-      summary: List candidates
-      parameters:
-      - $ref: '#/components/parameters/Page'
-      - $ref: '#/components/parameters/PerPage'
-      responses:
-        '200':
-          description: A paginated list of candidates.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CandidateList'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
     post:
-      operationId: createCandidate
       tags:
       - Candidates
-      summary: Create a candidate
+      summary: Create a new Candidate
+      description: 'Creates a new Candidate resource.
+
+
+        ### Required attributes
+
+
+        The Candidate resource’s required attributes vary depending on its intended use. If this resource is to be used in conjunction with the Invitations API (in which the invitation apply form collects the Candidate''s personal information), the only strictly required Candidate attribute is `email`.
+
+
+        If this resource is to be used to generate any other report type, other personal information is also required.
+
+
+        Attributes required to generate a Report include:
+
+        - `first_name`
+
+        - `middle_name` or `no_middle_name`
+
+        - `last_name`
+
+        - `dob`
+
+
+        Attributes required to generate a Report with a criminal check screening:
+
+        - `ssn`
+
+        - `zipcode`
+
+
+        Attributes required to generate a report with a Motor Vehicle Record (MVR) screening:
+
+        - `driver_license_number`
+
+        - `driver_license_state`
+
+
+        See Driver License validation in the Reference section for a list of valid input by state.
+
+
+        Attributes recommended to generate a report with an Identity Document Verification screening:
+
+        - `phone` (mobile phone number)
+
+
+        Validation for these attributes is performed when requesting a Report, as the requirements depend on the Package.
+
+
+        Checkr''s product incorporates SSN field controls designed to not accept SSNs with the following characteristics:
+
+
+        - SSNs without exactly 9 numeric characters
+
+        - SSNs that start with 666 (666-34-3768)
+
+        - SSNs that start with 9 (967-65-4325)
+
+        - SSNs that are a single digit (111-11-1111)
+
+        - SSNs that are sequential digits (123-45-6789)'
+      operationId: createCandidate
+      security:
+      - basic_auth: []
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CandidateCreate'
+        $ref: '#/components/requestBodies/CandidateCreate'
       responses:
         '201':
-          description: The created candidate.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Candidate'
+          $ref: '#/components/responses/CandidateCreated'
         '400':
-          $ref: '#/components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequestError'
         '401':
-          $ref: '#/components/responses/Unauthorized'
-  /candidates/{id}:
-    parameters:
-    - $ref: '#/components/parameters/ResourceId'
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/candidates \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9: \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"first_name\":\"John\",\n        \"middle_name\":\"Alfred\",\n        \"last_name\":\"Smith\",\n        \"email\":\"john.smith@gmail.com\",\n        \"phone\":\"5555555555\",\n        \"zipcode\":\"90401\",\n        \"dob\":\"1970-01-22\",\n        \"ssn\":\"847-43-4645\",\n        \"driver_license_number\":\"F2111655\",\n        \"driver_license_state\":\"CA\",\n        \"work_locations\":[{\"country\":\"US\"}],\n        \"postal_address\": {\n                            \"name\": \"John Alfred Smith\",\n                            \"street\": \"123 Main Street\",\n                            \"street2\": \"APT A\",\n                            \"city\": \"San Francisco\",\n                            \"state\": \"CA\",\n                            \"zipcode\": \"90401\"\n                            }\n        }'\n"
     get:
-      operationId: getCandidate
       tags:
       - Candidates
-      summary: Retrieve a candidate
-      responses:
-        '200':
-          description: The candidate.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Candidate'
-        '404':
-          $ref: '#/components/responses/NotFound'
-    post:
-      operationId: updateCandidate
-      tags:
-      - Candidates
-      summary: Update a candidate
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CandidateCreate'
-      responses:
-        '200':
-          description: The updated candidate.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Candidate'
-    delete:
-      operationId: deleteCandidatePII
-      tags:
-      - Candidates
-      summary: Request PII removal for a candidate
-      responses:
-        '200':
-          description: PII removal requested.
-components:
-  schemas:
-    Candidate:
-      type: object
-      properties:
-        id:
+      summary: List existing Candidates
+      description: 'Lists existing Candidates with the input parameters.
+
+
+        Note: This call will not return candidates with non-US `work_locations`. Use GET /candidates/{id} to retrieve candidates outside the US.'
+      operationId: listOfCandidates
+      security:
+      - basic_auth: []
+      parameters:
+      - name: email
+        in: query
+        description: Returns candidates with the input email address.
+        schema:
           type: string
-        object:
+      - name: full_name
+        in: query
+        description: Returns candidates with the input `full_name`.
+        schema:
           type: string
-          example: candidate
-        first_name:
+      - name: adjudication
+        in: query
+        description: Returns candidates with the input adjudication. `Null` if no adjudication has been made.
+        schema:
           type: string
-        middle_name:
+      - name: custom_id
+        in: query
+        description: Returns candidates with the input `custom_id`.
+        schema:
           type: string
-        last_name:
-          type: string
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        dob:
-          type: string
-          format: date
-        ssn:
-          type: string
-          description: May be returned masked (XXX-XX-1234).
-        zipcode:
-          type: string
-        driver_license_number:
-          type: string
-        driver_license_state:
-          type: string
-        created_at:
+      - name: created_after
+        in: query
+        description: Returns candidates created after the input date.
+        schema:
           type: string
           format: date-time
+      - name: created_before
+        in: query
+        description: Returns candidates created before the input date.
+        schema:
+          type: string
+          format: date-time
+      - name: report_adjudicated_after
+        in: query
+        description: Returns candidates adjudicated after the input date.
+        schema:
+          type: string
+          format: date-time
+      - name: report_adjudicated_before
+        in: query
+        description: Returns candidates adjudicated before the input date.
+        schema:
+          type: string
+          format: date-time
+      - name: report_adjudicator_email
+        in: query
+        description: Returns candidates with a report adjudicated by someone with input `adjudicator_email`.
+        schema:
+          type: string
+      - name: report_revised_after
+        in: query
+        description: Returns candidates with a report revised after the input date.
+        schema:
+          type: string
+          format: date-time
+      - name: report_revised_before
+        in: query
+        description: Returns candidates with a report revised before the input date.
+        schema:
+          type: string
+          format: date-time
+      - name: driver_license_number
+        in: query
+        description: Returns candidates with the input `driver_license_number`.
+        schema:
+          type: string
+      - name: geo_id
+        in: query
+        description: Returns candidates with the input `geo_id`.
+        schema:
+          type: string
+      - name: program_id
+        in: query
+        description: Returns candidates with the input `program_id`.
+        schema:
+          type: string
+      - name: metadata
+        in: query
+        description: 'Returns candidates matching the input key-values. Input keys will be matched exactly. Input values will be pre- and post-pended with wildcards. (For example: A query for 1234 will return results for \*1234\*.)'
+        schema:
+          type: object
+      - name: page
+        in: query
+        description: Specifies the page number to retrieve.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
+      - name: per_page
+        in: query
+        description: Indicates how many records each page should contain. The default value is 25 records.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
+      responses:
+        '200':
+          $ref: '#/components/responses/ListOfCandidates'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/candidates \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+  /candidates/{id}:
+    parameters:
+    - name: id
+      description: The Candidate's ID.
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Candidates
+      summary: Update an existing Candidate
+      description: 'Updates an existing Candidate.
+
+
+        Attempts to update a field that cannot be updated will return a 400 error stating "... cannot be updated”. For example, attempting to update an SSN will return 400 stating "Candidate SSN can not be updated because it has reports”.
+
+
+        Updating `geo_ids` will **replace** all existing Geos. To keep existing geos, include their IDs in the update request. `geo_ids` cannot be updated if the candidate''s work location is outside the US.
+
+        Only fields with `null` values can be updated after a Report has been ordered for a Candidate with the exception of the following fields:
+
+        - email
+
+        - phone
+
+        - previous_driver_license_number
+
+        - previous_driver_license_state
+
+        - copy_requested
+
+        - custom_id
+
+        - geo_ids
+
+
+        Updating metadata with an empty value (null or empty object) will delete existing metadata. Individual keys may also be set and unset.
+
+        - Adding a new key-value pair will maintain all existing key-value pairs.
+
+        - Providing a new value for an existing key will update the old value to the new value.
+
+        - Providing an empty value for an existing key will remove that key from the metadata object.
+
+        - When all keys in the metadata object have empty values, the object will be deleted.'
+      operationId: updateCandidate
+      security:
+      - basic_auth: []
+      requestBody:
+        $ref: '#/components/requestBodies/CandidatePatch'
+      responses:
+        '200':
+          $ref: '#/components/responses/CandidateUpdated'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/candidates/e44aa283528e6fde7d542194 \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9: \\\n    -d first_name=John \\\n    -d middle_name=Alfred \\\n    -d last_name=Smith \\\n    -d email=john.smith@gmail.com \\\n    -d phone=5555555555 \\\n    -d zipcode=90401 \\\n    -d dob=1970-01-22 \\\n    -d ssn=543-43-4645 \\\n    -d 'geo_ids[]=87f5bb4983eade22c55f4731&geo_ids[]=22b20140fc1adfae693ca35c'\n"
+    get:
+      tags:
+      - Candidates
+      summary: Retrieve an existing Candidate
+      description: Retrieves an existing Candidate.
+      operationId: getCandidate
+      security:
+      - basic_auth: []
+      parameters:
+      - name: include
+        in: query
+        description: Comma delimited string specifying the resources to be embedded in the returned Candidate object. See [Embedding Resources](#section/Reference/Embedding-Resources).
+        required: false
+        example: reports,geos
+        schema:
+          type: string
+          enum:
+          - reports
+          - geos
+      responses:
+        '200':
+          $ref: '#/components/responses/Candidate'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/candidates/e44aa283528e6fde7d542194 \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/candidates/e44aa283528e6fde7d542194?include=reports \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+  /candidates/{id}/pii:
+    parameters:
+    - name: id
+      description: The Candidate's ID.
+      in: path
+      required: true
+      schema:
+        type: string
+    delete:
+      tags:
+      - Candidates
+      summary: Request PII removal for a Candidate
+      description: 'Requests the removal of PII from an existing Candidate
+
+
+        Requesting the removal of PII from a candidate who has already had PII removed will result in an error.'
+      operationId: deleteCandidate
+      security:
+      - basic_auth: []
+      requestBody:
+        $ref: '#/components/requestBodies/CandidatePiiRemoval'
+      responses:
+        '200':
+          $ref: '#/components/responses/Candidate'
+        '400':
+          $ref: '#/components/responses/BadPiiRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+components:
+  requestBodies:
     CandidateCreate:
-      type: object
-      required:
-      - email
-      properties:
-        first_name:
-          type: string
-        middle_name:
-          type: string
-        last_name:
-          type: string
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        dob:
-          type: string
-          format: date
-        ssn:
-          type: string
-        zipcode:
-          type: string
-        work_locations:
-          type: array
-          items:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - email
+            properties:
+              object:
+                type: string
+                enum:
+                - candidate
+                readOnly: true
+              first_name:
+                type: string
+                pattern: ^(?=.*[a-zA-ZªµºÀ-ÖØ-öø-ÿ])[a-zA-Z0-9ªµºÀ-ÖØ-öø-ÿ\-'., ]*$
+                description: 'Candidate’s first name.
+
+                  '
+                example: John
+              middle_name:
+                type: string
+                pattern: '[a-zA-Z0-9ªµºÀ-ÖØ-öø-ÿ\-''., ]*'
+                description: 'Candidate’s middle name. This field is required if `no_middle_name` is `false`.
+
+                  '
+                example: Alfred
+              no_middle_name:
+                type: boolean
+                description: 'Required if no `middle_name` is provided. `true` if the candidate has no middle name.
+
+                  '
+                default: false
+              last_name:
+                type: string
+                pattern: '[a-zA-Z0-9ªµºÀ-ÖØ-öø-ÿ\-''., ]{2,}'
+                description: Candidate’s last name.
+                example: Smith
+              mother_maiden_name:
+                type: string
+                pattern: '[a-zA-Z0-9ªµºÀ-ÖØ-öø-ÿ\-''., ]*'
+                description: 'Candidate’s mother’s maiden name.
+
+                  '
+                example: Jones
+              email:
+                type: string
+                description: 'Candidate’s email address.
+
+                  '
+                format: email
+                example: john.smith@gmail.com
+              phone:
+                type:
+                - string
+                - 'null'
+                description: Candidate’s phone number.
+                example: 5555555555
+              zipcode:
+                type: string
+                description: Candidate’s 5-digit zip code.
+                example: 90401
+              dob:
+                type: string
+                description: Candidate’s date of birth.
+                format: date
+                example: '1970-01-22'
+              ssn:
+                type: string
+                description: Candidate’s Social Security Number. This value will be redacted in all return calls, except for the last four digits.
+                example: XXX-XX-4645
+              driver_license_number:
+                type: string
+                description: Candidate’s driver license number.
+                example: F2111655
+              driver_license_state:
+                type: string
+                description: 'Candidate’s driver license state of issue.
+
+                  Format: `ISO 3166-2:US`.
+
+                  '
+                example: CA
+              previous_driver_license_number:
+                type: string
+                description: Candidate’s previous driver license number.
+                example: F1501739
+              previous_driver_license_state:
+                type: string
+                description: 'State that issued the candidate’s previous driver license.
+
+                  Format: `ISO 3166-2:US`.
+
+                  '
+                example: MD
+              copy_requested:
+                type: boolean
+                description: If `true`, the candidate has asked to receive a copy of their report.
+                default: false
+              postal_address:
+                type: object
+                description: The candidate postal address is the address Checkr will use to send postal mail to the candidate. Each candidate can be associated with only one postal address.
+                example:
+                  name: John Alfred Smith
+                  street: 123 Main Street
+                  street2: APT A
+                  city: San Francisco
+                  state: CA
+                  zipcode: '94108'
+              custom_id:
+                type: string
+                description: Client-assigned unique ID for the Candidate. Can be used to map Checkr Candidate IDs to your internal tracking system, and to search for Candidates through both the Dashboard and the API.
+                example: HRIS-27
+              report_ids:
+                type: array
+                description: Array of Report IDs.
+                readOnly: true
+                items:
+                  type: string
+                  example: 532e71cfe88a1d4e8d00000d
+              geo_ids:
+                type: array
+                description: Array of Geo IDs.
+                items:
+                  type: string
+                  example: 79f943e212cce7de21c054a8
+              metadata:
+                $ref: '#/components/schemas/Metadata'
+              work_locations:
+                type: array
+                description: '<font color="red">Required</font> for non-US candidates.
+
+
+                  Array of locations described using country, state, and city. When country is not specified defaults to US. State is required for US candidates. Country is required for non-US candidates.
+
+                  '
+                items:
+                  $ref: '#/components/schemas/WorkLocation'
+      required: true
+    CandidatePiiRemoval:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - deletion_contact_email_address
+            properties:
+              deletion_contact_email_address:
+                type: string
+                description: Email address of person requesting candidate's PII removal.
+                example: john.smith@gmail.com
+              deletion_contact_first_name:
+                type: string
+                description: First name of person requesting candidate's PII removal.
+                example: John
+              deletion_contact_last_name:
+                type: string
+                description: Last name of person requesting candidate's PII removal.
+                example: Smith
+      required: true
+    CandidatePatch:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Candidate'
+      required: true
+  responses:
+    BadPiiRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadPiiRequestError'
+    Candidate:
+      description: Candidate details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Candidate'
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    CandidateCreated:
+      description: Candidate was successfully created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Candidate'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    ListOfCandidates:
+      description: List of Candidates
+      content:
+        application/json:
+          schema:
             type: object
             properties:
-              country:
+              object:
                 type: string
-              state:
+                description: A list
+                enum:
+                - list
+              next_href:
                 type: string
-              city:
+                format: uri
+              previous_href:
                 type: string
-    Error:
+                format: uri
+              count:
+                type: integer
+                example: 2
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Candidate'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+    CandidateUpdated:
+      description: Candidate was successfully updated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Candidate'
+  schemas:
+    ForbiddenError:
       type: object
       properties:
         error:
           type: string
-        errors:
-          type: array
-          items:
-            type: string
-    CandidateList:
+          example: You do not have permission to access the requested resource
+    Candidate:
       type: object
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Candidate'
+        id:
+          $ref: '#/components/schemas/ResourceId'
         object:
           type: string
-          example: list
-        count:
-          type: integer
-        next_href:
+          enum:
+          - candidate
+          readOnly: true
+        uri:
+          allOf:
+          - $ref: '#/components/schemas/ResourceURI'
+          example: /v1/candidates/e44aa283528e6fde7d542194
+        first_name:
           type: string
-        previous_href:
+          pattern: ^(?=.*[a-zA-ZªµºÀ-ÖØ-öø-ÿ])[a-zA-Z0-9ªµºÀ-ÖØ-öø-ÿ\-'., ]*$
+          description: 'Candidate’s first name.
+
+            '
+          example: John
+          minLength: 1
+        middle_name:
           type: string
-  responses:
-    NotFound:
-      description: The resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Authentication failed or was missing.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: The request was invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
+          pattern: '[a-zA-Z0-9ªµºÀ-ÖØ-öø-ÿ\-''., ]*'
+          description: 'Candidate’s middle name. This field is required if `no_middle_name` is `false`.
+
+            '
+          example: Alfred
+        no_middle_name:
+          type: boolean
+          description: 'Required if no `middle_name` is provided. `true` if the candidate has no middle name.
+
+            '
+          default: false
+        last_name:
+          type: string
+          pattern: '[a-zA-Z0-9ªµºÀ-ÖØ-öø-ÿ\-''., ]{2,}'
+          description: Candidate’s last name.
+          example: Smith
+          minLength: 1
+        mother_maiden_name:
+          type: string
+          pattern: '[a-zA-Z0-9ªµºÀ-ÖØ-öø-ÿ\-''., ]*'
+          description: 'Candidate’s mother’s maiden name.
+
+            '
+          example: Jones
+        email:
+          type: string
+          description: 'Candidate’s email address.
+
+            '
+          format: email
+          example: john.smith@gmail.com
+        phone:
+          type:
+          - string
+          - 'null'
+          description: Candidate’s phone number.
+          example: 5555555555
+        zipcode:
+          type: string
+          description: Candidate’s 5-digit zip code.
+          example: 90401
+        dob:
+          type: string
+          description: Candidate’s date of birth.
+          format: date
+          example: '1970-01-22'
+        ssn:
+          type: string
+          description: Candidate’s Social Security Number. This value will be redacted in all return calls, except for the last four digits.
+          example: XXX-XX-4645
+        driver_license_number:
+          type: string
+          description: Candidate’s driver license number.
+          example: F2111655
+        driver_license_state:
+          type: string
+          description: 'Candidate’s driver license state of issue.
+
+            Format: `ISO 3166-2:US`.
+
+            '
+          example: CA
+        previous_driver_license_number:
+          type: string
+          description: Candidate’s previous driver license number.
+          example: F1501739
+        previous_driver_license_state:
+          type: string
+          description: 'State that issued the candidate’s previous driver license.
+
+            Format: `ISO 3166-2:US`.
+
+            '
+          example: MD
+        copy_requested:
+          type: boolean
+          description: If `true`, the candidate has asked to receive a copy of their report.
+          default: false
+        custom_id:
+          type: string
+          description: Client-assigned unique ID for the Candidate. Can be used to map Checkr Candidate IDs to your internal tracking system, and to search for Candidates through both the Dashboard and the API.
+        report_ids:
+          type: array
+          description: Array of Report IDs.
+          readOnly: true
+          items:
+            type: string
+            example: 532e71cfe88a1d4e8d00000d
+        geo_ids:
+          type: array
+          description: Array of Geo IDs.
+          items:
+            type: string
+            example: 79f943e212cce7de21c054a8
+        adjudication:
+          type: string
+          description: The adjudication for the Candidate’s most recently created Report.
+          enum:
+          - engaged
+          - pre_adverse_action
+          - post_adverse_action
+        postal_address:
+          type: object
+          description: Candidate's postal address.
+          example:
+            name: John Alfred Smith
+            street: 123 Main Street
+            street2: APT A
+            city: San Francisco
+            state: CA
+            zipcode: '94108'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+    WorkLocation:
+      type: object
+      required:
+      - state
+      properties:
+        country:
+          type: string
+          description: The country in ISO-3166 alpha-2 format.
+          example: US
+          minLength: 2
+          maxLength: 2
+        state:
+          type: string
+          description: The two letter state code.
+          example: CA
+        city:
+          type: string
+          description: Name of the city
+          example: San Francisco
+          maxLength: 255
+    ResourceURI:
+      type: string
+      description: URI of the resource.
+      readOnly: true
+    Metadata:
+      type: object
+      description: 'Up to 50 customer-defined key-value pairs. Use this parameter to store additional information on your candidate. For example: Use the key to map candidates to `job_req_id`, `application_id`, or `branch_id`. Keys must be 40 characters or less. Values must be 500 characters or less.
+
+        For example: { "job_req_id": "12345" }'
+    BadRequestError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Dl number 'F211165' does not match the license number format in CA
     ResourceId:
-      name: id
-      in: path
-      required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
-    PerPage:
-      name: per_page
-      in: query
-      description: The number of results per page (default 25).
-      schema:
-        type: integer
-        default: 25
-        maximum: 100
-    Page:
-      name: page
-      in: query
-      description: The page of results to return.
-      schema:
-        type: integer
-        default: 1
+      type: string
+      example: e44aa283528e6fde7d542194
+      readOnly: true
+      description: ID of the resource.
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
+    BadPiiRequestError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Candidate has already had PII removed
   securitySchemes:
-    basicAuth:
+    basic_auth:
       type: http
       scheme: basic
-      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

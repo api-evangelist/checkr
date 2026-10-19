@@ -1,0 +1,278 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Checkr.com API Docs Programs API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
+  contact:
+    name: Checkr
+    email: clients@checkr.com
+    url: https://checkr.com
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
+servers:
+- url: https://api.checkr.com/v1
+  description: Main server
+tags:
+- name: Programs
+  description: 'Represents a division of an Account. Programs are typically used to identify clients,
+
+    cost centers, or departments. A Program may have many Geos and may have many Packages.'
+paths:
+  /programs:
+    get:
+      tags:
+      - Programs
+      summary: List existing Programs
+      description: Returns a list of existing Programs with the input `name`.
+      operationId: programsList
+      security:
+      - basic_auth: []
+      parameters:
+      - name: name
+        in: query
+        description: Returns Programs with the input `name`.
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Specifies the page number to retrieve.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
+      - name: per_page
+        in: query
+        description: Indicates how many records each page should contain. The default value is 25 records.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
+      responses:
+        '200':
+          $ref: '#/components/responses/ProgramsList'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/programs \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+  /programs/{id}:
+    parameters:
+    - name: id
+      description: ID of the Program to retrieve.
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - Programs
+      summary: Retrieve an existing Program
+      description: Returns an existing Program with the input ID.
+      operationId: getProgram
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Program'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/programs/e44aa283528e6fde7d542194 \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+components:
+  responses:
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    ProgramsList:
+      description: List of Programs
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              object:
+                type: string
+                description: A list
+                enum:
+                - list
+              next_href:
+                type: string
+                format: uri
+              previous_href:
+                type: string
+                format: uri
+              count:
+                type: integer
+                example: 2
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Program'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+    Program:
+      description: Program details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Program'
+  schemas:
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You do not have permission to access the requested resource
+    ResourceId:
+      type: string
+      example: e44aa283528e6fde7d542194
+      readOnly: true
+      description: ID of the resource.
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
+    Program:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ResourceId'
+        object:
+          type: string
+          enum:
+          - program
+          readOnly: true
+        name:
+          type: string
+          description: Human-readable name of the Program.
+          example: Program A
+        created_at:
+          type: string
+          description: Time at which the resource was created.
+          format: date-time
+          example: '2017-08-07T16:51:09Z'
+        deleted_at:
+          type:
+          - string
+          - 'null'
+          description: Time at which the resource was deleted.
+          format: date-time
+          example: null
+        package_ids:
+          type: array
+          items:
+            type: string
+            example: a57a0cd15965a585ff7d5d35
+          description: Array of associated Package IDs.
+        geo_ids:
+          type: array
+          items:
+            type: string
+            example: cbc37748bc6a45b41af5c3f5
+          description: Array of associated Geo IDs.
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

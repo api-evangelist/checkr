@@ -1,0 +1,449 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Checkr.com API Docs Hierarchy (Enabled by request) API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
+  contact:
+    name: Checkr
+    email: clients@checkr.com
+    url: https://checkr.com
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
+servers:
+- url: https://api.checkr.com/v1
+  description: Main server
+tags:
+- name: Hierarchy (Enabled by request)
+  description: 'Use the Hierarchy endpoint to structure your Account as a grouping of individual entities (Nodes) that represent your business with respect to your hiring and background check needs.
+
+
+    The parent-child relationship of Nodes may then be used to manage the relationship of your Packages and other account settings to Users and Candidates within your Account. Once defined, use the Checkr Dashboard to assign Nodes to Users, Packages, your Positive Adjudication Matrix, and other aspects of your Checkr Account.
+
+
+    Specifying a unique ID (custom_id) for each Node in the hierarchy allows you to edit the structure of your hierarchy without dissociating any Packages, PAMs, or Users assigned directly to the individual nodes. As nodes are moved to different locations within the hierarchy they will inherit Packages or PAMs from their new parent that may differ from the last, but Packages assigned directly to the node will not change.'
+paths:
+  /hierarchy:
+    post:
+      tags:
+      - Hierarchy (Enabled by request)
+      summary: Create Hierarchy
+      description: 'Creates a new or replaces an existing Account Hierarchy.
+
+
+        The Hierarchy endpoint performs ingestion asynchronously. Check the status
+
+        of the ingestion by calling `GET /v1/hierarchy/status`. Once ingested, use the Checkr Dashboard to assign your nodes to Packages, PAMs, and Users.'
+      operationId: updateAccountHierarchy
+      security:
+      - basic_auth: []
+      requestBody:
+        $ref: '#/components/requestBodies/HierarchyUpdate'
+      responses:
+        '202':
+          $ref: '#/components/responses/HierarchyUpdated'
+        '400':
+          $ref: '#/components/responses/BadHierarchyRequestError'
+        '403':
+          $ref: '#/components/responses/HierarchyNotEnabledError'
+        '423':
+          $ref: '#/components/responses/IngestionInProgressError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/hierarchy \\\n    -H 'Content-Type: application/json' \\\n    -u d3a265269d18997528b04cfa82bc6a108c1b8553: \\\n    -d '{ \"nodes\": [{\"name\":\"Acme Staffing\", \"tier\": \"department\", \"custom_id\": \"zpy8orej4r614ize\"}, {\"name\":\"Drivers Staffing\", \"tier\": \"divison\", \"custom_id\": \"ocquzig4k3whppfx\", \"parent_custom_id\": \"zpy8orej4r614ize\"}]}'\n"
+    get:
+      tags:
+      - Hierarchy (Enabled by request)
+      summary: Retrieve Hierarchy (Deprecated)
+      description: '**Note:** This endpoint is _deprecated_ and will no longer be supported. Please use the new List existing Nodes endpoint instead.
+
+
+        Retrieves the current Hierarchy for the Account.
+
+
+        Returns the account hierarchy in its entirety, or from a specific node to its children. The returned JSON object will include the Packages assigned to each node in the dashboard. This is useful for building UIs that truncate the list of Packages displayed to a requester, or display only the nodes that are relevant to the requester.
+
+
+        Output is arranged hierarchically, with child nodes accessible through the parent node. Customers without large hierarchy mode enabled who do not specify pagination parameters will be returned the entire hierarchy. Customers with large hierarchy mode enabled and pagination parameters specified in this request will be returned the given page and number of results per page. If pagination parameters are not included, only the first page of the hierarchy will be returned.
+
+
+        **Note:** Customers with large hierarchy mode enabled will see a different response. Please reach out to clients@checkr.com if you have any questions.'
+      operationId: getAccountHierarchy
+      security:
+      - basic_auth: []
+      parameters:
+      - name: node_custom_ids
+        in: query
+        description: An array of `custom_ids` for the nodes to return. Returns the portion(s) of the Account Hierarchy matching the input nodes and their descendants.
+        schema:
+          type: array
+          items:
+            type: string
+      - name: page
+        in: query
+        description: Specifies the page to retrieve. The default page is 1.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
+      - name: per_page
+        in: query
+        description: Indicates how many nodes each page should contain. The default per_page value is 20.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
+      responses:
+        '200':
+          $ref: '#/components/responses/AccountHierarchy'
+        '403':
+          $ref: '#/components/responses/HierarchyNotEnabledError'
+        '404':
+          $ref: '#/components/responses/HierarchyNotFoundError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl https://api.checkr.com/v1/hierarchy \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+  /hierarchy/nodes:
+    post:
+      tags:
+      - Hierarchy (Enabled by request)
+      summary: Add nodes to a hierarchy
+      description: 'Adds new nodes to an existing Account Hierarchy.
+
+
+        This endpoint creates the nodes synchronously.'
+      operationId: createAccountHierarchyNodes
+      security:
+      - basic_auth: []
+      requestBody:
+        $ref: '#/components/requestBodies/HierarchyUpdate'
+      responses:
+        '201':
+          $ref: '#/components/responses/HierarchyNodes'
+        '400':
+          $ref: '#/components/responses/BadHierarchyRequestError'
+        '403':
+          $ref: '#/components/responses/HierarchyNotEnabledError'
+        '423':
+          $ref: '#/components/responses/IngestionInProgressError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/hierarchy/nodes \\\n    -H 'Content-Type: application/json' \\\n    -u d3a265269d18997528b04cfa82bc6a108c1b8553: \\\n    -d '{ \"nodes\": [{\"name\":\"Acme Staffing\", \"tier\": \"department\", \"custom_id\": \"zpy8orej4r614ize\"}, {\"name\":\"Drivers Staffing\", \"tier\": \"divison\", \"custom_id\": \"ocquzig4k3whppfx\", \"parent_custom_id\": \"zpy8orej4r614ize\"}]}'\n"
+  /hierarchy/status:
+    get:
+      tags:
+      - Hierarchy (Enabled by request)
+      summary: Retrieve Hierarchy update status
+      description: 'Returns the status of the latest Hierarchy ingestion request.
+
+
+        This call requires no input, and is provided as a means to determine the progress of an
+
+        asynchronous `POST /hierarchy` request.'
+      operationId: getAccountHierarchyStatus
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/HierarchyStatus'
+        '403':
+          $ref: '#/components/responses/HierarchyNotEnabledError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl https://api.checkr.com/v1/hierarchy/status \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+components:
+  schemas:
+    HierarchyNotEnabledError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Sorry, your account is not enabled for Hierarchy
+    HierarchyNode:
+      type: object
+      required:
+      - name
+      - custom_id
+      properties:
+        name:
+          type: string
+          description: The name for the node. This name will be displayed in the Checkr Dashboard.
+          example: Acme Staffing
+          minLength: 1
+          maxLength: 255
+        custom_id:
+          type: string
+          description: 'Customer-defined unique ID for the node. Must be unique within your account. <b>Note: </b>Custom IDs may contain only letters, numbers, spaces, hyphens, colons, ampersands, and/or underscores.'
+          example: zpy8orej4r614ize
+          minLength: 1
+          maxLength: 255
+        tier:
+          type: string
+          description: Customer-defined label for this level of the hierarchy. (For example "Department" or "Division".)
+          example: department
+          maxLength: 255
+        parent_custom_id:
+          type: string
+          description: 'The `custom_id` for the parent of this node. If not provided, this node will be placed at the top level of the hierarchy. <b>Note: </b>If provided, this node must be a valid and previously loaded `custom_id`, and may contain only letters, numbers, spaces, hyphens, colons, ampersands, and/or underscores.'
+          example: parent custom id
+          maxLength: 255
+        packages:
+          type: array
+          description: List of slugs for packages that are visible to this node (through either direct assignment to the node, or assignment to one of the node's ancestors). Only provided if "include=packages" is included in the query.
+          items:
+            type: string
+          example:
+          - driver_pro
+          - tasker_pro
+    IngestionInProgressError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Ingestion is already in progress
+    BadHierarchyRequestError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: nodes cannot be empty
+    HierarchyTree:
+      type: object
+      required:
+      - name
+      - custom_id
+      properties:
+        name:
+          type: string
+          description: The name for the node. This name will be displayed in the Checkr Dashboard.
+          example: Acme Staffing
+        custom_id:
+          type: string
+          description: Customer-defined unique ID for the node. Must be unique within your account.
+          example: zpy8orej4r614ize
+        tier:
+          type: string
+          description: Customer-defined label for this level of the hierarchy. (For example "Department" or "Division")
+          example: department
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/HierarchyTree'
+          description: List of child hierarchy trees with name, custom_id, tier and their children
+    HierarchyNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: No hierarchy exists on account, or hierarchy ingestion is in progress
+  responses:
+    HierarchyStatus:
+      description: The current status of hierarchy ingestion.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              hierarchy_present:
+                type: boolean
+                description: If `true`, a valid hierarchy exists for the account.
+                example: true
+              hierarchy_pending:
+                type: boolean
+                description: If `true`, a hierarchy ingestion request is currently processing.
+                example: false
+              latest_ingestion:
+                type: object
+                properties:
+                  sync_id:
+                    type: string
+                    description: The `sync_id` of the last fully-processed ingestion request. `null` if no requests have processed.
+                    example: account-da78fa2cd1e6ebee4b5975aa
+                  time:
+                    type: string
+                    format: date-time
+                    description: The date and time of the start of the last fully-processed ingestion request. `null` if no requests have processed.
+                    example: '2020-01-01T08:00:00Z'
+                  successful:
+                    type: boolean
+                    description: If `true`, the last hierarchy ingestion request contained no errors.
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                    description: All error messages produced by the last hierarchy ingestion request.
+                    example:
+                    - 'Row 1: Validation failed: Name required'
+    AccountHierarchy:
+      description: The hierarchy for the account.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sync_id:
+                type: string
+                description: The `uri_name` of the Account, plus a randomly generated hexadecimal ID, linked with a hyphen.
+                example: account-da78fa2cd1e6ebee4b5975aa
+              time:
+                type: string
+                format: date-time
+                description: The date and time at which the ingestion job began.
+                example: '2020-01-01T08:00:00Z'
+              nodes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HierarchyTree'
+    HierarchyUpdated:
+      description: Ingestion successfully initiated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sync_id:
+                type: string
+                description: The `uri_name` of the Account, plus a randomly generated hexadecimal ID, linked with a hyphen.
+                example: account-da78fa2cd1e6ebee4b5975aa
+              time:
+                type: string
+                format: date-time
+                description: The date and time at which the ingestion job began.
+                example: '2020-02-11T00:27:14Z'
+    HierarchyNodes:
+      description: Nodes were successfully added to the hierarchy
+      content:
+        application/json:
+          schema:
+            type: string
+            example: null
+    HierarchyNotEnabledError:
+      description: Hierarchy not enabled
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HierarchyNotEnabledError'
+    BadHierarchyRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadHierarchyRequestError'
+    IngestionInProgressError:
+      description: Ingestion already in progress
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IngestionInProgressError'
+    HierarchyNotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HierarchyNotFoundError'
+  requestBodies:
+    HierarchyUpdate:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - nodes
+            properties:
+              nodes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HierarchyNode'
+      required: true
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

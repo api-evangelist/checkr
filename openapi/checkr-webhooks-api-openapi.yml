@@ -1,126 +1,416 @@
 openapi: 3.2.0
 info:
-  title: Checkr Webhooks API
-  description: The Checkr API is a RESTful interface for running compliant employment background checks.
-  version: '1.0'
+  version: v1
+  title: Checkr.com API Docs Webhooks API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
   contact:
     name: Checkr
+    email: clients@checkr.com
     url: https://checkr.com
-  termsOfService: https://checkr.com/terms-of-service
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
 servers:
 - url: https://api.checkr.com/v1
-  description: Production
-- url: https://api.checkr-staging.com/v1
-  description: Staging
-security:
-- basicAuth: []
+  description: Main server
 tags:
 - name: Webhooks
-  description: Event notification subscriptions.
+  description: Use webhooks to receive updates on objects created with the API and to kick off additional workflows based on these events. See Webhooks for more information.
 paths:
   /webhooks:
-    get:
-      operationId: listWebhooks
-      tags:
-      - Webhooks
-      summary: List webhooks
-      responses:
-        '200':
-          description: A list of webhook subscriptions.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Webhook'
     post:
-      operationId: createWebhook
       tags:
       - Webhooks
-      summary: Create a webhook
+      summary: Create a new Webhook
+      description: 'Creates a new Webhook resource. An account can have a maximum of 2 webhooks.
+
+
+        Any webhook URL that fails to accept with a 2XX status code at least one request over a period of 60 days will be removed automatically - e.g. webhooks failing for 100% of the requests during 60 or more days.'
+      operationId: createWebhook
+      security:
+      - basic_auth: []
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/WebhookCreate'
+        $ref: '#/components/requestBodies/WebhookCreate'
       responses:
         '201':
-          description: The created webhook.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Webhook'
-  /webhooks/{id}:
-    parameters:
-    - $ref: '#/components/parameters/ResourceId'
+          $ref: '#/components/responses/WebhookCreated'
+        '400':
+          $ref: '#/components/responses/BadWebhookCreateRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/webhooks \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9: \\\n    -d include_object=true \\\n    -d webhook_url=https://example.com"
     get:
-      operationId: getWebhook
       tags:
       - Webhooks
-      summary: Retrieve a webhook
+      summary: List existing Webhooks
+      description: Returns a list of existing Webhooks
+      operationId: webhooksList
+      security:
+      - basic_auth: []
       responses:
         '200':
-          description: The webhook.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Webhook'
-    delete:
-      operationId: deleteWebhook
-      tags:
-      - Webhooks
-      summary: Delete a webhook
-      responses:
-        '200':
-          description: The webhook was deleted.
-components:
-  parameters:
-    ResourceId:
-      name: id
+          $ref: '#/components/responses/WebhooksList'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/webhooks \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:"
+  /webhooks/${id}:
+    parameters:
+    - name: id
       in: path
+      description: ID of the Webhook.
       required: true
-      description: The unique identifier of the resource.
       schema:
         type: string
+    get:
+      tags:
+      - Webhooks
+      summary: Retrieve a Webhook
+      description: Returns the existing Webhook corresponding to the input ID.
+      operationId: getWebhook
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Webhook'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/webhooks/e44aa283528e6fde7d542194 \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:"
+    delete:
+      tags:
+      - Webhooks
+      summary: Delete a Webhook
+      description: Deletes the existing Webhook corresponding to the input ID.
+      operationId: deleteWebhook
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/WebhookDeleted'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "curl -X DELETE https://api.checkrhq-staging.net/v1/webhooks/e44aa283528e6fde7d542194 \\\n     -u 83ebeabdec09f6670863766f792ead24d61fe3f9:"
+components:
   schemas:
-    WebhookCreate:
+    ResourceURI:
+      type: string
+      description: URI of the resource.
+      readOnly: true
+    WebhookDelete:
       type: object
       required:
       - webhook_url
       properties:
-        webhook_url:
-          type: string
-        live:
-          type: boolean
-        included_object_types:
-          type: array
-          items:
-            type: string
-    Webhook:
-      type: object
-      properties:
         id:
-          type: string
+          $ref: '#/components/schemas/ResourceId'
         object:
           type: string
-          example: webhook
+          enum:
+          - webhook
+          readOnly: true
+        uri:
+          allOf:
+          - $ref: '#/components/schemas/ResourceURI'
+          example: /v1/webhooks/e44aa283528e6fde7d542194
+        account_id:
+          type: string
+          example: 8e122cc56b8fa82d33c6118a
+          readOnly: true
+          description: The account associated with the webhook.
+        application_id:
+          type: string
+          example: null
+          readOnly: true
+          description: The application associated with the webhook.
+        include_object:
+          type: boolean
+          description: When `true`, the webhook event payload will include the related object.
         webhook_url:
           type: string
-        live:
-          type: boolean
-        included_object_types:
-          type: array
-          items:
-            type: string
+          description: The URL which receives the webhook event payload. This must be an HTTPS or an AWS SNS URL.
+          example: https://example.com
         created_at:
           type: string
+          description: Time at which the webhook was created.
           format: date-time
+          example: '1939-09-01T12:21:00Z'
+          readOnly: true
+        deleted_at:
+          type:
+          - string
+          - 'null'
+          description: Time at which the webhook was deleted.
+          format: date-time
+          example: '1945-09-02T04:40:00Z'
+          readOnly: true
+    BadRequestError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Dl number 'F211165' does not match the license number format in CA
+    Webhook:
+      type: object
+      required:
+      - webhook_url
+      properties:
+        id:
+          $ref: '#/components/schemas/ResourceId'
+        object:
+          type: string
+          enum:
+          - webhook
+          readOnly: true
+        uri:
+          allOf:
+          - $ref: '#/components/schemas/ResourceURI'
+          example: /v1/webhooks/e44aa283528e6fde7d542194
+        account_id:
+          type: string
+          example: 8e122cc56b8fa82d33c6118a
+          readOnly: true
+          description: The account associated with the webhook.
+        application_id:
+          type: string
+          example: null
+          readOnly: true
+          description: The application associated with the webhook.
+        include_object:
+          type: boolean
+          description: When `true`, the webhook event payload will include the related object.
+        webhook_url:
+          type: string
+          description: The URL which receives the webhook event payload. This must be an HTTPS or an AWS SNS URL.
+          example: https://example.com
+        created_at:
+          type: string
+          description: Time at which the webhook was created.
+          format: date-time
+          example: '1939-09-01T12:21:00Z'
+          readOnly: true
+        deleted_at:
+          type:
+          - string
+          - 'null'
+          description: Time at which the webhook was deleted.
+          format: date-time
+          example: null
+          readOnly: true
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You do not have permission to access the requested resource
+    ResourceId:
+      type: string
+      example: e44aa283528e6fde7d542194
+      readOnly: true
+      description: ID of the resource.
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
+  responses:
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    WebhookDeleted:
+      description: Webhook was successfully deleted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WebhookDelete'
+    Webhook:
+      description: Webhook details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Webhook'
+    WebhooksList:
+      description: List of Webhooks
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              object:
+                type: string
+                description: A list
+                enum:
+                - list
+              next_href:
+                type: string
+                format: uri
+              previous_href:
+                type: string
+                format: uri
+              count:
+                type: integer
+                example: 2
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Webhook'
+    WebhookCreated:
+      description: Webhook details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Webhook'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+    BadWebhookCreateRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: 'Examples: <br> • webhook_url is missing. <br> • Url has already been taken. <br> • Allowed webhook API limit exceeded. <br> • Url is not valid. Please use a publicly available host and the HTTPS or SNS protocol. <br>
+
+                  '
+  requestBodies:
+    WebhookCreate:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - webhook_url
+            properties:
+              include_object:
+                type: boolean
+                description: When `true`, the webhook event payload will include the related object.
+              webhook_url:
+                type: string
+                description: The URL which receives the webhook event payload. This must be an HTTPS or an AWS SNS URL. For more information, see [Supported Webhook URLs](#section/Webhooks/Supported-webhook-URLs) section.
+                example: https://example.com
+              live:
+                type: boolean
+                description: When 'true', the webhook is for the live environment.
+                example: true
+      required: true
   securitySchemes:
-    basicAuth:
+    basic_auth:
       type: http
       scheme: basic
-      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

@@ -1,0 +1,509 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Checkr.com API Docs Forms I-9 API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
+  contact:
+    name: Checkr
+    email: clients@checkr.com
+    url: https://checkr.com
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
+servers:
+- url: https://api.checkr.com/v1
+  description: Main server
+tags:
+- name: Forms I-9
+  description: The Forms I-9 resource provides all information about Forms I-9. It also allows to create a new Form I-9, retrieves details about ongoing I-9s (creating a CSV file) and also makes the PDF files for completed I-9s available.
+paths:
+  /i9/forms_i9:
+    get:
+      tags:
+      - Forms I-9
+      summary: List existing Form I-9s
+      description: Retrieves all I-9s for the authenticated Checkr account.
+      operationId: getFormI9
+      security:
+      - basic_auth: []
+      parameters:
+      - name: order_by
+        in: query
+        description: "Returns records listed by `order_by` parameter. \n\nIf neither is specified, records will be ordered by start_date.\n"
+        required: false
+        example: full_name
+        schema:
+          type: string
+          enum:
+          - full_name
+          - start_date
+          - worksite_name
+          - open_task
+      - name: order
+        in: query
+        description: 'Returns records listed in ascending or descending order of the order_by parameter. If neither is specified, records will be listed in descending order.
+
+          '
+        required: false
+        example: asc
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: page
+        in: query
+        description: Specifies the page number to retrieve.
+        required: false
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Indicates how many records each page should contain.
+        required: false
+        schema:
+          type: integer
+          default: 25
+      responses:
+        '200':
+          $ref: '#/components/responses/FormI9List'
+        '400':
+          $ref: '#/components/responses/BadFormI9RequestError'
+        '401':
+          $ref: '#/components/responses/I9UnauthorizedError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/i9/forms_i9?order_by=start_date&order=desc&page=1&per_page=25 \\ \n       -U YOUR_SECRET_API_KEY:\n"
+    post:
+      tags:
+      - Forms I-9
+      summary: Create a new Form I-9
+      description: 'Creates a new Form I-9 resource. This resource allow the creation of a single
+
+        Form I-9 and also the creation of a bulk of Forms I-9 in one request.'
+      operationId: createFormI9
+      security:
+      - basic_auth: []
+      requestBody:
+        $ref: '#/components/requestBodies/FormI9Create'
+      responses:
+        '201':
+          $ref: '#/components/responses/FormI9Created'
+        '400':
+          $ref: '#/components/responses/BadFormI9CreateRequestError'
+        '401':
+          $ref: '#/components/responses/I9UnauthorizedError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/i9/forms_i9 \\\n       -U YOUR_SECRET_API_KEY: \\\n       -H \"Content-Type: application/json\" \\\n       -d '{        \n\t\t\"candidate_id\": \"3de7e278beb24d14a3785e2dd02cca49\",\n\t\t\"email\": \"john.doe@example.com\",\n\t\t\"start_date\": \"2023-04-29\",\n\t\t\"worksite_id\": \"8046067e32ad6b25a9078735\",\n\t\t\"workflow_type\": \"remote_section_1_only\",\n\t\t\"authorized_representative_first_name\": \"Lee\",\n\t\t\"authorized_representative_last_name\": \"Perry\",\n\t\t\"authorized_representative_email\": \"lee.perry@domain.com\"\t\n\t  }'\n"
+  /i9/forms_i9/{id}:
+    parameters:
+    - name: id
+      in: path
+      description: ID of the Form I9
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - Forms I-9
+      summary: Retrieve a Form I-9
+      description: Retrieves an existing Form I-9.
+      operationId: getFormI9ID
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/FormI9'
+        '401':
+          $ref: '#/components/responses/I9UnauthorizedError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/i9/forms_i9/1a16ef5f9c1f1df045e74bb4 \\ \n       -H YOUR_SECRET_API_KEY:\n"
+  /i9/forms_i9/{id}/pdf:
+    parameters:
+    - name: id
+      in: path
+      description: ID of the Form I9
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - Forms I-9
+      summary: Retrieve Form I-9 PDF file
+      description: 'Retrieves a Form I-9 PDF file associated with the Form I-9 ID.
+
+
+        This endpoint returns a pre-signed S3 URL, valid for 5 minutes.'
+      operationId: getFormI9Pdf
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/FormI9Pdf'
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                type: 'null'
+        '400':
+          $ref: '#/components/responses/BadFormI9PdfRequestError'
+        '401':
+          $ref: '#/components/responses/I9UnauthorizedError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/i9/forms_i9/1a16ef5f9c1f1df045e74bb4/pdf \\ \n       -H YOUR_SECRET_API_KEY:\n"
+components:
+  responses:
+    BadFormI9CreateRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            anyOf:
+            - $ref: '#/components/schemas/RequiredFieldError'
+            - $ref: '#/components/schemas/CandidateRegisteredError'
+            - $ref: '#/components/schemas/WorksiteNotFoundError'
+    BadFormI9PdfRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Resource ID not informed
+    BadFormI9RequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Attribute 'foo' cannot be used for sorting.
+    FormI9Created:
+      description: Resource created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FormI9'
+    FormI9Pdf:
+      description: PDF URL
+      content:
+        text/plain:
+          schema:
+            type: string
+            description: Form I-9 PDF link.
+          examples:
+            sample_text:
+              value: https://api.checkr.com/key_1?X-Amz-Credential=xyz%2F20231002%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20231002T182721Z&x-id=GetObject&X-Amz-Signature=00fa239977fddb97a5e66f899ac41c34726bb9fb34167c60aa97762a1360eda7
+    I9UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: The account is not authorized to use I9 endpoints
+    FormI9:
+      description: Form I-9 details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FormI9'
+    FormI9List:
+      description: List of Forms I-9
+      content:
+        application/json:
+          schema:
+            properties:
+              object:
+                type: string
+                description: A list
+                enum:
+                - list
+              next_href:
+                type: string
+                format: uri
+              previous_href:
+                type: string
+                format: uri
+              count:
+                type: integer
+                example: 1
+              data:
+                type: array
+                description: Array of objects (Form I-9)
+                items:
+                  $ref: '#/components/schemas/FormI9'
+  requestBodies:
+    FormI9Create:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - candidate_id
+            - email
+            - worksite_id
+            - workflow_type
+            - start_date
+            properties:
+              candidate_id:
+                type: string
+                description: 'Candidate resource Id.
+
+                  '
+                example: 3de7e278beb24d14a3785e2dd02cca49
+              email:
+                type: string
+                description: Candidate email address.
+                example: john.doe@example.com
+              worksite_id:
+                type: string
+                description: Worksite resource Id.
+                example: 8046067e32ad6b25a9078735
+              workflow_type:
+                type: string
+                description: 'Workflow type.
+
+
+                  For additional insights into workflow types, please consider reviewing the [Form I-9 definitions](#section/Reference/Form-I-9-definitions-lessBETAgreater).
+
+                  '
+                enum:
+                - remote_section_1_only
+                - employer_appointment
+                - employee_appointment
+                example: remote_section_1_only
+              start_date:
+                type: string
+                description: Candidate start date.
+                example: '2023-04-29'
+              authorized_representative_first_name:
+                type: string
+                description: First name of authorized representative.
+                example: Lee
+              authorized_representative_last_name:
+                type: string
+                description: Last name of authorized representative.
+                example: Perry
+              authorized_representative_email:
+                type: string
+                description: Email address of authorized representative.
+                example: lee.perry@domain.com
+      required: true
+  schemas:
+    RequiredFieldError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: <required_field> is a required field
+    WorksiteNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Worksite ID <id> not found
+    CandidateRegisteredError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: 'candidate_id: <id> already has a form I-9'
+    FormI9:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the resource
+          example: 1a16ef5f9c1f1df045e74bb4
+        object:
+          type: string
+          enum:
+          - form_i9
+        uri:
+          type: string
+          description: URI of the resource
+          example: v1/forms_i9/1a16ef5f9c1f1df045e74bb4
+        candidate_id:
+          type: string
+          description: ID of the candidate
+          example: 3de7e278beb24d14a3785e2dd02cca49
+        order_progress:
+          type: string
+          description: 'Form I-9 order progress.
+
+
+            More details on [Form I-9 definitions](#section/Reference/Form-I-9-definitions-lessBETAgreater).
+
+            '
+          enum:
+          - section_1_incomplete
+          - section_2_incomplete
+          - awaiting_approval
+          - everify_pending
+          - everify_tnc_issued
+          - i9_complete
+          example: section_1_incomplete
+        open_tasks:
+          type: string
+          description: 'Form I-9 open task.
+
+
+            More details on [Form I-9 definitions](#section/Reference/Form-I-9-definitions-lessBETAgreater).
+
+            '
+          enum:
+          - no_action
+          - complete_section_2
+          - appoint_section_2_representative
+          - accept_reject_i9
+          - check_user_email
+          example: complete_section_2
+        open_tasks_url:
+          type: string
+          description: Form I-9 open task link.
+          example: ''
+        form_i9_url:
+          type: string
+          description: Form I-9 link to Tracker UI.
+          example: https://integration.i9complete.com/Content/tracker/YWg1ZDg5SDM5RVMzbWxh
+        start_date:
+          type: string
+          description: Candidate start date.
+          example: '2023-04-29'
+        worksite_id:
+          type: string
+          description: Worksite resource Id.
+          example: 8046067e32ad6b25a9078735
+        worksite_uri:
+          type: string
+          description: URI of the worksite
+          example: v1/i9/worksites/8046067e32ad6b25a9078735
+        workflow_type:
+          type: string
+          description: 'Type of workflow.
+
+
+            More details on [Form I-9 definitions](#section/Reference/Form-I-9-definitions-lessBETAgreater).
+
+            '
+          enum:
+          - remote_section_1_only
+          - employer_appointment
+          - employee_appointment
+          example: remote_section_1_only
+        authorized_representative_first_name:
+          type: string
+          description: First name of authorized representative.
+          example: Lee
+        authorized_representative_last_name:
+          type: string
+          description: Last name of authorized representative.
+          example: Perry
+        authorized_representative_email:
+          type: string
+          description: Email address of authorized representative.
+          example: lee.perry@domain.com
+        created_at:
+          type: string
+          description: Form I-9 date of creation.
+          example: '2023-04-29T16:21:11Z'
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

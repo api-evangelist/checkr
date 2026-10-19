@@ -1,0 +1,12 @@
+{
+ "url": "https://api.redocly.com/registry/bundle/checkr/Checkr%20Public%20API/v1/openapi.yaml",
+ "final": "https://api.redocly.com/registry/bundle/checkr/Checkr%20Public%20API/v1/openapi.yaml",
+ "status": 200,
+ "content_type": "text/yaml; charset=utf-8",
+ "bytes": 576314,
+ "sha256": "27d4f350cc61792217e9cb573abaa083bbbaa4045a1a74fb7667f4999bad60cf",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "re-archived: the provider's current document replaced a stale archive (roadmap#793); the old files are in openapi/_superseded/2026-10-19-stale"
+}

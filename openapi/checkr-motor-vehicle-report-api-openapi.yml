@@ -1,0 +1,927 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Checkr.com API Docs Motor Vehicle Report API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
+  contact:
+    name: Checkr
+    email: clients@checkr.com
+    url: https://checkr.com
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
+servers:
+- url: https://api.checkr.com/v1
+  description: Main server
+tags:
+- name: Motor Vehicle Report
+  description: 'Motor Vehicle Records originate from a state’s Department of Motor Vehicles, and include
+
+    information related to a person’s driving history, including driver’s license status and
+
+    restrictions, as well as violations and convictions. Use MVR reports to evaluate a candidate’s
+
+    driving history and safety record.
+
+
+    Please note that some convictions, such as driving under the influence, may appear only
+
+    on MVR reports, and not on criminal searches.
+
+
+    For more information, please see
+
+    Motor Vehicle Records
+
+    in the Checkr Help Center.'
+paths:
+  /motor_vehicle_reports/{id}:
+    parameters:
+    - name: id
+      in: path
+      description: ID of the Motor Vehicle Report to retrieve.
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - Motor Vehicle Report
+      summary: Retrieve an existing Motor Vehicle Report
+      description: Returns an existing Motor Vehicle Report with the input ID.
+      operationId: getMotorVehicleReport
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/MotorVehicleReport'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/motor_vehicle_reports/539fd88c101897f7cd000007 \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+components:
+  schemas:
+    ResourceURI:
+      type: string
+      description: URI of the resource.
+      readOnly: true
+    AssessmentAttribute:
+      type:
+      - string
+      - 'null'
+      description: 'The assessment for this screening. This field will be non-null only for Assess-enabled accounts. For accounts with Assess enabled, it will be null for reports completed before Assess was enabled, and null for a short time after report completion while the account''s Assess rules are applied.
+
+        '
+      enum:
+      - eligible
+      - review
+      - escalated
+      example: eligible
+    ScreeningResult:
+      type:
+      - string
+      - 'null'
+      description: Outcome of the screening.
+      enum:
+      - clear
+      - consider
+    ScreeningStatus:
+      type: string
+      description: Status of the screening.
+      enum:
+      - pending
+      - complete
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You do not have permission to access the requested resource
+    ScreeningsGenericPayload:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ResourceId'
+        object:
+          type: string
+        uri:
+          allOf:
+          - $ref: '#/components/schemas/ResourceURI'
+        status:
+          type: string
+          description: 'Status of the screening.
+
+            '
+          enum:
+          - pending
+          - complete
+          - canceled
+          - suspended
+          example: complete
+        result:
+          type:
+          - string
+          - 'null'
+          description: Result of the screening.
+          enum:
+          - clear
+          - consider
+          example: clear
+        assessment:
+          allOf:
+          - $ref: '#/components/schemas/AssessmentAttribute'
+        created_at:
+          type: string
+          description: Time at which the screening was created.
+          format: date-time
+          example: '2014-01-18T12:34:00Z'
+        completed_at:
+          type: string
+          description: Time at which the screening was completed.
+          format: date-time
+          example: '2014-01-18T12:35:30Z'
+        turnaround_time:
+          type: integer
+          description: Number of seconds the screening took to complete, calculated from `created_at` to `completed_at`.
+        cancellation_reason:
+          type: string
+          description: See [cancellation reasons](#section/Reference/Cancellation-Reasons) section for possible values.
+          example: complete_now_customer_requested
+        cancellation_reason_description:
+          type: string
+          description: See [cancellation reasons](#section/Reference/Cancellation-Reasons) section for possible values.
+          example: Customer requested Complete Now prior to screening completion
+    ResourceId:
+      type: string
+      example: e44aa283528e6fde7d542194
+      readOnly: true
+      description: ID of the resource.
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
+    MotorVehicleReport:
+      allOf:
+      - $ref: '#/components/schemas/ScreeningsGenericPayload'
+      - type: object
+        properties:
+          object:
+            enum:
+            - motor_vehicle_report
+          license_reports:
+            type: array
+            description: Array of license reports
+            items:
+              type: object
+              properties:
+                number:
+                  type: string
+                  description: Candidate’s driver’s license number.
+                  example: F2111132
+                dob:
+                  type: string
+                  format: date
+                  description: Date of Birth of the individual the license was issued to as returned by the DMV.
+                  example: '1980-01-01'
+                state:
+                  type: string
+                  description: Candidate’s driver’s license state of issue.
+                  example: CA
+                status:
+                  type: string
+                  description: Status of the license as returned by the DMV if found, or status indicating the license is not found or not available.
+                  example: valid, expired, not_found
+                type:
+                  type: string
+                  description: Type of the license as returned by the DMV.
+                  example: personal, commercial, or non-commercial
+                class:
+                  type: string
+                  description: Class of the license as returned by the DMV.
+                  example: C
+                expiration_date:
+                  type: string
+                  format: date
+                  description: Date on which the license expires.
+                  example: '2016-07-24'
+                issued_date:
+                  type: string
+                  format: date
+                  description: Date on which the license was issued.
+                  example: '2006-12-03'
+                first_issued_date:
+                  type: string
+                  format: date
+                  description: Date on which the license was first issued. Used to determine if the candidate meets minimum experience requirements.
+                  example: '2000-01-14'
+                restrictions:
+                  type: array
+                  description: Array of restrictions, as returned by the individual states' DMV.
+                  items:
+                    type: string
+                current_license:
+                  type: boolean
+                  description: True when this is the current license in use
+                privilege_to_drive:
+                  type: string
+                  enum:
+                  - valid
+                  - invalid
+                  description: Displays the validity of the license, as determined by the returned `license_status`, `license_class`, and `expiration_date`. If one or more of these three fields indicates that the license is not valid, `privilege_to_drive` is `invalid`.
+                  example: valid
+                violations:
+                  type: array
+                  description: Array of Violation objects.
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: conviction
+                      issued_date:
+                        type: string
+                        example: '2011-11-14'
+                      conviction_date:
+                        type: string
+                        example: '2010-04-11'
+                      description:
+                        type: string
+                        example: speeding 15-19 mph
+                      points:
+                        type: integer
+                        example: 0
+                      city:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      county:
+                        type: string
+                        example: SANTA CLARA
+                      state:
+                        type: string
+                        example: California
+                      ticket_number:
+                        type: string
+                        example: 2D55555
+                      disposition:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      category:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      court_name:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      acd_code:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      state_code:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      docket:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                accidents:
+                  type: array
+                  description: Array of Accident objects.
+                  items:
+                    type: object
+                    properties:
+                      accident_date:
+                        type: string
+                        example: '2009-04-12'
+                      description:
+                        type: string
+                        example: property damage
+                      city:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      county:
+                        type: string
+                        example: SAN FRANCISCO
+                      state:
+                        type:
+                        - string
+                        - 'null'
+                        description: 'State.
+
+                          Format: `ISO 3166-2:US`
+
+                          '
+                        example: null
+                      order_number:
+                        type: string
+                        example: 33-435932
+                      points:
+                        example: null
+                      vehicle_speed:
+                        type:
+                        - number
+                        - 'null'
+                        example: null
+                      reinstatement_date:
+                        type:
+                        - string
+                        - 'null'
+                        format: date
+                        example: null
+                      action_taken:
+                        type: string
+                        example: police report filed
+                      ticket_number:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      enforcing_agency:
+                        type: string
+                        example: San Francisco PD
+                      jurisdiction:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      severity:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      violation_number:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      license_plate:
+                        type: string
+                        example: 6UM6938
+                      fine_amount:
+                        type:
+                        - number
+                        - 'null'
+                        example: null
+                      state_code:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      acd_code:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      injury_accident:
+                        type: boolean
+                        default: false
+                      fatality_accident:
+                        type: boolean
+                        default: false
+                      fatality_count:
+                        type: integer
+                        example: 0
+                      injury_count:
+                        type: integer
+                        example: 0
+                      vehicles_involved_count:
+                        type: integer
+                        example: 3
+                      report_number:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      policy_number:
+                        type:
+                        - string
+                        - 'null'
+                        example: null
+                      group:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - unspecified
+                        - property damage
+                        - personal injury
+                        - fatality
+                        description: Displays category type for an accident.
+                        example: property damage
+                      note:
+                        type: string
+                        description: A note that is added if an accident appears on a candidate’s MVR.
+                        example: Unless fault is indicated, only the fact of an accident is being reported.
+                suspensions:
+                  type: array
+                  description: Array of Suspension objects.
+                  items:
+                    type: object
+                    properties:
+                      description:
+                        type: string
+                        example: ACCUMULATION OF CONVICTIONS OR POINTS
+                      start_date:
+                        type: string
+                        example: '2011-11-14'
+                      end_date:
+                        type: string
+                        example: '2012-03-21'
+                      state:
+                        type: string
+                        example: CA
+                endorsements:
+                  type: array
+                  description: Array of Endorsements
+                  items:
+                    type: string
+                medical_certificates:
+                  type: array
+                  description: Array of Medical Certificate objects. Only available for commercial MVR.
+                  items:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: CERTIFIED
+                      issued_date:
+                        type: string
+                        example: '2011-11-14'
+                      expiration_date:
+                        type: string
+                        example: '2012-03-21'
+                      self_certification:
+                        type: string
+                        example: NON-EXCEPTED INTERSTATE
+                      examiner:
+                        type: object
+                        properties:
+                          full_name:
+                            type: string
+                            example: Amy Welch Taylor Jr.
+                          license_number:
+                            type: string
+                            example: '981736076'
+                          license_state:
+                            type: string
+                            example: CT
+                          registration_number:
+                            type: string
+                            example: '11111111111'
+          uri:
+            example: /v1/motor_vehicle_reports/539fd88c101897f7cd000007
+          status:
+            allOf:
+            - $ref: '#/components/schemas/ScreeningStatus'
+            - example: complete
+          result:
+            allOf:
+            - $ref: '#/components/schemas/ScreeningResult'
+            - example: consider
+          turnaround_time:
+            example: 90
+          full_name:
+            type: string
+            description: Candidate’s full name, as listed with the DMV.
+            example: John Alfred Smith
+          license_number:
+            type: string
+            description: Candidate’s driver’s license number.
+            example: F2111132
+          license_state:
+            type: string
+            description: Candidate’s driver’s license state of issue.
+            example: CA
+          previous_license_number:
+            type: string
+            description: Candidate’s previous driver’s license number.
+            example: F2111132
+          previous_license_state:
+            type: string
+            description: Candidate’s previous driver’s license state of issue.
+            example: CA
+          license_status:
+            type: string
+            description: Status of the license as returned by the DMV if found, or status indicating the license is not found or not available.
+            example: valid, expired, not_found
+          license_type:
+            type: string
+            description: Type of the license as returned by the DMV.
+            example: personal, commercial, or non-commercial
+          license_class:
+            type: string
+            description: Class of the license as returned by the DMV.
+            example: C
+          dob:
+            type: string
+            format: date
+            description: Date of Birth of the individual the license was issued to as returned by the DMV.
+            example: '1980-01-01'
+          expiration_date:
+            type: string
+            format: date
+            description: Date on which the license expires.
+            example: '2016-07-24'
+          covid_extension:
+            type: boolean
+            description: Returns `true` when the MVR report has been automatically adjusted for DMV license expiration date extension. This field will be returned in the response data for impacted reports only.
+          issued_date:
+            type: string
+            format: date
+            description: Date on which the license was issued.
+            example: '2006-12-03'
+          first_issued_date:
+            type: string
+            format: date
+            description: Date on which the license was first issued. Used to determine if the candidate meets minimum experience requirements.
+            example: '2000-01-14'
+          inferred_issued_date:
+            type:
+            - string
+            - 'null'
+            format: date
+            description: Checkr-inferred license issued date based on data returned by the DMV.
+            example: null
+          restrictions:
+            type: array
+            description: Array of restrictions, as returned by the individual states' DMV.
+            items:
+              type: string
+          custom_rules:
+            type: object
+            description: Object with custom rules applied to generate this MVR.
+            properties:
+              rule_key_1:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    example: rule description 1
+                  satisfied:
+                    type: boolean
+                    example: true
+              rule_key_2:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    example: rule description 2
+                  satisfied:
+                    type: boolean
+                    example: false
+          not_found:
+            type: boolean
+            description: No license found by the DMV matching the candidate's license number/state and PII.
+            default: false
+          experience_failed:
+            type: boolean
+            description: If true, the MVR has an unsatisfied StrictExperience rule.
+            default: false
+          type:
+            type: string
+            description: MVR type.
+            example: standard
+          privilege_to_drive:
+            type: string
+            enum:
+            - valid
+            - invalid
+            description: Displays the validity of the license, as determined by the returned `license_status`, `license_class`, and `expiration_date`. If one or more of these three fields indicates that the license is not valid, `privilege_to_drive` is `invalid`.
+            example: valid
+          accidents:
+            type: array
+            description: Array of Accident objects.
+            items:
+              type: object
+              properties:
+                accident_date:
+                  type: string
+                  example: '2009-04-12'
+                description:
+                  type: string
+                  example: property damage
+                city:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                county:
+                  type: string
+                  example: SAN FRANCISCO
+                state:
+                  type:
+                  - string
+                  - 'null'
+                  description: 'State.
+
+                    Format: `ISO 3166-2:US`
+
+                    '
+                  example: null
+                order_number:
+                  type: string
+                  example: 33-435932
+                points:
+                  example: null
+                vehicle_speed:
+                  type:
+                  - number
+                  - 'null'
+                  example: null
+                reinstatement_date:
+                  type:
+                  - string
+                  - 'null'
+                  format: date
+                  example: null
+                action_taken:
+                  type: string
+                  example: police report filed
+                ticket_number:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                enforcing_agency:
+                  type: string
+                  example: San Francisco PD
+                jurisdiction:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                severity:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                violation_number:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                license_plate:
+                  type: string
+                  example: 6UM6938
+                fine_amount:
+                  type:
+                  - number
+                  - 'null'
+                  example: null
+                state_code:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                acd_code:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                injury_accident:
+                  type: boolean
+                  default: false
+                fatality_accident:
+                  type: boolean
+                  default: false
+                fatality_count:
+                  type: integer
+                  example: 0
+                injury_count:
+                  type: integer
+                  example: 0
+                vehicles_involved_count:
+                  type: integer
+                  example: 3
+                report_number:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                policy_number:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                group:
+                  type:
+                  - string
+                  - 'null'
+                  enum:
+                  - unspecified
+                  - property damage
+                  - personal injury
+                  - fatality
+                  description: Displays category type for an accident.
+                  example: property damage
+                note:
+                  type: string
+                  description: A note that is added if an accident appears on a candidate’s MVR.
+                  example: Unless fault is indicated, only the fact of an accident is being reported.
+          violations:
+            type: array
+            description: Array of Violation objects.
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: conviction
+                issued_date:
+                  type: string
+                  example: '2011-11-14'
+                conviction_date:
+                  type: string
+                  example: '2010-04-11'
+                description:
+                  type: string
+                  example: speeding 15-19 mph
+                points:
+                  type: integer
+                  example: 0
+                city:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                county:
+                  type: string
+                  example: SANTA CLARA
+                state:
+                  type: string
+                  example: California
+                ticket_number:
+                  type: string
+                  example: 2D55555
+                disposition:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                category:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                court_name:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                acd_code:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                state_code:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+                docket:
+                  type:
+                  - string
+                  - 'null'
+                  example: null
+          suspensions:
+            type: array
+            description: Array of Suspension objects.
+            items:
+              type: object
+              properties:
+                description:
+                  type: string
+                  example: ACCUMULATION OF CONVICTIONS OR POINTS
+                start_date:
+                  type: string
+                  example: '2011-11-14'
+                end_date:
+                  type: string
+                  example: '2012-03-21'
+                state:
+                  type: string
+                  example: CA
+  responses:
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+    MotorVehicleReport:
+      description: Motor Vehicle Report details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MotorVehicleReport'
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

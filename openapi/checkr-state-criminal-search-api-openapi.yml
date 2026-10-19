@@ -1,0 +1,591 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Checkr.com API Docs State Criminal Search API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
+  contact:
+    name: Checkr
+    email: clients@checkr.com
+    url: https://checkr.com
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
+servers:
+- url: https://api.checkr.com/v1
+  description: Main server
+tags:
+- name: State Criminal Search
+  description: 'The State Criminal Search returns criminal records from a selected state’s database,
+
+    the content of which varies by state. Some states include records reported from all counties;
+
+    some include records only from a few. This search should be used in conjunction with
+
+    a County Criminal Search, and not as a replacement for the more complete records returned
+
+    from the County Search.
+
+
+    For more information, please see
+
+    State Criminal Search
+
+    in the Checkr Help Center.'
+paths:
+  /state_criminal_searches/{id}:
+    parameters:
+    - name: id
+      in: path
+      description: ID of the State Criminal Search to retrieve.
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - State Criminal Search
+      summary: Retrieve an existing State Criminal Search
+      description: Returns an existing State Criminal Search with the input ID.
+      operationId: getStateCriminalSearch
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/StateCriminalSearch'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/state_criminal_searches/539fdcf335644a0ef4000001 \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+components:
+  schemas:
+    ResourceURI:
+      type: string
+      description: URI of the resource.
+      readOnly: true
+    AssessmentAttribute:
+      type:
+      - string
+      - 'null'
+      description: 'The assessment for this screening. This field will be non-null only for Assess-enabled accounts. For accounts with Assess enabled, it will be null for reports completed before Assess was enabled, and null for a short time after report completion while the account''s Assess rules are applied.
+
+        '
+      enum:
+      - eligible
+      - review
+      - escalated
+      example: eligible
+    ScreeningResult:
+      type:
+      - string
+      - 'null'
+      description: Outcome of the screening.
+      enum:
+      - clear
+      - consider
+    ScreeningStatus:
+      type: string
+      description: Status of the screening.
+      enum:
+      - pending
+      - complete
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You do not have permission to access the requested resource
+    ScreeningPointer:
+      type: string
+      description: Pointer description associated with the screening.
+      enum:
+      - Arrest Search
+      - Candidate Zip Code
+      - Candidate Address
+      - <county>, <state> County Search
+      - National Search
+      - <state> State Search
+      - Account Policy
+      - <education address> Education History
+      - <employment address> Employment History
+      - Report Geo
+      - MVR Address
+      - Package Policy
+      - Candidate Self Disclosure
+      - SSN Trace Address History
+      - Checkr Initiated
+    ResourceId:
+      type: string
+      example: e44aa283528e6fde7d542194
+      readOnly: true
+      description: ID of the resource.
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+          pattern: '[a-zA-Z0-9 -''.,]*'
+          description: Street address.
+          example: 123 Main St.
+        unit:
+          type: string
+          pattern: '[a-zA-Z0-9 -''.,]*'
+          description: House, building or apartment number.
+          example: 2000
+        city:
+          type: string
+          pattern: '[a-zA-Z0-9 -''.,]*'
+          description: City.
+          example: San Francisco
+        state:
+          type: string
+          description: State.
+          example: CA
+        zipcode:
+          type: string
+          description: 5-digit zip code.
+          example: '90401'
+        country:
+          type: string
+          description: 'Country.
+
+
+            Format: `ISO 3166-1 alpha-2`
+
+            '
+          example: US
+    ScreeningsGenericPayload:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ResourceId'
+        object:
+          type: string
+        uri:
+          allOf:
+          - $ref: '#/components/schemas/ResourceURI'
+        status:
+          type: string
+          description: 'Status of the screening.
+
+            '
+          enum:
+          - pending
+          - complete
+          - canceled
+          - suspended
+          example: complete
+        result:
+          type:
+          - string
+          - 'null'
+          description: Result of the screening.
+          enum:
+          - clear
+          - consider
+          example: clear
+        assessment:
+          allOf:
+          - $ref: '#/components/schemas/AssessmentAttribute'
+        created_at:
+          type: string
+          description: Time at which the screening was created.
+          format: date-time
+          example: '2014-01-18T12:34:00Z'
+        completed_at:
+          type: string
+          description: Time at which the screening was completed.
+          format: date-time
+          example: '2014-01-18T12:35:30Z'
+        turnaround_time:
+          type: integer
+          description: Number of seconds the screening took to complete, calculated from `created_at` to `completed_at`.
+        cancellation_reason:
+          type: string
+          description: See [cancellation reasons](#section/Reference/Cancellation-Reasons) section for possible values.
+          example: complete_now_customer_requested
+        cancellation_reason_description:
+          type: string
+          description: See [cancellation reasons](#section/Reference/Cancellation-Reasons) section for possible values.
+          example: Customer requested Complete Now prior to screening completion
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
+    Record:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ResourceId'
+        case_number:
+          type: string
+          example: 24323-DA
+        file_date:
+          type:
+          - string
+          - 'null'
+          format: date
+          example: null
+        arresting_agency:
+          type: string
+          example: DEA Boston Division
+        court_jurisdiction:
+          type:
+          - string
+          - 'null'
+          example: null
+        court_of_record:
+          type:
+          - string
+          - 'null'
+          example: null
+        full_name:
+          type: string
+          example: John Alfred Smith
+        dob:
+          type: string
+          example: '1970-01-22'
+        yob:
+          type: integer
+          example: 1970
+        county:
+          type: string
+          example: SUFFOLK
+        state:
+          type: string
+          example: MA
+        address:
+          $ref: '#/components/schemas/Address'
+    StateCriminalSearch:
+      allOf:
+      - $ref: '#/components/schemas/ScreeningsGenericPayload'
+      - type: object
+        properties:
+          object:
+            enum:
+            - state_criminal_search
+          uri:
+            example: /v1/state_criminal_searches/539fdcf335644a0ef4000001
+          status:
+            allOf:
+            - $ref: '#/components/schemas/ScreeningStatus'
+            - example: complete
+          result:
+            allOf:
+            - $ref: '#/components/schemas/ScreeningResult'
+            - example: consider
+          created_at:
+            type: string
+            format: date-time
+            example: '2014-01-18T12:34:00Z'
+          completed_at:
+            type: string
+            format: date-time
+            example: '2014-01-18T12:35:30Z'
+          turnaround_time:
+            example: 100800
+          estimated_completion_time:
+            type: string
+            format: date-time
+            description: Estimated time of completion for the Screening. This estimate will be based on the maximum turnaround time across all states searched.
+            example: '2014-01-18T12:34:00Z'
+          state:
+            type: string
+            description: State searched for these records.
+            example: CA
+          records:
+            type: array
+            description: Array of CriminalRecord objects.
+            items:
+              allOf:
+              - $ref: '#/components/schemas/Record'
+              - type: object
+                properties:
+                  file_date:
+                    example: '2010-02-18'
+                  arresting_agency:
+                    example: San Francisco Police Department
+                  court_jurisdiction:
+                    example: San Francisco
+                  charges:
+                    type: array
+                    items:
+                      allOf:
+                      - $ref: '#/components/schemas/Charge'
+                      - type: object
+                        properties:
+                          charge:
+                            example: Sell Cocaine
+                          defendant:
+                            example: John Alfred Smith
+                          arrest_date:
+                            example: '2011-04-22'
+                          sentence_date:
+                            example: '2011-06-02'
+          filtered_by_positive_adjudication_records:
+            type: array
+            description: Array of CriminalRecord objects filtered out by your account’s Positive Adjudication Matrix or by your account’s Assess configuration.
+            items:
+              allOf:
+              - $ref: '#/components/schemas/Record'
+          screening_pointers:
+            type: array
+            description: Array of `screening_pointers` associated with the screening.
+            items:
+              allOf:
+              - $ref: '#/components/schemas/ScreeningPointer'
+              - type: string
+                example:
+                - Denver, CO County Search
+                - Kentucky State Search
+                - Widgets-R-Us Employment Address
+                - Harvard University Education Address
+    Charge:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ResourceId'
+        charge:
+          type: string
+          example: Fraud
+        category:
+          type: string
+          description: 'The Checkr Assess category assigned to this criminal charge. This field will be included only if Checkr Assess is enabled for your account.
+
+            '
+          enum:
+          - criminal_intent
+          - drugs_and_alcohol
+          - fraud_and_deception
+          - homicide
+          - security
+          - sexual
+          - statutory
+          - theft_and_property
+          - unclassified
+          - vehicles_and_traffic
+          - violence
+          example: fraud_and_deception
+        charge_type:
+          type:
+          - string
+          - 'null'
+          example: null
+        charge_id:
+          type:
+          - string
+          - 'null'
+          example: null
+        classification:
+          type: string
+          example: Felony
+        deposition:
+          type:
+          - string
+          - 'null'
+          example: null
+        defendant:
+          type:
+          - string
+          - 'null'
+          example: null
+        plaintiff:
+          type:
+          - string
+          - 'null'
+          example: null
+        sentence:
+          type: string
+          example: 'Active Punishment Minimum: 10Y'
+        disposition:
+          type: string
+          example: Guilty
+        probation_status:
+          type:
+          - string
+          - 'null'
+          example: null
+        offense_date:
+          type: string
+          format: date
+          example: '2011-04-22'
+        deposition_date:
+          type: string
+          format: date
+          example: '2014-05-27'
+        arrest_date:
+          type:
+          - string
+          - 'null'
+          format: date
+          example: null
+        charge_date:
+          type:
+          - string
+          - 'null'
+          format: date
+          example: null
+        sentence_date:
+          type:
+          - string
+          - 'null'
+          format: date
+          example: null
+        disposition_date:
+          type: string
+          format: date
+          example: '2011-06-02'
+        conviction_date:
+          type:
+          - string
+          - 'null'
+          format: date
+          example: '2011-06-02'
+        release_date:
+          type:
+          - string
+          - 'null'
+          format: date
+          example: '2011-06-02'
+        next_court_date:
+          type:
+          - string
+          - 'null'
+          format: date
+          example: '2011-06-02'
+        court:
+          type: string
+          example: Circuit & District Court
+        plea:
+          type: string
+          example: null
+        assessment:
+          type: string
+          example: null
+        prison_time:
+          type: string
+          description: Sentenced to prison time.
+          example: 4 Year(s)
+        jail_time:
+          type: string
+          description: Sentenced to jail time.
+          example: 15 Day(s)
+        probation_time:
+          type: string
+          description: Sentenced to probation time.
+          example: null
+        restitution:
+          type: string
+          description: Sentenced to restitution.
+          example: '220.00'
+  responses:
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    StateCriminalSearch:
+      description: State Criminal Search details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StateCriminalSearch'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

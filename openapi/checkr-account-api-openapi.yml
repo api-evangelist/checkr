@@ -1,96 +1,574 @@
 openapi: 3.2.0
 info:
-  title: Checkr Account API
-  description: The Checkr API is a RESTful interface for running compliant employment background checks.
-  version: '1.0'
+  version: v1
+  title: Checkr.com API Docs Account API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
   contact:
     name: Checkr
+    email: clients@checkr.com
     url: https://checkr.com
-  termsOfService: https://checkr.com/terms-of-service
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
 servers:
 - url: https://api.checkr.com/v1
-  description: Production
-- url: https://api.checkr-staging.com/v1
-  description: Staging
-security:
-- basicAuth: []
+  description: Main server
 tags:
 - name: Account
-  description: Account and user metadata.
+  description: 'The Account resource includes account information and settings. Account information can be
+
+    updated from the Dashboard. Some Account settings, like `available_screenings`, can be updated
+
+    only by Checkr. Contact our Customer Success team for more information.'
 paths:
   /account:
     get:
-      operationId: getAccount
       tags:
       - Account
-      summary: Retrieve account details
+      summary: Retrieve authenticated account details
+      description: Returns Account details for the authenticated account.
+      operationId: account
+      security:
+      - basic_auth: []
       responses:
         '200':
-          description: The account.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Account'
-  /users:
-    get:
-      operationId: listUsers
+          $ref: '#/components/responses/Account'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/account \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:"
+  /accounts:
+    post:
       tags:
       - Account
-      summary: List users
+      summary: Create a new Account
+      description: 'Creates a customer Account associated with your Partner Application.
+
+        Only Checkr Partners are authorized to use this endpoint.'
+      operationId: createAccount
+      security:
+      - basic_auth: []
+      requestBody:
+        $ref: '#/components/requestBodies/AccountCreate'
       responses:
-        '200':
-          description: A list of users on the account.
-          content:
-            application/json:
-              schema:
+        '201':
+          $ref: '#/components/responses/Account'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/accounts \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9: \\\n    -d client_id=56269e3411a549fd07ed8d92 \\\n    -d name=Acme+Corporation \\\n    -d default_compliance_state=CA \\\n    -d purpose=employment \\\n    -d user[full_name]=Jeanette+Hughes \\\n    -d user[email]=user@example.com \\\n    -d company[dba_name]=Acme \\\n    -d company[industry]=72 \\\n    -d company[street]=123+Main+Street \\\n    -d company[city]=San Francisco \\\n    -d company[state]=CA \\\n    -d company[zipcode]=94107 \\\n    -d company[tax_id]=123456789 \\\n    -d company[incorporation_state]=CA \\\n    -d company[incorporation_type]=association \\\n    -d company[phone]=206-555-0100 \\\n    -d company[website]=https%3A%2F%2Fwww.example.com\n"
+components:
+  requestBodies:
+    AccountCreate:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - client_id
+            - name
+            - purpose
+            - user
+            - company
+            properties:
+              client_id:
+                type: string
+                description: Client credentials provided as part of your Partner Application.
+                example: 56269e3411a549fd07ed8d92
+              oauth_authorize:
+                type: boolean
+                description: Allows skipping of the /oauth/authorize call
+                default: false
+              name:
+                type: string
+                description: Name of Account displayed in the Dashboard.
+                example: Acme Corporation
+              default_compliance_city:
+                type:
+                - string
+                - 'null'
+                description: 'Fallback compliance city if candidate location is not provided.
+
+                  '
+                example: San Francisco
+              default_compliance_state:
+                type:
+                - string
+                - 'null'
+                description: 'Fallback compliance state if candidate location is not provided. Format: `ISO 3166-2:US`.
+
+                  '
+                example: CA
+              purpose:
+                type: string
+                description: 'Permissible purpose to run background checks. Determines which background checks the Account is credentialed for.
+
+                  '
+                enum:
+                - employment
+                - business
+                - insurance
+                - tenant
+                example: employment
+              user:
                 type: object
                 properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/User'
-components:
+                  full_name:
+                    type: string
+                    description: Full name of the initial Admin user for the Account.
+                    example: Jeanette Hughes
+                  email:
+                    type: string
+                    description: Email of the initial Admin user for the Account.
+                    example: user@example.com
+              company:
+                type: object
+                properties:
+                  city:
+                    type: string
+                    description: City where company is headquartered.
+                    example: San Francisco
+                  dba_name:
+                    type:
+                    - string
+                    - 'null'
+                    description: Name of Company displayed in Checkr emails and branded web pages.
+                    example: Acme
+                  industry:
+                    type:
+                    - string
+                    - 'null'
+                    description: 'Industry that company operates in. Format: `NAICS 2017 Code`.
+
+                      '
+                    example: '72'
+                  state:
+                    type: string
+                    description: 'State where company is headquartered. Format: `ISO 3166-2:US`.
+
+                      '
+                    example: CA
+                  street:
+                    type: string
+                    description: Street address where company is headquartered.
+                    example: 123 Main Street
+                  tax_id:
+                    type: string
+                    description: Company Tax ID number.
+                    example: '123456789'
+                  zipcode:
+                    type: string
+                    description: Zipcode where company is headquartered.
+                    example: '94107'
+                  incorporation_state:
+                    type:
+                    - string
+                    - 'null'
+                    description: 'State where company is incorporated. Format: `ISO 3166-2:US`.
+
+                      '
+                    example: CA
+                  incorporation_type:
+                    type: string
+                    description: Type of incorporation.
+                    enum:
+                    - association
+                    - co-ownership
+                    - corporation
+                    - joint-venture
+                    - limited-partnership
+                    - llc
+                    - llp
+                    - non-profit
+                    - partnership
+                    - s-corporation
+                    - sp
+                    - trusteeship
+                  phone:
+                    type:
+                    - string
+                    - 'null'
+                    description: Company phone number.
+                    example: 206-555-0100
+                  website:
+                    type:
+                    - string
+                    - 'null'
+                    description: Company website.
+                    example: https://www.example.com
+      required: true
   schemas:
+    ResourceURI:
+      type: string
+      description: URI of the resource.
+      readOnly: true
     Account:
       type: object
       properties:
         id:
           type: string
+          description: "The ID of the Account.\n\n<b>Note: </b>The returned Account ID is dependent on the API token used to make the call.\n  * If an account-level API token is used, the ID of the account associated with the Live API Token will be returned.\n  * If a partner OAuth token is used, the ID of the account (or customer's account) connected to the OAuth application will be returned.\n"
         object:
           type: string
-          example: account
-        name:
-          type: string
-        uri_name:
-          type: string
+          enum:
+          - account
+        account_deauthorization:
+          type: object
+          description: 'Account deauthorization details if account has been deauthorized.
+
+            '
+          properties:
+            reason:
+              type: string
+              description: Reason for account deauthorization.
+              example: nonpayment
         adverse_action_email:
           type: string
-        support_email:
-          type: string
-        billing_email:
-          type: string
+          description: 'Email used to send pre- and post- Adverse Action notices on behalf of the Account to candidates.
+
+            This address will also receive undeliverable notices if an Adverse Action notice isn''t deliverable to a candidate.
+
+            '
+          format: email
+          example: john.doe@example.com
         api_authorized:
           type: boolean
+          description: 'Determines whether Account is authorized to use the API to order background checks.
+
+            '
+          default: false
+          example: true
         authorized:
           type: boolean
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-        object:
-          type: string
-          example: user
-        name:
-          type: string
-        email:
-          type: string
-        roles:
+          description: 'Determines whether Account is credentialed to order background checks.
+
+            '
+          default: false
+          example: true
+        available_screenings:
           type: array
+          description: 'List of screening types available for the Account.
+
+            '
           items:
             type: string
+            pattern: '[a-z_]+'
+          example:
+          - county_civil_search
+          - county_criminal_search
+          - municipal_criminal_search
+          - education_verification
+          - employment_verification
+          - federal_civil_search
+          - federal_criminal_search
+          - motor_vehicle_report
+          - national_criminal_search
+          - sex_offender_search
+          - ssn_trace
+          - state_criminal_search
+          - international_adverse_media_search
+          - international_education_verification
+        billing_email:
+          type: string
+          description: 'Email that is used for Checkr to contact you about invoices and other billing communication.
+
+            '
+          format: email
+          example: john.doe@example.com
+        company:
+          type: object
+          description: Company details
+          properties:
+            name:
+              type: string
+              description: Registered company name.
+              example: Acme Corporation
+            dba_name:
+              type: string
+              description: 'Doing-Business-As name of Company displayed in Checkr emails and branded web pages.
+
+                '
+              example: ACME
+            street:
+              type: string
+              description: Street address where company is headquartered.
+              example: 123 Main St
+            city:
+              type: string
+              description: City where company is headquartered.
+              example: Wilmington
+            state:
+              type: string
+              description: 'State where company is headquartered. Format: `ISO 3166-2:US`.
+
+                '
+              example: DE
+            zipcode:
+              type: string
+              description: Zipcode where company is headquartered.
+              example: '19801'
+            phone:
+              type: string
+              description: Company phone number.
+              example: 206-555-0100
+            website:
+              type: string
+              description: Company's official corporate website.
+              example: https://example.com
+            industry:
+              type: string
+              description: Industry that company operates in, as NAICS code (see https://www.naics.com)
+              pattern: '[0-9-]+'
+              example: 52-59
+            incorporation_state:
+              type: string
+              description: 'Incorporation state. Format: `ISO 3166-2:US`.
+
+                '
+              example: DE
+            incorporation_type:
+              type: string
+              description: Type of incorporation.
+              example: llc
+              enum:
+              - association
+              - co-ownership
+              - corporation
+              - joint-venture
+              - limited-partnership
+              - llc
+              - llp
+              - non-profit
+              - partnership
+              - s-corporation
+              - sp
+              - trusteeship
+            tax_id:
+              type: string
+              description: Company Tax ID number.
+              example: '123456789'
+              writeOnly: true
+        compliance_contact_email:
+          type: string
+          description: 'Email for the main point of contact on your side to communicate with Checkr about
+
+            compliance issues or updates. This is also where we''ll send you the results of candidate
+
+            disputes (for example, if we changed the information on a report).
+
+            '
+          format: email
+          example: compliance.team@example.com
+        created_at:
+          type: string
+          description: Time at which the Account was created.
+          format: date-time
+          example: '2020-01-07T00:26:49Z'
+        default_compliance_city:
+          type:
+          - string
+          - 'null'
+          description: 'Fallback compliance city if candidate location is not provided.
+
+            '
+          example: San Francisco
+        default_compliance_state:
+          type:
+          - string
+          - 'null'
+          description: 'Fallback compliance state if candidate location is not provided. Format: `ISO 3166-2:US`.
+
+            '
+          example: CA
+        geos_required:
+          type: boolean
+          description: Determines whether a Geo must be provided to order a Report.
+          default: false
+        name:
+          type: string
+          description: Name of Account displayed in the Dashboard.
+          example: Acme Corp
+        purpose:
+          type: string
+          description: 'Permissible purpose to run background checks.
+
+            Determines which background checks the Account is credentialed for.
+
+            '
+          default: employment
+          enum:
+          - employment
+          - business
+          - insurance
+          - tenant
+        segmentation_enabled:
+          type: boolean
+          description: Determines whether Hierarchy/Nodes is enabled on the Account.
+          default: true
+        support_email:
+          type:
+          - string
+          - 'null'
+          description: 'Email address used for candidates to contact you if they need to supply evidence
+
+            of rehabilitation or other context during the Adverse Action process.
+
+            '
+          format: email
+          example: support@example.com
+        support_phone:
+          type:
+          - string
+          - 'null'
+          description: 'Phone number used for candidates to contact you if they need to supply evidence of
+
+            rehabilitation or other context during the Adverse Action process.
+
+            '
+          example: 206-555-0188
+        technical_contact_email:
+          type: string
+          description: 'The main point of contact on your side to communicate with Checkr about technical issues or
+
+            updates.
+
+            '
+          format: email
+          example: jane.smith@example.com
+        uri:
+          allOf:
+          - $ref: '#/components/schemas/ResourceURI'
+          example: /v1/accounts/e44aa283528e6fde7d542194
+        uri_name:
+          type: string
+          example: acme-corp
+          pattern: '[a-z0-9-_]+'
+          description: 'Unique slug referencing the Account. This appears in some Account-specific URL paths.
+
+            '
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You do not have permission to access the requested resource
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
+  responses:
+    Account:
+      description: Account details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Account'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
   securitySchemes:
-    basicAuth:
+    basic_auth:
       type: http
       scheme: basic
-      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

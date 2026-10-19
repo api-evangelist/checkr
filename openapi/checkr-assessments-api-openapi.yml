@@ -1,0 +1,314 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Checkr.com API Docs Assessments API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
+  contact:
+    name: Checkr
+    email: clients@checkr.com
+    url: https://checkr.com
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
+servers:
+- url: https://api.checkr.com/v1
+  description: Main server
+tags:
+- name: Assessments
+  description: 'Use this endpoint to return the Assessments for Reports.
+
+
+    Note: Listen to the `report.updated` webhook to determine when an Assessment has been applied to a report.'
+paths:
+  /reports/{report_id}/assessments:
+    get:
+      tags:
+      - Assessments
+      summary: List existing Assessments
+      description: Returns Assessments for an existing Report.
+      operationId: assessmentsByReport
+      security:
+      - basic_auth: []
+      parameters:
+      - name: report_id
+        in: path
+        required: true
+        description: The ID of the associated Report.
+        schema:
+          type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/AssessmentsList'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/reports/b861a56db1b1b89692dd6118/assessments \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+components:
+  schemas:
+    BadRequestError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Dl number 'F211165' does not match the license number format in CA
+    Ruleset:
+      type: object
+      description: 'Information about a Ruleset.
+
+        '
+      properties:
+        id:
+          $ref: '#/components/schemas/ResourceId'
+        name:
+          type: string
+          description: The name of the Ruleset
+          example: Ruleset for employees in Arizona
+        version:
+          $ref: '#/components/schemas/RulesetVersion'
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You do not have permission to access the requested resource
+    Assessment:
+      type: object
+      description: 'Information about an Assessment of the Report.
+
+        '
+      properties:
+        value:
+          $ref: '#/components/schemas/AssessmentValue'
+        created_at:
+          type: string
+          description: 'Time at which the Assessment was created.
+
+
+            <b>Note: </b>This timestame is accurate to the millisecond.
+
+            '
+          format: date-time
+          example: 2014-01-18T12:34:015Z
+        ruleset:
+          $ref: '#/components/schemas/Ruleset'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssessmentResult'
+    Rule:
+      type: object
+      description: 'Description of the applied Rule, as defined for your account.
+
+        '
+      properties:
+        name:
+          type: string
+          description: The name of the Rule, as defined for your account.
+          example: Allow dismissed charges rule
+        type:
+          type: string
+          description: The type of the Rule.
+          enum:
+          - count
+          - custom
+          - default
+          - lookback_period
+          - fairness_and_compliance
+          - undefined
+          example: lookback_period
+    RulesetVersion:
+      type: object
+      description: "Information about a RulesetVersion. RulesetVersions are complete, distinct \nversions of Rulesets. New RulesetVersions are generated each time a Ruleset \nis published. The most recent 'live' RulesetVersion is used (by default) when \nassessing new Reports.\n\nRulesetVersions also include metadata about the creator and publisher of the \nversion, and timestamps for these events.\n"
+      properties:
+        number:
+          type: integer
+          description: The version number
+          example: 5
+    ResourceId:
+      type: string
+      example: e44aa283528e6fde7d542194
+      readOnly: true
+      description: ID of the resource.
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
+    AssessedObject:
+      type: object
+      description: 'TODO
+
+        '
+      properties:
+        object_id:
+          $ref: '#/components/schemas/ResourceId'
+        object_type:
+          type: string
+          enum:
+          - child_abuse_search
+          - criminal_charge
+          - drug_screening
+          - drug_screening_v2
+          - employment_verification
+          - education_verification
+          - global_watchlist_charge
+          - motor_vehicle_report
+          - occupational_health_screening
+          - sex_offender_search
+          example: criminal_charge
+    AssessmentResult:
+      type: object
+      description: 'The result of assessing one or more items on the report.
+
+        '
+      properties:
+        value:
+          $ref: '#/components/schemas/AssessmentValue'
+        assessed_objects:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssessedObject'
+        rule:
+          $ref: '#/components/schemas/Rule'
+    AssessmentValue:
+      type: string
+      example: eligible
+      enum:
+      - eligible
+      - review
+      - escalated
+  responses:
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+    AssessmentsList:
+      description: List of Assessments
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Assessment'
+              object:
+                type: string
+                enum:
+                - list
+              count:
+                type: integer
+                description: 'The total number of assessments for the specified Report.
+
+                  '
+                example: 1
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

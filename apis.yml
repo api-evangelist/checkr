@@ -188,24 +188,6 @@ apis:
     url: collections/checkr.postman_collection.json
   - type: OpenCollection
     url: collections/checkr.opencollection.json
-- aid: checkr:checkr-nodes-and-hierarchy-api
-  name: Checkr Nodes and Hierarchy API
-  description: Tree of nodes modeling account/organization structure.
-  humanURL: https://docs.checkr.com/
-  baseURL: https://api.checkr.com/v1
-  tags:
-  - Nodes and Hierarchy
-  properties:
-  - type: OpenAPI
-    url: openapi/checkr-nodes-and-hierarchy-api-openapi.yml
-  - type: Documentation
-    url: https://docs.checkr.com/
-  - type: APIReference
-    url: https://docs.checkr.com/
-  - type: PostmanCollection
-    url: collections/checkr.postman_collection.json
-  - type: OpenCollection
-    url: collections/checkr.opencollection.json
 - aid: checkr:checkr-packages-api
   name: Checkr Packages API
   description: Bundles of screenings and the programs that group them.
@@ -234,24 +216,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/checkr-reports-api-openapi.yml
-  - type: Documentation
-    url: https://docs.checkr.com/
-  - type: APIReference
-    url: https://docs.checkr.com/
-  - type: PostmanCollection
-    url: collections/checkr.postman_collection.json
-  - type: OpenCollection
-    url: collections/checkr.opencollection.json
-- aid: checkr:checkr-screenings-api
-  name: Checkr Screenings API
-  description: Individual screening components nested under a report.
-  humanURL: https://docs.checkr.com/
-  baseURL: https://api.checkr.com/v1
-  tags:
-  - Screenings
-  properties:
-  - type: OpenAPI
-    url: openapi/checkr-screenings-api-openapi.yml
   - type: Documentation
     url: https://docs.checkr.com/
   - type: APIReference
@@ -312,6 +276,1177 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/checkr-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-adverse-items-api
+  name: Checkr Adverse Items API
+  description: >-
+    Adverse Items are items selected from a returned report that may be used
+
+    to initiate Adverse Action for a Candidate.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Adverse Items
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-adverse-items-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-assessments-api
+  name: Checkr Assessments API
+  description: >-
+    Use this endpoint to return the Assessments for Reports.
+
+
+    <b>Note: </b>Listen to the `report.updated` webhook to determine when an Assessment has been applied
+    to a report.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Assessments
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-assessments-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-candidate-postal-address-api
+  name: Checkr Candidate Postal Address API
+  description: >-
+    The candidate postal address is the address Checkr will use to send postal mail to the candidate.
+    Each candidate can be associated with only one postal address.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Candidate Postal Address
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-candidate-postal-address-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-candidate-stories-api
+  name: Checkr Candidate Stories API
+  description: >-
+    Candidate Stories allows candidates with records the opportunity to share additional context
+
+    about themselves and their background checks. Once submitted, these stories will be available
+
+    to customers in the candidate’s report in the Checkr Dashboard.
+
+
+    For more information, please see
+
+    [Candidate Stories: Improving understanding of the past and present](https://help.checkr.com/hc/en-us/articles/360044417414)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Candidate Stories
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-candidate-stories-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-counties-api
+  name: Checkr Counties API
+  description: >-
+    The Counties resource provides a list of all counties within the United States.
+
+    Use the returned list to validate the counties submitted by your candidates during the [Self Disclosure](#operation/createReport)
+    process.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Counties
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-counties-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-county-criminal-search-api
+  name: Checkr County Criminal Search API
+  description: >-
+    County Criminal records make up the majority of criminal records, and are therefore one of
+
+    the most complete sources for both felony and misdemeanor records. These records are
+
+    not reported to the federal database, and will therefore not be surfaced
+
+    in a Federal Criminal Database Search.
+
+
+    The County Criminal Search resource defines the results from a criminal record search
+
+    in a specific county.
+
+
+    For more information, please see
+
+    [County Criminal Search](https://help.checkr.com/hc/en-us/articles/360001686627)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - County Criminal Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-county-criminal-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-driver-licenses-api
+  name: Checkr Driver Licenses API
+  description: >-
+    The driver licenses resource represents a single driver license for a candidate. Candidates may have
+    one current driver license and may have any number of previous driver licenses.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Driver Licenses
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-driver-licenses-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-drug-alcohol-clearinghouse-search-api
+  name: Checkr Drug & Alcohol Clearinghouse Search API
+  description: >-
+    A Drug & Alcohol Clearinghouse search provides information about a candidate's drug and alcohol violation
+    history.
+
+
+    The screening includes a query result of Driver Prohibited or Not Prohibited.
+
+    Further query details, such as the violations themselves, can be accessed via the Checkr Dashboard.
+
+
+    For more information, please see
+
+    [DOT Checks](https://help.checkr.com/hc/en-us/articles/20842669601047-DOT-checks) in the Checkr Help
+    Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Drug & Alcohol Clearinghouse Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-drug-alcohol-clearinghouse-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-education-verification-api
+  name: Checkr Education Verification API
+  description: >-
+    Use an Education Verification to verify a candidate’s education history, and highest degree
+
+    achieved.
+
+
+    For this screening, candidates are asked to supply their degree, major, school, and the state
+
+    in which the school is located. Checkr then attempts to verify the information. After three
+
+    failed attempts (itemized in the logs), Checkr generates an exception, and asks the candidate
+
+    to upload supporting documentation. Once the document is uploaded, the verification process
+
+    will begin again.
+
+
+    For more information, please see
+
+    [Education Verification](https://help.checkr.com/hc/en-us/articles/360001863468)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Education Verification
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-education-verification-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-employers-api
+  name: Checkr Employers API
+  description: >-
+    The Employers resource includes all relevant employer information for the specified Candidate.
+
+    Employer resources are tied to the specified candidate, and do not transfer to other employees within
+    the system.
+
+    Once attached to a candidate, all employers are retained when running subsequent employment verifications.
+    For example, if multiple employment verifications are run for an existing candidate, each report will
+    use all employers attached to that candidate for the verification.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Employers
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-employers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-employment-verification-api
+  name: Checkr Employment Verification API
+  description: >-
+    Use an Employment Verification to verify a candidate’s employment history for the last three
+
+    employers, or the last seven years.
+
+
+    For this screening, candidates are asked to supply their employment history. Checkr then
+
+    attempts to verify the information. After three failed attempts (itemized in the logs),
+
+    Checkr generates an exception, and asks the candidate to upload supporting documentation.
+
+    Once the document is uploaded, the verification process will begin again.
+
+
+    For more information, please see
+
+    [Employment Verification](https://help.checkr.com/hc/en-us/articles/228391768)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Employment Verification
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-employment-verification-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-facis-search-api
+  name: Checkr FACIS Search API
+  description: >-
+    Searches databases for records of adverse actions against individuals and entities in the healthcare
+    field. For more information, please see
+
+    [FACIS](https://help.checkr.com/hc/en-us/articles/360001576947-FACIS-Fraud-Abuse-Control-Information-System-search)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - FACIS Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-facis-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-federal-civil-search-api
+  name: Checkr Federal Civil Search API
+  description: >-
+    Searches the PACER database to identify Federal Civil records. Checkr conducts Federal District Searches
+    to verify records identified by this search.
+
+    For more information, please see
+
+    [Federal Civil District Search](https://help.checkr.com/hc/en-us/articles/360010443533)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Federal Civil Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-federal-civil-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-federal-criminal-search-api
+  name: Checkr Federal Criminal Search API
+  description: >-
+    Searches the Federal Criminal record database and Federal District courts to return felony and misdemeanor
+    records.
+
+    (National, State, and County Criminal Searches do not return federal records.) For more information,
+    please see
+
+    [Federal Criminal Search](https://help.checkr.com/hc/en-us/articles/360001882627)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Federal Criminal Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-federal-criminal-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-federal-district-civil-search-api
+  name: Checkr Federal District Civil Search API
+  description: >-
+    Searches Federal District Civil courts to verify felony and misdemeanor records identified by PACER
+
+    For more information, please see
+
+    [Federal District Civil Search](https://help.checkr.com/hc/en-us/articles/360010443533)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Federal District Civil Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-federal-district-civil-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-federal-district-criminal-search-api
+  name: Checkr Federal District Criminal Search API
+  description: >-
+    Searches Federal District Criminal courts to verify felony and misdemeanor records identified by PACER.
+
+    For more information, please see
+
+    [Federal District Criminal Search](https://help.checkr.com/hc/en-us/articles/360001882627)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Federal District Criminal Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-federal-district-criminal-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-forms-i-9-api
+  name: Checkr Forms I-9 API
+  description: >-
+    The Forms I-9 resource provides all information about Forms I-9. It also allows to create a new Form
+    I-9, retrieves details about ongoing I-9s (creating a CSV file) and also makes the PDF files for completed
+    I-9s available.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Forms I-9
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-forms-i-9-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-global-watchlist-search-api
+  name: Checkr Global Watchlist Search API
+  description: >-
+    The Global Watchlist Search searches known domestic and international terrorist watchlists
+
+    as well as the records of the Office of Inspector General (OIG), Excluded Parties List (EPL)
+
+    and additional domestic and international agency lists.
+
+
+    For more information, please see
+
+    [Global Watchlist Search](https://help.checkr.com/hc/en-us/articles/360001951208)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Global Watchlist Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-global-watchlist-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-hierarchy-enabled-by-request-api
+  name: Checkr Hierarchy (Enabled by request) API
+  description: >-
+    Use the Hierarchy endpoint to structure your Account as a grouping of individual entities (Nodes)
+    that represent your business with respect to your hiring and background check needs.
+
+
+    The parent-child relationship of Nodes may then be used to manage the relationship of your Packages
+    and other account settings to Users and Candidates within your Account. Once defined, use the Checkr
+    Dashboard to assign Nodes to Users, Packages, your Positive Adjudication Matrix, and other aspects
+    of your Checkr Account.
+
+
+    Specifying a unique ID (custom_id) for each Node in the hierarchy allows you to edit the structure
+    of your hierarchy without dissociating any Packages, PAMs, or Users assigned directly to the individual
+    nodes. As nodes are moved to different locations within the hierarchy they will inherit Packages or
+    PAMs from their new parent that may differ from the last, but Packages assigned directly to the node
+    will not change.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Hierarchy (Enabled by request)
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-hierarchy-enabled-by-request-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-international-adverse-media-search-api
+  name: Checkr International Adverse Media Search API
+  description: >-
+    In countries where third party access to criminal record information is restricted, Adverse Media
+    Checks may be performed to access private databases, public sanctions lists, media sources, and other
+    public and private record repositories.
+
+    Refer to [International Screenings](https://help.checkr.com/hc/en-us/articles/360056108714-International-Screenings#:~:text=is%204%20days.-,Adverse%20Media%20Check,-%3A%20In%20countries)
+    for more details.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - International Adverse Media Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-international-adverse-media-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-international-criminal-search-api
+  name: Checkr International Criminal Search API
+  description: >-
+    Criminal records check in supported countries. Criminal data is accessed from the appropriate database
+    or agency.
+
+    Refer to [International Screenings](https://help.checkr.com/hc/en-us/articles/360056108714-International-Screenings#:~:text=International%20Criminal%20Check)
+    for more details.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - International Criminal Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-international-criminal-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-international-education-verification-api
+  name: Checkr International Education Verification API
+  description: >-
+    The verification of academic status of any educational level such as high school, college and post-grad
+    may include institution name, dates of attendance, graduation/conferred date, degree obtained, major,
+    minor, honors and relevant awards. Reasonable attempts will be made to search available industry databases
+    and international educational institutions.
+
+    Refer to [International Screenings](https://help.checkr.com/hc/en-us/articles/360056108714-International-Screenings#:~:text=International%20Education%20Verification)
+    for more details.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - International Education Verification
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-international-education-verification-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-international-employment-verification-api
+  name: Checkr International Employment Verification API
+  description: >-
+    Verification of previous employment history may include employer’s name, dates of employment, position/title,
+    reason for leaving, eligibility for rehire, and comments. Reasonable attempts will be made to verify
+    available government agencies and employment databases. Email verification, and phone verification
+    may be used in countries where the records of former employers are not available in searchable form,
+    and where contacting the supervisor or manager is common practice.
+
+    Refer to [International Screenings](https://help.checkr.com/hc/en-us/articles/360056108714-International-Screenings#:~:text=International%20Employment%20Verification)
+    for more details.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - International Employment Verification
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-international-employment-verification-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-international-global-watchlist-search-api
+  name: Checkr International Global Watchlist Search API
+  description: >-
+    A comprehensive search of multiple U.S. and International government watchlists which include the
+    FBI’s Most Wanted list, Interpol's Most Wanted lists, Office of Foreign Asset Control Sanction lists,
+    Denied Persons lists, Department of State Sanction lists, and the Specially Designated Nationals List.
+
+    Refer to [International Screenings](https://help.checkr.com/hc/en-us/articles/360056108714-International-Screenings#:~:text=Global%20Watchlist%20Check)
+    for more details.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - International Global Watchlist Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-international-global-watchlist-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-international-identity-document-validation-api
+  name: Checkr International Identity Document Validation API
+  description: >-
+    Verifies that the candidate’s passport, national ID or driver’s license is authentic and validly in
+    circulation. This check provides a multi-level validation process by inspecting document data and
+    positioning for authenticity, scanning the [Machine Readable Zone](https://en.wikipedia.org/wiki/Machine-readable_passport)
+    (if available), and cross-checking the information provided against government databases to discover
+    if the document is stolen, lost, expired or invalid.
+
+    Refer to [International Screenings](https://help.checkr.com/hc/en-us/articles/360056108714-International-Screenings#:~:text=to%20international%20candidates%3A-,Identity%20Document%20Validation,-%3A%20Verifies%20that)
+    for more details.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - International Identity Document Validation
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-international-identity-document-validation-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-international-motor-vehicle-report-api
+  name: Checkr International Motor Vehicle Report API
+  description: >-
+    Checks the validity of a driver license and where available, may include a detailed history of the
+    candidate’s driving violations or license conditions. Canada only at this time.
+
+    Refer to [International Screenings](https://help.checkr.com/hc/en-us/articles/360056108714-International-Screenings#:~:text=International%20motor%20vehicle,hours%20to%20weeks.)
+    for more details.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - International Motor Vehicle Report
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-international-motor-vehicle-report-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-motor-vehicle-report-api
+  name: Checkr Motor Vehicle Report API
+  description: >-
+    Motor Vehicle Records originate from a state’s Department of Motor Vehicles, and include
+
+    information related to a person’s driving history, including driver’s license status and
+
+    restrictions, as well as violations and convictions. Use MVR reports to evaluate a candidate’s
+
+    driving history and safety record.
+
+
+    Please note that some convictions, such as driving under the influence, may appear only
+
+    on MVR reports, and not on criminal searches.
+
+
+    For more information, please see
+
+    [Motor Vehicle Records](https://help.checkr.com/hc/en-us/articles/360001568167)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Motor Vehicle Report
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-motor-vehicle-report-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-national-criminal-search-api
+  name: Checkr National Criminal Search API
+  description: >-
+    Checkr conducts a National Criminal Database Search as a routine part of all criminal
+
+    background checks. The search queries 3,200 counties and over 900 million records across
+
+    the United States, and provides a quick means to evaluate which courts or jurisdictions should
+
+    be searched more thoroughly for any given candidate.
+
+
+    The National Criminal Database Search is used only as a "pointer search" to determine which
+
+    courts or jurisdictions to search. Records returned from this database do not appear
+
+    on the final report.
+
+
+    For more information, please see
+
+    [National Criminal Database Search](https://help.checkr.com/hc/en-us/articles/360001686567)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - National Criminal Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-national-criminal-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-nodes-api
+  name: Checkr Nodes API
+  description: >-
+    Nodes are the individual entities that comprise an Account Hierarchy. If hierarchy is enabled for
+    your Checkr Account, this endpoint may be used to retrieve a list of all Account Nodes. To create
+    Nodes, use the [Create Hierarchy](#operation/updateAccountHierarchy) endpoint.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Nodes
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-nodes-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-personal-reference-verification-api
+  name: Checkr Personal Reference Verification API
+  description: >-
+    Use a Personal Reference Verification to verify a candidate’s personal credentials.
+
+    For this screening, candidates are asked to supply a personal reference. Checkr then contacts the
+    personal reference and asks predefined questions to confirm their credentials.
+
+    For more information, please see [Personal and Professional Reference Checks](https://help.checkr.com/hc/en-us/articles/360000989328-Personal-and-Professional-Reference-Checks).
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Personal Reference Verification
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-personal-reference-verification-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-professional-license-verification-api
+  name: Checkr Professional License Verification API
+  description: >-
+    Use a Professional License Verification to verify a candidate's professional credentials.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Professional License Verification
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-professional-license-verification-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-professional-licenses-api
+  name: Checkr Professional Licenses API
+  description: >-
+    The professional license resource represents a single certification or license issued to a candidate
+    for qualification in a professional field. Candidates may have two existing professional license resources
+    at a time.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Professional Licenses
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-professional-licenses-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-professional-reference-verification-api
+  name: Checkr Professional Reference Verification API
+  description: >-
+    Use a Professional Reference Verification to verify a candidate’s professional credentials.
+
+    For this screening, candidates are asked to supply a professional reference. Checkr then contacts
+    the professional reference and asks predefined questions to confirm their credentials.
+
+    For more information, please see [Personal and Professional Reference Checks](https://help.checkr.com/hc/en-us/articles/360000989328-Personal-and-Professional-Reference-Checks).
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Professional Reference Verification
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-professional-reference-verification-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-programs-api
+  name: Checkr Programs API
+  description: >-
+    Represents a division of an Account. Programs are typically used to identify clients,
+
+    cost centers, or departments. A Program may have many Geos and may have many Packages.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Programs
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-programs-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-report-addresses-api
+  name: Checkr Report Addresses API
+  description: Represents candidate reported addresses on a Report.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Report Addresses
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-report-addresses-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-report-eta-api
+  name: Checkr Report ETA API
+  description: >-
+    Report ETAs predict when screenings will complete for each background check report. This ETA provides
+    a date for the estimated completion of a specific report, helping both you and your candidates plan
+    ahead.
+
+
+    While the predictions are highly accurate, they are not a guarantee. Some county-level searches are
+    subject to unpredictable timelines, due to manual search processes and court availability. For more
+    information on these searches, please see [County Criminal Record Search](https://help.checkr.com/hc/en-us/articles/360001686627)
+    in the Checkr Help Center.
+
+
+    90% of reports will complete within one business day of the estimated date.
+
+
+    For those reports which do not complete within the initial estimate, Checkr will re-generate the ETA
+    using the current information available for the remaining screenings. A [report.updated](#section/Webhooks/Report-events)
+    webhook will be issued for both the initial and each subsequent ETA.
+
+
+    For more information, see [Checkr ETA](https://help.checkr.com/hc/en-us/articles/360025682094) in
+    the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Report ETA
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-report-eta-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-report-tags-api
+  name: Checkr Report Tags API
+  description: Report Tags are defined by customers, and may be used to search Reports.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Report Tags
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-report-tags-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-schools-api
+  name: Checkr Schools API
+  description: >-
+    The School resource includes all relevant educational information for the specified Candidate.
+
+    School resources are tied to the specified candidate, and do not transfer to other alumna within the
+    system.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Schools
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-schools-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-sex-offender-registry-search-api
+  name: Checkr Sex Offender Registry Search API
+  description: >-
+    Represents an instant multi-state Sex Offender Registry Search.
+
+
+    A nationwide search of all 50 states' and the District of Columbia’s sex offender registries
+
+    for all levels of registered sex offenders. Search includes type(s) of offense and
+
+    identifiers, such as Date of Birth (DOB).
+
+
+    For more information, please see
+
+    [Sex Offender Registry Search](https://help.checkr.com/hc/en-us/articles/360001863428)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Sex Offender Registry Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-sex-offender-registry-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-ssn-api
+  name: Checkr SSN API
+  description: >-
+    The SSN resource allows you to retrieve a candidate's encrypted SSN.
+
+
+    **Note**: Access to this endpoint requires an RSA key-pair for encryption. See [Configuring Encryption
+    for Candidate SSN Endpoint](#section/Advanced-Features/Configuring-encryption-for-the-SSN-resource)
+    for information on how to generate encryption keys. Work with your Checkr Customer Success Manager
+    to enable this feature for your account.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - SSN
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-ssn-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-ssn-trace-api
+  name: Checkr SSN Trace API
+  description: >-
+    SSN Trace is typically the first screening run, and is used to verify that
+
+    the input SSN exists, determine where and when it was issued, and to compile
+
+    a list of all known aliases associated with the SSN. This Trace is also used to generate
+
+    a list of all known addresses recorded by credit agencies for the SSN for the last 7 years.
+
+
+    An SSN Trace may be used to determine which additional jurisdictions should be searched for
+
+    the candidate, based on the list of known addresses returned.
+
+
+    If the platform detects an issue with the SSN Trace run (data mismatch, absence of data,
+
+    or inclusion of the SSN on the death master file), Checkr may issue an exception and ask
+
+    the candidate to either re-enter their SSN or upload other supporting documentation.
+
+
+    <b>Note: </b>Information returned by this search is not a part of the consumer report and may not
+    be used for FCRA purposes, including eligibility determinations under the FCRA
+
+
+    For more information, please see
+
+    [SSN Trace](https://help.checkr.com/hc/en-us/articles/360001967227)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - SSN Trace
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-ssn-trace-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-state-criminal-search-api
+  name: Checkr State Criminal Search API
+  description: >-
+    The State Criminal Search returns criminal records from a selected state’s database,
+
+    the content of which varies by state. Some states include records reported from all counties;
+
+    some include records only from a few. This search should be used in conjunction with
+
+    a County Criminal Search, and not as a replacement for the more complete records returned
+
+    from the County Search.
+
+
+    For more information, please see
+
+    [State Criminal Search](https://help.checkr.com/hc/en-us/articles/360001668148)
+
+    in the Checkr Help Center.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - State Criminal Search
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-state-criminal-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-users-api
+  name: Checkr Users API
+  description: >-
+    The User resource includes user information and role assignments. Users can be invited and assigned
+    roles from the Dashboard.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-users-api-openapi.yml
+  - type: Documentation
+    url: https://docs.checkr.com/
+  - type: APIReference
+    url: https://docs.checkr.com/
+  - type: PostmanCollection
+    url: collections/checkr.postman_collection.json
+  - type: OpenCollection
+    url: collections/checkr.opencollection.json
+- aid: checkr:checkr-worksites-api
+  name: Checkr Worksites API
+  description: >-
+    The User resource includes user information and role assignments. Users can be invited and assigned
+    roles from the Dashboard.
+  humanURL: https://docs.checkr.com/
+  baseURL: https://api.checkr.com/v1
+  tags:
+  - Worksites
+  properties:
+  - type: OpenAPI
+    url: openapi/checkr-worksites-api-openapi.yml
   - type: Documentation
     url: https://docs.checkr.com/
   - type: APIReference

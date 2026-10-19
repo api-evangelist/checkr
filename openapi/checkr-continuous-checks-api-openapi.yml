@@ -1,138 +1,496 @@
 openapi: 3.2.0
 info:
-  title: Checkr Continuous Checks API
-  description: The Checkr API is a RESTful interface for running compliant employment background checks.
-  version: '1.0'
+  version: v1
+  title: Checkr.com API Docs Continuous Checks API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
   contact:
     name: Checkr
+    email: clients@checkr.com
     url: https://checkr.com
-  termsOfService: https://checkr.com/terms-of-service
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
 servers:
 - url: https://api.checkr.com/v1
-  description: Production
-- url: https://api.checkr-staging.com/v1
-  description: Staging
-security:
-- basicAuth: []
+  description: Main server
 tags:
 - name: Continuous Checks
-  description: Ongoing monitoring for new records.
+  description: 'Continuous Check runs a monthly check for pointers to new records, which may result in a Report. Unlike a Subscription, which generates a full Report at a defined cadence, Continuous Check generates a full Report only if new reportable information is found. For more information, see Continuous Crim: The new standard of safety and Continuous MVR: The new standard in driver safety in the Checkr Help Center.
+
+
+    Use the `report.complete` webhook to watch for new Reports created for candidates enrolled in Continuous Check. These Reports will list one of the following as the Package within the webhook payload:
+
+    - `continuous_check`
+
+    - `continuous_mvr`
+
+    - `continuous_mvr_enrollment`
+
+
+    **Note:** These Package names are returned through the Checkr APIs, but may not be used as input. Attempting to create Invitations, Reports, or Subscriptions with these Packages will result in a `Package not found` error.
+
+
+    **Note:** It is your legal obligation to manage your list of candidates enrolled in Continuous Check. You must obtain the required evergreen consent before enrolling them, and you must remove them from the service when they begin an Adverse Action process or are removed from your platform. Work with your legal counsel to ensure that your Continuous Check process remains compliant with all applicable laws and regulations.
+
+
+    **Note:** If your candidate is located outside of the US, they cannot be enrolled in Continuous Check.'
 paths:
-  /continuous_checks:
-    get:
-      operationId: listContinuousChecks
-      tags:
-      - Continuous Checks
-      summary: List continuous checks
-      responses:
-        '200':
-          description: A list of continuous checks.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ContinuousCheck'
-    post:
-      operationId: createContinuousCheck
-      tags:
-      - Continuous Checks
-      summary: Create a continuous check
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ContinuousCheckCreate'
-      responses:
-        '201':
-          description: The created continuous check.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ContinuousCheck'
-  /continuous_checks/{id}:
+  /candidates/{candidate_id}/continuous_checks:
     parameters:
-    - $ref: '#/components/parameters/ResourceId'
-    get:
-      operationId: getContinuousCheck
-      tags:
-      - Continuous Checks
-      summary: Retrieve a continuous check
-      responses:
-        '200':
-          description: The continuous check.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ContinuousCheck'
-    delete:
-      operationId: cancelContinuousCheck
-      tags:
-      - Continuous Checks
-      summary: Cancel a continuous check
-      responses:
-        '200':
-          description: The cancelled continuous check.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ContinuousCheck'
-components:
-  parameters:
-    ResourceId:
-      name: id
+    - name: candidate_id
       in: path
+      description: The Candidate's ID.
       required: true
-      description: The unique identifier of the resource.
       schema:
         type: string
+    post:
+      tags:
+      - Continuous Checks
+      summary: Create a new Continuous Check
+      description: Creates a new Continuous Check resource.
+      operationId: createContinuousCheck
+      security:
+      - basic_auth: []
+      requestBody:
+        $ref: '#/components/requestBodies/ContinuousCheckCreate'
+      responses:
+        '201':
+          $ref: '#/components/responses/ContinuousCheckCreated'
+        '400':
+          $ref: '#/components/responses/BadContinuousCheckRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/ContinuousCheckMissingSSNTraceError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/candidates/e44aa283528e6fde7d542194/continuous_checks \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9: \\\n    -d type=criminal\n"
+    get:
+      tags:
+      - Continuous Checks
+      summary: List existing Continuous Checks
+      description: Returns a list of existing Continuous Checks.
+      operationId: listOfContinuousChecks
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ContinuousChecksList'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/CandidateNotFoundError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/candidates/e44aa283528e6fde7d542194/continuous_checks \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+  /continuous_checks/{id}:
+    parameters:
+    - name: id
+      in: path
+      description: The Continuous Check's ID.
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - Continuous Checks
+      summary: Retrieve an existing Continuous Check
+      description: Returns an existing Continuous Check with the input ID.
+      operationId: getContinuousCheck
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ContinuousCheck'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/ContinuousCheckNotFoundError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/continuous_checks/4722c07dd9a10c3985ae432a \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+    post:
+      tags:
+      - Continuous Checks
+      summary: Update an existing Continuous Check
+      description: Updates the node and/or work locations of an existing Continuous Check.
+      operationId: postContinuousCheck
+      security:
+      - basic_auth: []
+      requestBody:
+        $ref: '#/components/requestBodies/ContinuousCheckUpdate'
+      responses:
+        '201':
+          $ref: '#/components/responses/ContinuousCheckUpdated'
+        '400':
+          $ref: '#/components/responses/BadContinuousCheckUpdateRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/ContinuousCheckNotFoundError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/continuous_checks/76c7435e035d43b55bb9d1c6 \\\n     -u 83ebeabdec09f6670863766f792ead24d61fe3f9: \\\n     -d node=zpy8orej4r614ize\n"
+    delete:
+      tags:
+      - Continuous Checks
+      summary: Cancel an existing Continuous Check
+      description: Cancels an existing Continuous Check.
+      operationId: cancelContinuousCheck
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ContinuousCheckCanceled'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/ContinuousCheckNotFoundError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X DELETE https://api.checkr.com/v1/continuous_checks/4722c07dd9a10c3985ae432a \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9\n"
+components:
+  requestBodies:
+    ContinuousCheckCreate:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - type
+            properties:
+              type:
+                type: string
+                description: Defines the screening type(s) for this Continuous Check.
+                example: criminal
+                enum:
+                - criminal
+                - mvr
+              node:
+                type: string
+                description: '<font color="red">Required</font> for hierarchy-enabled accounts with Nodes.
+
+
+                  `custom_id` of the associated node.
+
+                  '
+              work_locations:
+                type: array
+                description: '<font color="red">Required</font> for hierarchy-enabled accounts.
+
+
+                  Array of locations described using country, state, and city. When country is not specified defaults to US. State is required for US candidates. Country is required for non-US candidates.
+
+                  '
+                items:
+                  $ref: '#/components/schemas/WorkLocation'
+      required: true
+    ContinuousCheckUpdate:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - type
+            properties:
+              node:
+                type: string
+                description: '`custom_id` of the associated node.
+
+                  '
+              work_locations:
+                type: array
+                description: 'Array of locations described using country, state, and city. When country is not specified defaults to US. State is required for US candidates. Country is required for non-US candidates.
+
+                  '
+                items:
+                  $ref: '#/components/schemas/WorkLocation'
+      required: true
   schemas:
+    BadContinuousCheckUpdateRequestError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Node cannot be found on your account
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You do not have permission to access the requested resource
+    WorkLocation:
+      type: object
+      required:
+      - state
+      properties:
+        country:
+          type: string
+          description: The country in ISO-3166 alpha-2 format.
+          example: US
+          minLength: 2
+          maxLength: 2
+        state:
+          type: string
+          description: The two letter state code.
+          example: CA
+        city:
+          type: string
+          description: Name of the city
+          example: San Francisco
+          maxLength: 255
+    ContinuousCheckMissingSSNTraceError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Candidate must have a completed SSN trace
+    CandidateNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Candidate not found
+    ResourceId:
+      type: string
+      example: e44aa283528e6fde7d542194
+      readOnly: true
+      description: ID of the resource.
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
     ContinuousCheck:
       type: object
       properties:
         id:
-          type: string
+          $ref: '#/components/schemas/ResourceId'
         object:
           type: string
-          example: continuous_check
+          enum:
+          - continuous_check
+          readOnly: true
         type:
           type: string
+          description: Type of Continuous Check.
           enum:
           - criminal
           - mvr
-        status:
-          type: string
-          enum:
-          - active
-          - canceled
-        candidate_id:
-          type: string
-        node:
-          type: string
+          example: criminal
         created_at:
           type: string
+          description: Time at which the Continuous Check was created.
           format: date-time
-    ContinuousCheckCreate:
-      type: object
-      required:
-      - candidate_id
-      - type
-      properties:
+          example: '2015-05-14T17:45:34Z'
         candidate_id:
           type: string
-        type:
-          type: string
-          enum:
-          - criminal
-          - mvr
+          description: ID of the Candidate enrolled in Continuous Check.
+          example: 551564b7865af96a28b13f36
         node:
           type: string
+          description: Custom ID of the Node associated with the Continuous Check.
+          example: zpy8orej4r614ize
+        work_locations:
+          type: array
+          description: Array of work locations associated with the Continuous Check.
+          items:
+            $ref: '#/components/schemas/WorkLocation'
+    BadContinuousCheckRequestError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: type does not have a valid value
+    ContinuousCheckNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Continuous Check not found
+  responses:
+    CandidateNotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CandidateNotFoundError'
+    ContinuousCheckCanceled:
+      description: Continuous Check was successfully canceled
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ContinuousCheck'
+    ContinuousCheckMissingSSNTraceError:
+      description: Unprocessable entity
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ContinuousCheckMissingSSNTraceError'
+    ContinuousCheck:
+      description: Continuous Check details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ContinuousCheck'
+    BadContinuousCheckRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadContinuousCheckRequestError'
+    ContinuousCheckUpdated:
+      description: Continuous Check was successfully updated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ContinuousCheck'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    BadContinuousCheckUpdateRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadContinuousCheckUpdateRequestError'
+    ContinuousChecksList:
+      description: List of Continuous Checks
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContinuousCheck'
+              object:
+                type: string
+                description: A list
+                enum:
+                - list
+              count:
+                type: integer
+                example: 1
+    ContinuousCheckNotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ContinuousCheckNotFoundError'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+    ContinuousCheckCreated:
+      description: Continuous Check was successfully created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ContinuousCheck'
   securitySchemes:
-    basicAuth:
+    basic_auth:
       type: http
       scheme: basic
-      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

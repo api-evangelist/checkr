@@ -1,0 +1,416 @@
+openapi: 3.2.0
+info:
+  version: v1
+  title: Checkr.com API Docs Nodes API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
+  contact:
+    name: Checkr
+    email: clients@checkr.com
+    url: https://checkr.com
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
+servers:
+- url: https://api.checkr.com/v1
+  description: Main server
+tags:
+- name: Nodes
+  description: Nodes are the individual entities that comprise an Account Hierarchy. If hierarchy is enabled for your Checkr Account, this endpoint may be used to retrieve a list of all Account Nodes. To create Nodes, use the Create Hierarchy endpoint.
+paths:
+  /nodes:
+    get:
+      tags:
+      - Nodes
+      summary: List existing Nodes
+      description: 'Returns a list of existing Nodes that make up the current Account Hierarchy.
+
+
+        * If `include=packages` is passed, each Node object in the response will include a "packages" field. This will be an array of strings representing the slugs of the account Packages that are assigned (directly or indirectly) to the given Node. This field can be used to build UIs that truncate the list of Packages displayed to a requester, or to display only the nodes that are relevant to the requester.
+
+
+        * If `include=packages` is not passed, no package information will be included in the response.
+
+
+        This endpoint uses pagination; please see the corresponding reference page for details.'
+      operationId: nodesList
+      security:
+      - basic_auth: []
+      parameters:
+      - name: include
+        in: query
+        description: Includes a "packages" array with each Node object, containing a list of slugs for packages that are assigned to that node or its ancestors.
+        required: false
+        example: packages
+        schema:
+          type: string
+          enum:
+          - packages
+      - name: page
+        in: query
+        description: Specifies the page number to retrieve.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
+      - name: per_page
+        in: query
+        description: Indicates how many records each page should contain. The default value is 25 records.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
+      - name: order_by
+        in: query
+        description: Returns records sorted by custom_id or created_at. If neither is specified, records will be sorted by created_at.
+        required: false
+        example: custom_id
+        schema:
+          type:
+          - string
+          - 'null'
+          enum:
+          - custom_id
+          - created_at
+      - name: order
+        in: query
+        description: Returns records arranged in order as specified by the `order_by` parameter. If neither is specified, records will be listed in ascending order.
+        required: false
+        example: desc
+        schema:
+          type:
+          - string
+          - 'null'
+          enum:
+          - asc
+          - desc
+      responses:
+        '200':
+          $ref: '#/components/responses/NodesList'
+        '403':
+          $ref: '#/components/responses/HierarchyNotEnabledError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl https://api.checkr.com/v1/nodes?include=packages \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+  /nodes/{custom_id}:
+    parameters:
+    - name: custom_id
+      in: path
+      description: custom_id of the Node.
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - Nodes
+      summary: Retrieve an existing node
+      description: 'Returns an existing node by custom_id.
+
+
+        * If `include=packages` is passed, the response will include a "packages" field.
+
+        This will be an array of strings representing the slugs of the account
+
+        Packages that are assigned (directly or indirectly) to the given Node. This field can be
+
+        used to build UIs that truncate the list of Packages displayed to a requester, or to
+
+        display only the nodes that are relevant to the requester.
+
+
+        * If `include=packages` is not passed, no package information will be included in the response.'
+      operationId: getNode
+      security:
+      - basic_auth: []
+      parameters:
+      - name: include
+        in: query
+        description: Includes a "packages" array with each Node object, containing a list of slugs for packages that are assigned to that node or its ancestors.
+        required: false
+        example: packages
+        schema:
+          type: string
+          enum:
+          - packages
+      responses:
+        '200':
+          $ref: '#/components/responses/Node'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl https://api.checkr.com/v1/nodes/my_custom_id?include=packages \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+    patch:
+      tags:
+      - Nodes
+      summary: Update an existing node
+      description: Updates the name and tier on an existing node by custom_id.
+      operationId: updateNode
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Node'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X PATCH https://api.checkr.com/v1/nodes/my_custom_id \\\n    -H 'Content-Type: application/json' \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9: \\\n    -d '{\"name\":\"Acme Staffing\", \"tier\": \"department\"}'\n"
+    delete:
+      tags:
+      - Nodes
+      summary: Delete an existing node
+      description: 'Deletes an existing node by custom_id.
+
+
+        Parent nodes and nodes assigned to continuous check subscriptions or legacy
+
+        subscriptions cannot be deleted.'
+      operationId: deleteNode
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Node'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X DELETE https://api.checkr.com/v1/nodes/my_custom_id \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
+components:
+  schemas:
+    HierarchyNotEnabledError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Sorry, your account is not enabled for Hierarchy
+    Node:
+      type: object
+      required:
+      - name
+      - custom_id
+      properties:
+        name:
+          type: string
+          description: The name for the node. This name will be displayed in the Checkr Dashboard.
+          example: Acme Staffing
+          minLength: 1
+          maxLength: 255
+        custom_id:
+          type: string
+          description: 'Customer-defined unique ID for the node. Must be unique within your account. <b>Note: </b>Custom IDs will contain only letters, numbers, spaces, hyphens, colons, ampersands, and/or underscores.'
+          example: zpy8orej4r614ize
+          minLength: 1
+          maxLength: 255
+        tier:
+          type: string
+          description: Customer-defined label for this level of the hierarchy. (For example "Department" or "Division".)
+          example: department
+          maxLength: 255
+        parent_custom_id:
+          type: string
+          description: The `custom_id` for the parent of this node. If not provided, this node will be placed at the top level of the hierarchy.
+          example: 2tpiycfpbw5o3xat
+          maxLength: 255
+        packages:
+          type: array
+          description: List of slugs for packages that are visible to this node (through either direct assignment to the node, or assignment to one of the node's ancestors). Only provided if "include=packages" is included in the query.
+          items:
+            type: string
+          example:
+          - driver_pro
+          - tasker_pro
+    HierarchyNode:
+      type: object
+      required:
+      - name
+      - custom_id
+      properties:
+        name:
+          type: string
+          description: The name for the node. This name will be displayed in the Checkr Dashboard.
+          example: Acme Staffing
+          minLength: 1
+          maxLength: 255
+        custom_id:
+          type: string
+          description: 'Customer-defined unique ID for the node. Must be unique within your account. <b>Note: </b>Custom IDs may contain only letters, numbers, spaces, hyphens, colons, ampersands, and/or underscores.'
+          example: zpy8orej4r614ize
+          minLength: 1
+          maxLength: 255
+        tier:
+          type: string
+          description: Customer-defined label for this level of the hierarchy. (For example "Department" or "Division".)
+          example: department
+          maxLength: 255
+        parent_custom_id:
+          type: string
+          description: 'The `custom_id` for the parent of this node. If not provided, this node will be placed at the top level of the hierarchy. <b>Note: </b>If provided, this node must be a valid and previously loaded `custom_id`, and may contain only letters, numbers, spaces, hyphens, colons, ampersands, and/or underscores.'
+          example: parent custom id
+          maxLength: 255
+        packages:
+          type: array
+          description: List of slugs for packages that are visible to this node (through either direct assignment to the node, or assignment to one of the node's ancestors). Only provided if "include=packages" is included in the query.
+          items:
+            type: string
+          example:
+          - driver_pro
+          - tasker_pro
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You do not have permission to access the requested resource
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
+  responses:
+    HierarchyNotEnabledError:
+      description: Hierarchy not enabled
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HierarchyNotEnabledError'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    Node:
+      description: Node
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HierarchyNode'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+    NodesList:
+      description: List of Nodes
+      content:
+        application/json:
+          schema:
+            properties:
+              object:
+                type: string
+                description: A list
+                enum:
+                - list
+              next_href:
+                type: string
+                format: uri
+              previous_href:
+                type: string
+                format: uri
+              count:
+                type: integer
+                example: 2
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Node'
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

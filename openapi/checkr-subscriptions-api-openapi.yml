@@ -1,168 +1,633 @@
 openapi: 3.2.0
 info:
-  title: Checkr Subscriptions API
-  description: The Checkr API is a RESTful interface for running compliant employment background checks.
-  version: '1.0'
+  version: v1
+  title: Checkr.com API Docs Subscriptions API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
   contact:
     name: Checkr
+    email: clients@checkr.com
     url: https://checkr.com
-  termsOfService: https://checkr.com/terms-of-service
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
 servers:
 - url: https://api.checkr.com/v1
-  description: Production
-- url: https://api.checkr-staging.com/v1
-  description: Staging
-security:
-- basicAuth: []
+  description: Main server
 tags:
 - name: Subscriptions
-  description: Recurring re-runs of a package for a candidate.
+  description: 'Represents a background check subscription. A background report with
+
+    the Package specified will run at every interval.'
 paths:
   /subscriptions:
-    get:
-      operationId: listSubscriptions
+    post:
       tags:
       - Subscriptions
-      summary: List subscriptions
+      summary: Create a new Subscription
+      description: 'Creates a new Subscription.
+
+
+        Notes for International Customers: Subscriptions are not available for reports which include international packages.
+
+        If your candidate is located outside the US, you may not create a Subscription for them.'
+      operationId: createSubscription
+      security:
+      - basic_auth: []
+      requestBody:
+        $ref: '#/components/requestBodies/SubscriptionCreate'
       responses:
         '200':
-          description: A list of subscriptions.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Subscription'
-    post:
-      operationId: createSubscription
+          $ref: '#/components/responses/SubscriptionCreated'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/PackageNotFoundError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/subscriptions \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9: \\\n    -d package=driver_pro \\\n    -d start_date=2017-02-10 \\\n    -d interval_unit=month \\\n    -d interval_count=1 \\\n    -d candidate_id=4722c07dd9a10c3985ae432a\n"
+    get:
       tags:
       - Subscriptions
-      summary: Create a subscription
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SubscriptionCreate'
+      summary: List existing Subscriptions
+      description: Lists existing Subscriptions with the input parameters.
+      operationId: getSubscriptions
+      security:
+      - basic_auth: []
+      parameters:
+      - name: candidate_id
+        in: query
+        schema:
+          type: string
+        description: ID of the candidate to search for subscriptions.
+        required: false
+      - name: created_after
+        in: query
+        description: Returns subscriptions created after the input date.
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: created_before
+        in: query
+        description: Returns subscriptions created before the input date.
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: status
+        description: Returns subscriptions with the input status.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - active
+          - inactive
+      - name: page
+        in: query
+        description: Specifies the page number to retrieve.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
+      - name: per_page
+        in: query
+        description: Indicates how many records each page should contain. The default value is 25 records.
+        required: false
+        schema:
+          type:
+          - number
+          - 'null'
       responses:
-        '201':
-          description: The created subscription.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Subscription'
+        '200':
+          $ref: '#/components/responses/SubscriptionsList'
+        '400':
+          $ref: '#/components/responses/BadSubscriptionsListRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/subscriptions \\\n    -d candidate_id=4722c07dd9a10c3985ae432a\n    -d created_after=2021-12-21\n    -d created_before=2021-12-31\n    -d status=active\n    -d page=2\n    -d per_page=10\n"
   /subscriptions/{id}:
     parameters:
-    - $ref: '#/components/parameters/ResourceId'
+    - name: id
+      in: path
+      description: ID of the Subscription.
+      required: true
+      schema:
+        type: string
     get:
+      tags:
+      - Subscriptions
+      summary: Retrieve an existing Subscription
+      description: Retrieves an existing Subscription.
       operationId: getSubscription
-      tags:
-      - Subscriptions
-      summary: Retrieve a subscription
+      security:
+      - basic_auth: []
       responses:
         '200':
-          description: The subscription.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Subscription'
+          $ref: '#/components/responses/Subscription'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/subscriptions/e44aa283528e6fde7d542194 \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
     post:
+      tags:
+      - Subscriptions
+      summary: Update a Subscription
+      description: Updates a Subscription. Specify only those parameters you wish to change.
       operationId: updateSubscription
-      tags:
-      - Subscriptions
-      summary: Update a subscription
+      security:
+      - basic_auth: []
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SubscriptionCreate'
+        $ref: '#/components/requestBodies/SubscriptionUpdate'
       responses:
         '200':
-          description: The updated subscription.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Subscription'
+          $ref: '#/components/responses/SubscriptionCreated'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/subscriptions/e44aa283528e6fde7d542194 \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9: \\\n    -d package=driver_pro \\\n    -d start_date=2017-02-10 \\\n    -d interval_unit=month \\\n    -d interval_count=1 \\\n    -d candidate_id=e44aa283528e6fde7d542194\n"
     delete:
-      operationId: cancelSubscription
       tags:
       - Subscriptions
-      summary: Cancel a subscription
+      summary: Cancel an existing Subscription
+      description: Cancels an existing Subscription.
+      operationId: cancelSubscription
+      security:
+      - basic_auth: []
       responses:
         '200':
-          description: The cancelled subscription.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Subscription'
+          $ref: '#/components/responses/SubscriptionCanceled'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X DELETE https://api.checkr.com/v1/subscriptions/e44aa283528e6fde7d542194 \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
 components:
   schemas:
+    PackageNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Package not found
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You do not have permission to access the requested resource
+    SubscriptionCanceled:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ResourceId'
+        object:
+          type: string
+          enum:
+          - subscription
+          readOnly: true
+        uri:
+          allOf:
+          - $ref: '#/components/schemas/ResourceURI'
+          description: URI of the Subscription.
+          example: /v1/subscriptions/4722c07dd9a10c3985ae432a
+        status:
+          type: string
+          description: Status of the Subscription.
+          enum:
+          - active
+          - inactive
+          example: active
+        created_at:
+          type: string
+          description: Time at which the Subscription was created.
+          format: date-time
+          example: '2014-01-18T12:34:00Z'
+        canceled_at:
+          type:
+          - string
+          - 'null'
+          description: Time at which the Subscription was canceled.
+          format: date-time
+          example: '2014-01-30T12:34:00Z'
+        package:
+          type: string
+          description: Package to run for the Subscription.
+          example: driver_pro
+        interval_count:
+          type: integer
+          description: The number of intervals between each recurrent background check.
+          example: 1
+        interval_unit:
+          type: string
+          description: Interval at which the Subscription will repeat.
+          enum:
+          - day
+          - week
+          - month
+          - year
+          example: month
+        start_date:
+          type: string
+          description: Start date for the Subscription. This is the date on which the Subscription will begin, and the first time the report will be run.
+          format: date
+          example: '2014-06-10'
+        candidate_id:
+          type: string
+          description: ID of the candidate screened.
+          example: e44aa283528e6fde7d542194
+    WorkLocation:
+      type: object
+      required:
+      - state
+      properties:
+        country:
+          type: string
+          description: The country in ISO-3166 alpha-2 format.
+          example: US
+          minLength: 2
+          maxLength: 2
+        state:
+          type: string
+          description: The two letter state code.
+          example: CA
+        city:
+          type: string
+          description: Name of the city
+          example: San Francisco
+          maxLength: 255
+    ResourceURI:
+      type: string
+      description: URI of the resource.
+      readOnly: true
+    BadRequestError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Dl number 'F211165' does not match the license number format in CA
+    ResourceId:
+      type: string
+      example: e44aa283528e6fde7d542194
+      readOnly: true
+      description: ID of the resource.
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
     Subscription:
       type: object
       properties:
         id:
-          type: string
+          $ref: '#/components/schemas/ResourceId'
         object:
           type: string
-          example: subscription
+          enum:
+          - subscription
+          readOnly: true
+        uri:
+          allOf:
+          - $ref: '#/components/schemas/ResourceURI'
+          description: URI of the Subscription.
+          example: /v1/subscriptions/e44aa283528e6fde7d542194
         status:
           type: string
+          description: Status of the Subscription.
           enum:
           - active
-          - canceled
-        candidate_id:
-          type: string
-        package:
-          type: string
-        interval_count:
-          type: integer
-        interval_unit:
-          type: string
-          enum:
-          - month
-          - year
-        start_date:
-          type: string
-          format: date
+          - inactive
+          example: active
         created_at:
           type: string
+          description: Time at which the Subscription was created.
           format: date-time
-    SubscriptionCreate:
-      type: object
-      required:
-      - candidate_id
-      - package
-      properties:
-        candidate_id:
-          type: string
+          example: '2014-01-18T12:34:00Z'
+        canceled_at:
+          type:
+          - string
+          - 'null'
+          description: Time at which the Subscription was canceled.
+          format: date-time
+          example: null
         package:
           type: string
+          description: Package to run for the Subscription.
+          example: driver_pro
         interval_count:
           type: integer
+          description: The number of intervals between each recurrent background check.
+          example: 1
         interval_unit:
           type: string
+          description: Interval at which the Subscription will repeat.
           enum:
+          - day
+          - week
           - month
           - year
+          example: month
         start_date:
           type: string
+          description: Start date for the Subscription. This is the date on which the Subscription will begin, and the first time the report will be run.
           format: date
+          example: '2014-06-10'
+        next_occurrence_date:
+          type: string
+          description: The next date on which the Subscription will be run. This date is determined based on the `start_date`, `interval_unit`, `interval_count`, and the last date the subscription was run.
+          format: date
+          example: '2014-07-10'
+        candidate_id:
+          type: string
+          description: ID of the candidate screened.
+          example: 4722c07dd9a10c3985ae432a
         node:
           type: string
-  parameters:
-    ResourceId:
-      name: id
-      in: path
+          description: Node to be used when generating a report for this Subscription.
+          example: zpy8orej4r614ize
+        work_locations:
+          type: array
+          description: Array of work locations to be used when generating a report for this Subscription.
+          items:
+            $ref: '#/components/schemas/WorkLocation'
+  responses:
+    PackageNotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PackageNotFoundError'
+    BadSubscriptionsListRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: status does not have a valid value
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    SubscriptionsList:
+      description: List of Subscriptions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              object:
+                type: string
+                description: A list
+                enum:
+                - list
+              next_href:
+                type: string
+                format: uri
+              previous_href:
+                type: string
+                format: uri
+              count:
+                type: integer
+                example: 2
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subscription'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    Subscription:
+      description: Subscription details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Subscription'
+    SubscriptionCanceled:
+      description: Subscription was successfully canceled
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SubscriptionCanceled'
+    SubscriptionCreated:
+      description: Subscription was successfully created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Subscription'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+  requestBodies:
+    SubscriptionCreate:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - package
+            - candidate_id
+            - start_date
+            properties:
+              package:
+                type: string
+                description: '`slug` of the associated package.
+
+                  '
+              candidate_id:
+                type: string
+                description: ID of the candidate being screened.
+              start_date:
+                type: string
+                format: date
+                description: Start date for the subscription. This is the date on which the subscription will begin, and the first time the report will be run.
+              interval_count:
+                type: integer
+                description: The number of intervals between each recurrent background check.
+              interval_unit:
+                type: string
+                description: Interval at which the subscription will repeat.
+                enum:
+                - day
+                - week
+                - month
+                - year
+              node:
+                type: string
+                description: '<font color="red">Required</font> for hierarchy-enabled accounts.
+
+
+                  `custom_id` of the associated node.
+
+                  '
+              work_locations:
+                type: array
+                description: '<font color="red">Required</font> for hierarchy-enabled accounts.
+
+                  Array of locations described using country, state, and city. When country is not specified defaults to US. State is required for US candidates. Country is required for non-US candidates.
+
+                  '
+                items:
+                  $ref: '#/components/schemas/WorkLocation'
       required: true
-      description: The unique identifier of the resource.
-      schema:
-        type: string
+    SubscriptionUpdate:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              package:
+                type: string
+                description: Package to run for the Report.
+              candidate_id:
+                type: string
+                description: ID of the candidate being screened.
+              start_date:
+                type: string
+                format: date
+                description: Start date for the subscription. This is the date on which the subscription will begin, and the first time the report will be run.
+              interval_count:
+                type: integer
+                description: The number of intervals between each recurrent background check.
+              interval_unit:
+                type: string
+                description: Interval at which the subscription will repeat.
+                enum:
+                - day
+                - week
+                - month
+                - year
+              node:
+                type: string
+                description: '`custom_id` of the associated node.
+
+                  '
+              work_locations:
+                type: array
+                description: 'Array of locations described using country, state, and city. When country is not specified defaults to US. State is required for US candidates. Country is required for non-US candidates.
+
+                  '
+                items:
+                  $ref: '#/components/schemas/WorkLocation'
+      required: true
   securitySchemes:
-    basicAuth:
+    basic_auth:
       type: http
       scheme: basic
-      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites

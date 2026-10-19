@@ -1,70 +1,120 @@
 openapi: 3.2.0
 info:
-  title: Checkr Reports API
-  description: The Checkr API is a RESTful interface for running compliant employment background checks.
-  version: '1.0'
+  version: v1
+  title: Checkr.com API Docs Reports API
+  license:
+    name: Proprietary
+    url: https://www.checkr.com
   contact:
     name: Checkr
+    email: clients@checkr.com
     url: https://checkr.com
-  termsOfService: https://checkr.com/terms-of-service
+  description: '# Introduction
+
+
+    Checkr is a modern, RESTful API-driven background screening service. The Checkr API uses resource-oriented URLs, supports HTTPS authentication and HTTPS verbs, and leverages JSON in all responses passed back to customers. Checkr is used by over 10,000 customers in a wide variety of industries, and supports a range of screening products and candidate workflows. For a full list of our screenings, please see the Checkr Screenings section below or read the Checkr Help Center articles on Screening Types. This Programming Guide is designed to help customers get up-and-running with Checkr''s background screening services, both by providing the necessary context to understand the background screening industry and its regulations, and by giving technical guidance on how to work with the Checkr API. **Note:** The cURL command is used for all examples in the Checkr API documentation. ### Other resources
+
+
+    For information about using the Checkr Dashboard, and compliance and regulatory aspects of background checks, visit the Checkr Help Center. For a more targeted set of Checkr Dashboard learning paths for talent sourcing roles like Recruiters, Adjudicators, or Program Administrators, please see the Checkr Learning Center. ## Understand the screening process
+
+
+    Checkr follows a standardized screening process:
+
+
+    1. Customer requests a background check. 2. Candidate is presented with and signs the necessary disclosures and authorizations, and submits the requested Personally Identifiable Information (PII). - With the Checkr-Hosted Apply Flow, the candidate signs disclosures and authorizations and enters their own PII. - With a custom self-hosted flow, the Checkr customer collects the required authorizations, and passes Checkr candidate PII using the Checkr API. 3. Checkr conducts an SSN Trace, and collects associated addresses. 4. Checkr runs searches or verifications based on the screening Packages requested. 5. Checkr applies appropriate compliance filters based on the customer’s settings and candidate’s provided residence to determine which records to show, and returns a finalized report to the customer. 6. If there is a record on the report, the customer Engages or Adverse Actions the Candidate, based on an individualized assessment of the candidate''s report. ### 1. Request a background check
+
+
+    To initiate a background check, a customer provides Checkr their candidate''s email address (for a Checkr-Hosted Apply Flow) or the candidate''s PII (for a self-hosted flow). For more information on ways to achieve this, please see Designing your workflow. ### 2. Candidate signs disclosures and authorizations
+
+
+    Under the U.S. Fair Credit Reporting Act (FCRA), customers are obligated to collect consent from their candidates when running background checks through Checkr or any other Consumer Reporting Agency (CRA). The Checkr-Hosted Apply Flow presents candidates with fields in which the requested PII may be entered, and collects candidate information on behalf of the customer. Checkr will also present disclosures and authorizations to the candidate, and enable eSignature to capture consent, on behalf of customers using this flow with the Checkr Dashboard or email invitation flow. Custom self-hosted flows collect candidate PII, and pass the information to Checkr using the Checkr API. Customers creating a self-hosted flow will receive guidance from the Checkr team on setting up a similar process as required. ### 3. Checkr runs an SSN Trace
+
+
+    Checkr runs an SSN Trace to match the candidate’s provided PII with existing credit header data mapped to the SSN. This process yields a list of names and addresses associated with the entered SSN, which can be used to supplement the background check process. At this point Checkr also conducts some initial data comparisons to check that critical pieces of information, like a candidate''s submitted Date of Birth (DOB) and SSN, align with information held on file by the credit bureaus.'
 servers:
 - url: https://api.checkr.com/v1
-  description: Production
-- url: https://api.checkr-staging.com/v1
-  description: Staging
-security:
-- basicAuth: []
+  description: Main server
 tags:
 - name: Reports
-  description: The container aggregating a candidate's screenings and result.
+  description: 'Reports provide all information relevant to a candidate’s requested background check. Reports include the status of the background check process, the list of searches included in the check, and the Package requested.
+
+    Depending on the Package selected, a report may include any combination of Checkr Screenings listed below.
+
+
+    Reports are provided to candidates through the Candidate Portal, and as a PDF (if requested).
+
+
+    For more information on the searches listed, see Screenings (below),
+
+    or Screening Types
+
+    in the Checkr Help Center.'
 paths:
   /reports:
     post:
+      tags:
+      - Reports
+      summary: Create a new Report
+      description: 'Creates a new Report resource.
+
+
+        Notes:
+
+        - This resource does not support the creation of reports which include international Packages. Use the `/invitations` API to order these reports.
+
+        - Employment Verifications, Education Verifications, and Credit Checks may not be initiated using the `/reports` API. Please use the `/invitations` API to initiate the Checkr-Hosted Apply Flow when ordering background checks that include any of these screening types.
+
+        - Creating a Report which includes an Occupational Health or Drug
+
+        Check will automatically issue an email invitation to the candidate to schedule their appointment at a clinic of their choice.'
       operationId: createReport
-      tags:
-      - Reports
-      summary: Create a report
+      security:
+      - basic_auth: []
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReportCreate'
-      responses:
-        '201':
-          description: The created report.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Report'
-  /reports/{id}:
-    parameters:
-    - $ref: '#/components/parameters/ResourceId'
-    get:
-      operationId: getReport
-      tags:
-      - Reports
-      summary: Retrieve a report
-      parameters:
-      - name: include
-        in: query
-        description: Comma-separated related resources to embed (e.g. documents,geos).
-        schema:
-          type: string
+        $ref: '#/components/requestBodies/ReportCreate'
       responses:
         '200':
-          description: The report.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Report'
+          $ref: '#/components/responses/ReportCreated'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/PackageNotFoundError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/reports \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9: \\\n    -d package=driver_pro \\\n    -d candidate_id=e44aa283528e6fde7d542194\n"
+  /reports/{id}:
+    parameters:
+    - name: id
+      in: path
+      description: The Report's ID.
+      required: true
+      schema:
+        type: string
     post:
-      operationId: updateReport
       tags:
       - Reports
-      summary: Update or upgrade a report
+      summary: Update an existing Report
+      description: 'Updates the `package` or `adjudication` for an existing Report resource.
+
+
+        Use this endpoint to update reports which include the candidate''s Social Security Number. To update a Report which does not include an SSN, first use the update Candidate request to add the candidate’s SSN before updating the report.
+
+
+        Either `package` or `adjudication` is required.
+
+
+        Note: This endpoint may also be used to update international reports for candidates which do not include an SSN.
+
+
+        **Note**: The Package of a Report cannot be updated if it has an Adverse Action with the status: `complete` or `dispute`. To proceed, cancel the Adverse Action or create a new Report.'
+      operationId: updateReport
+      security:
+      - basic_auth: []
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -72,127 +122,829 @@ paths:
               properties:
                 package:
                   type: string
-                  description: A package slug to upgrade the report to.
+                  description: 'Slug of the Package.
+
+                    '
+                  example: driver_pro
+                adjudication:
+                  type: string
+                  enum:
+                  - engaged
+                  example: engaged
+        required: true
       responses:
         '200':
-          description: The updated report.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Report'
+          $ref: '#/components/responses/ReportUpdated'
+        '400':
+          $ref: '#/components/responses/PreExistingAdverseActionError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/reports/4722c07dd9a10c3985ae432a \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9: \\\n    -d package=driver_pro\n"
+    get:
+      tags:
+      - Reports
+      summary: Retrieve an existing Report
+      description: Returns an existing Report with the input ID.
+      operationId: getReport
+      security:
+      - basic_auth: []
+      parameters:
+      - name: include
+        in: query
+        description: Comma delimited string specifying the resources to be embedded in the returned Report object. See [Embedding Resources](#section/Reference/Embedding-Resources).
+        required: false
+        example: candidate,drug_screening
+        schema:
+          type: string
+          enum:
+          - arrest_search
+          - candidate
+          - candidate_stories
+          - county_civil_searches
+          - county_criminal_searches
+          - credit_report
+          - dispute_comments
+          - documents
+          - drug_alcohol_clearinghouse
+          - drug_screening
+          - education_verification
+          - employment_verification
+          - eviction_search
+          - facis_search
+          - federal_civil_search
+          - federal_criminal_search
+          - geos
+          - global_watchlist_search
+          - international_adverse_media_searches
+          - international_criminal_searches
+          - international_criminal_searches_v2
+          - international_education_verification
+          - international_employment_verification
+          - international_global_watchlist_search
+          - international_identity_document_validation
+          - motor_vehicle_report
+          - municipal_criminal_searches
+          - national_criminal_search
+          - occupational_health_screening
+          - personal_reference_verifications
+          - photo_verification
+          - pointer_state_criminal_searches
+          - professional_reference_verifications
+          - professional_license_verifications
+          - program
+          - public_comments
+          - self_disclosures
+          - sex_offender_search
+          - ssn_trace
+          - state_criminal_searches
+          - terrorist_watchlist_search
+      responses:
+        '200':
+          $ref: '#/components/responses/Report'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X GET https://api.checkr.com/v1/reports/4722c07dd9a10c3985ae432a?include=drug_screening \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9:\n"
   /reports/{id}/complete:
     parameters:
-    - $ref: '#/components/parameters/ResourceId'
-    post:
-      operationId: completeReport
-      tags:
-      - Reports
-      summary: Complete a report
-      responses:
-        '200':
-          description: The completed report.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Report'
-  /reports/{id}/eta:
-    parameters:
-    - $ref: '#/components/parameters/ResourceId'
-    get:
-      operationId: getReportEta
-      tags:
-      - Reports
-      summary: Retrieve a report ETA
-      responses:
-        '200':
-          description: The estimated completion time for the report.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  estimated_completion_time:
-                    type: string
-                    format: date-time
-components:
-  parameters:
-    ResourceId:
-      name: id
+    - name: id
+      description: The Report's ID.
       in: path
       required: true
-      description: The unique identifier of the resource.
       schema:
         type: string
+    post:
+      tags:
+      - Reports
+      summary: Complete an existing Report
+      description: 'Cancels all pending or suspended screenings and completes the report.
+
+
+        Use this endpoint to complete reports which include pending or suspended screenings. If a report is completed with pending or suspended screenings, the following events will be triggered:
+
+
+        - The `status` for all in-progress screenings within the report will be updated to `canceled`.
+
+        - A cancellation reason and the reason’s description will be added to each canceled screening.
+
+        - Checkr will issue webhooks upon report completion.
+
+        - If all screenings are canceled, a `report.canceled` webhook will be issued.
+
+        - If at least one screening has a result before the report is completed, Checkr will issue two webhooks: first, `report.updated`, followed by `report.complete`.'
+      operationId: completeReport
+      security:
+      - basic_auth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/ReportUpdated'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+      x-codeSamples:
+      - lang: curl
+        source: "$ curl -X POST https://api.checkr.com/v1/reports/4722c07dd9a10c3985ae32a/complete \\\n    -u 83ebeabdec09f6670863766f792ead24d61fe3f9\n"
+components:
   schemas:
+    PackageNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Package not found
+    ForbiddenError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: You do not have permission to access the requested resource
+    SelfDisclosure:
+      type: object
+      required:
+      - description
+      - date
+      - location
+      properties:
+        description:
+          type: string
+          description: Candidate-provided description of their criminal history.
+          example: I made a mistake and grew from this experience.
+        offense_level:
+          type: string
+          description: The level of the offense.
+          example: Misdemeanor
+        offense_category:
+          type: string
+          description: The criminal charge
+          example: Insurance Fraud
+        sentence:
+          type: string
+          description: The sentence imposed.
+          example: 24 months probation
+        time_served:
+          type: string
+          description: The time served.
+          example: 20 months probation
+        date:
+          type: string
+          description: Date of the conviction.
+          format: date
+          example: '2019-11-01'
+        location:
+          type: object
+          description: The location of the incident.
+          required:
+          - state
+          - county
+          properties:
+            county:
+              type: string
+              description: 'Name of the county in which the conviction occurred. (Use the [/counties](#tag/Counties) resource to obtain a list of counties in each state.)
+
+                '
+              example: BOULDER
+            state:
+              type: string
+              description: 'State where the county is located. Format: `ISO 3166-2:US`.
+
+                '
+              example: CO
+            country:
+              type: string
+              description: '2 letter country code. Format: `ISO 3166-1 alpha-2` (`US` by default.)
+
+                '
+              example: US
     Report:
       type: object
       properties:
         id:
-          type: string
+          $ref: '#/components/schemas/ResourceId'
         object:
           type: string
-          example: report
+          description: 'Defines the object type: `report`.
+
+            '
+          enum:
+          - report
+          readOnly: true
+        uri:
+          allOf:
+          - $ref: '#/components/schemas/ResourceURI'
+          example: /v1/reports/4722c07dd9a10c3985ae432a
         status:
           type: string
+          description: 'Status of the report.
+
+
+            `canceled` if and only if all screenings, including SSN Trace, within the report were canceled.
+
+            `complete` if at least one screening was completed.
+
+            '
           enum:
           - pending
-          - consider
-          - clear
+          - complete
           - suspended
           - dispute
-          - complete
+          - canceled
+          example: complete
         result:
-          type: string
+          type:
+          - string
+          - 'null'
+          description: 'Outcome of the report.
+
+            '
           enum:
           - clear
           - consider
-        candidate_id:
-          type: string
-        package:
-          type: string
+          example: clear
+        includes_canceled:
+          type: boolean
+          description: Returns `true` if the report includes a canceled screening.
+          example: false
         created_at:
           type: string
+          description: 'Time at which the report was created.
+
+            '
           format: date-time
+          example: '2014-01-18T12:34:00Z'
         completed_at:
           type: string
+          description: 'Time at which the report was completed.
+
+            '
           format: date-time
-        ssn_trace_id:
-          type: string
-        county_criminal_search_ids:
-          type: array
-          items:
-            type: string
-        national_criminal_search_id:
-          type: string
-        federal_criminal_search_id:
-          type: string
-        sex_offender_search_id:
-          type: string
-        motor_vehicle_report_id:
-          type: string
-    ReportCreate:
-      type: object
-      required:
-      - candidate_id
-      - package
-      properties:
-        candidate_id:
-          type: string
+          example: '2014-01-18T12:35:30Z'
+        revised_at:
+          type:
+          - string
+          - 'null'
+          description: 'Time at which the report was revised.
+
+            '
+          format: date-time
+          example: null
+        upgraded_at:
+          type:
+          - string
+          - 'null'
+          description: 'Time at which the report was upgraded.
+
+            '
+          format: date-time
+          example: null
+        turnaround_time:
+          type: integer
+          description: Number of seconds the report took to complete, calculated from `created_at` to `completed_at`.
+          example: 90
         package:
           type: string
-        node:
+          description: 'Human-readable name of the Package.
+
+            '
+          example: driver_pro
+        adjudication:
+          type:
+          - string
+          - 'null'
+          description: 'The adjudication for the candidate. `Null` if no adjudication has been made.
+
+            '
+          enum:
+          - engaged
+          - pre_adverse_action
+          - post_adverse_action
+          example: engaged
+        assessment:
+          type:
+          - string
+          - 'null'
+          description: 'The assessment for the report. This field will be non-null only for Assess-enabled accounts. For accounts with Assess enabled, it will be null for reports completed before Assess was enabled, and null for a short time after report completion while the account''s Assess rules are applied.
+
+            '
+          enum:
+          - eligible
+          - review
+          - escalated
+          example: eligible
+        source:
           type: string
+          enum:
+          - api
+          - continuous_check
+          - form
+          - manual_order
+          - recurrence
+          - web
+          description: The method used to create the report. <br>`api` created from the Checkr API. <br>`continuous_check` created automatically from a Continuous Check return. <br>`form` created from the Checkr Hosted Invite/Apply flow. <br>`manual_order` created from a manual order (customer enters candidate's PII) originating in the Checkr Dashboard. <br>`recurrence` created from a Subscription. <br>`web` created from <b>Candidates > Order new Report </b> in the Checkr Dashboard.
+          example: api
+        segment_stamps:
+          type: array
+          description: 'Tier and name of the node the report was ordered with and tier|name information for all its parent nodes.
+
+            '
+          items:
+            type: string
+            example:
+            - unit|Anvil Charlotte
+            - company|Acme Corporation
+            - division|Anvil Sales
+            - region|Anvil South East
         work_locations:
           type: array
+          description: 'Array of work locations set while ordering this report.
+
+            '
           items:
-            type: object
-            properties:
-              country:
-                type: string
-              state:
-                type: string
+            $ref: '#/components/schemas/WorkLocation'
+        estimated_completion_time:
+          type: string
+          description: 'Date at which the report is predicted to be finished. Despite the date-time format, we only estimate to the date. The time is not relevant.
+
+            '
+          format: date-time
+          example: '2019-07-31T00:00:00Z'
+        candidate_story_ids:
+          type: array
+          description: Array of Candidate Story IDs linked to the Report.
+          items:
+            type: string
+            example: 989b4c2d83dd8a81547f2dae
+        candidate_id:
+          type: string
+          description: ID of the candidate being screened.
+          example: e44aa283528e6fde7d542194
+        drug_screening:
+          type: object
+          description: Embedded Drug Screening object
+          properties:
+            id:
+              type: string
+              description: ID of the Drug Screening linked to the Report.
+              example: 539fd88c101897f7cd000001
+            status:
+              type: string
+              description: 'Status of the Drug Screening.
+
+                '
+              enum:
+              - pending
+              - clear
+              - consider
+              - suspended
+              - canceled
+              - complete
+              example: clear
+            result:
+              type: string
+              description: 'Outcome of the Drug Screening.
+
+                '
+              enum:
+              - clear
+              - consider
+              example: clear
+            disposition:
+              type: string
+              description: Medical evaluation for entire screening
+              enum:
+              - negative
+              - positive
+              - canceled
+              example: negative
+            mro_notes:
+              type: string
+              description: Notes from Medical Review Officer
+              example: Diluted Sample
+            analytes:
+              type: array
+              description: Array of result analytes from the Drug Screening Panel
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of drug that was tested
+                    example: Marijuana
+                  disposition:
+                    type: string
+                    description: Medical evaluation for specific drug
+                    enum:
+                    - negative
+                    - positive
+                    example: negative
+                  specimen_type:
+                    type: string
+                    description: Type of specimen that was tested
+                    enum:
+                    - urine
+                    - breath
+                    - saliva
+                    example: urine
+            events:
+              type: array
+              description: Array of drug screening events
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: Type of event
+                    enum:
+                    - completed
+                    - screening_invitation_sent
+                    - screening_scheduled
+                    - status_update
+                    - screening_pass_extended
+                    - screening_notice
+                    example: status_update
+                  text:
+                    type: string
+                    description: Additional note for event type
+                    example: Specimen Sent to Lab
+                  created_at:
+                    type: string
+                    description: Time the event was created
+                    format: date-time
+                    example: '2014-01-19T11:28:31Z'
+            screening_pass_expires_at:
+              type: string
+              description: Time the Candidate has to complete the drug screening
+              format: date-time
+              example: '2014-01-19T11:28:31Z'
+            appointment_id:
+              type: string
+              description: ID of the Appointment linked to the Drug Screening.
+              example: 539fd88c101897f7cd000001
+        ssn_trace_id:
+          type: string
+          description: ID of the SSN Trace linked to the Report.
+          example: 539fd88c101897f7cd000001
+        arrest_search_id:
+          type: string
+          description: ID of the Arrest Search linked to the report.
+          example: 539fd88c101897f7cd000001
+        drug_alcohol_clearinghouse_id:
+          type: string
+          description: ID of the Drug & Alcohol Clearinghouse Search linked to the Report.
+          example: 539fd88c101897f7cd000001
+        drug_screening_id:
+          type: string
+          description: ID of the Drug Screening linked to the report.
+          example: 539fd88c101897f7cd000001
+        facis_search_id:
+          type: string
+          description: ID of the FACIS Search linked to the Report.
+          example: 539fd88c101897f7cd000001
+        federal_criminal_search_id:
+          type: string
+          description: ID of the Federal Criminal Search linked to the Report.
+          example: 539fd88c101897f7cd000001
+        federal_district_criminal_search_id:
+          type: string
+          description: ID of the Federal District Criminal Search linked to the Report.
+          example: 539fd88c101897f7cd000001
+        federal_civil_search_id:
+          type: string
+          description: ID of the Federal Civil Search linked to the Report.
+          example: 539fd88c101897f7cd000001
+        federal_district_civil_search_id:
+          type: string
+          description: ID of the Federal District Civil Search linked to the Report.
+          example: 539fd88c101897f7cd000001
+        global_watchlist_search_id:
+          type: string
+          description: ID of the Global Watchlist Search linked to the Report.
+          example: 539fd88c101897f7cd000001
+        sex_offender_search_id:
+          type: string
+          description: ID of the Sex Offender Registry Search linked to the Report.
+          example: 539fd88c101897f7cd000008
+        national_criminal_search_id:
+          type: string
+          description: ID of the National Criminal Search linked to the Report.
+          example: 539fd88c101897f7cd000006
+        county_criminal_search_ids:
+          type: array
+          description: Array of County Criminal Search IDs linked to the Report.
+          items:
+            type: string
+            example: 539fdcf335644a0ef4000003
+        occupational_health_screening_id:
+          type: string
+          description: ID of the Health Screening linked to the report.
+          example: 539fdcf335644a0ef4000003
+        personal_reference_verification_ids:
+          type: array
+          description: Array of Personal Reference Verification IDs linked to the Report.
+          items:
+            type: string
+            example: 539fdcf335644a0ef4000003
+        professional_reference_verification_ids:
+          type: array
+          description: Array of Professional Reference Verification IDs linked to the Report.
+          items:
+            type: string
+            example: 539fdcf335644a0ef4000003
+        motor_vehicle_report_id:
+          type: string
+          description: ID of the Motor Vehicle Record Search linked to the Report.
+          example: 539fd88c101897f7cd000007
+        professional_license_verification_ids:
+          type: array
+          description: Array of Professional License Verification IDs linked to the Report.
+          items:
+            type: string
+            example: 5ee1b0c080c74df951ce6a59
+        state_criminal_searches:
+          type: array
+          description: Array of State Criminal Search IDs linked to the Report.
+          items:
+            type: string
+            example: 539fdcf335644a0ef4000003
+        international_criminal_searches_v2_ids:
+          type: array
+          description: Array of International Criminal Search IDs linked to the Report. If no searches exist, this field is omitted.
+          items:
+            type: string
+            example: 41007c751c9a15c892c0981a0400d1
+        international_adverse_media_search_ids:
+          type: array
+          description: Array of International Adverse Media Search IDs linked to the Report. If no searches exists, this field is omitted.
+          items:
+            type: string
+            example: 41007c751c9a15c892c0981a0400e2
+        international_global_watchlist_search_id:
+          type: string
+          description: ID of an International Global Watchlist Search linked to the Report. If no search exists, this field is omitted.
+          example: 41007c751c9a15c892c0981a0400f3
+        international_education_verification_id:
+          type: string
+          description: ID of an International Education Verification linked to the Report. If no verification exists, this field is omitted.
+          example: 41007c751c9a15c892c0981a040004
+        international_employment_verification_id:
+          type: string
+          description: ID of an International Employment Verification linked to the Report. If no verification exists, this field is omitted.
+          example: 41007c751c9a15c892c0981a040015
+        international_identity_document_validation_id:
+          type: string
+          description: ID of an International Identity Document Validation linked to the Report. If no validation exists, this field is omitted.
+          example: 41007c751c9a15c892c0981a040026
+        document_ids:
+          type: array
+          description: Array of Document IDs.
+          items:
+            example: 539fdcf335496a0ef4000003
+            type: string
+        geo_ids:
+          type: array
+          description: Array of Geo IDs.
+          items:
+            type: string
+            example: 87f5bb4983eade22c55f4731
+        program_id:
+          type: string
+          description: 'ID of the Program linked to the Report.
+
+            '
+          example: 00166f9ff39ec7b453adfaec
+        archived:
+          type: boolean
+          description: Returns `true` if the invitation is archived.
+          example: false
+    WorkLocation:
+      type: object
+      required:
+      - state
+      properties:
+        country:
+          type: string
+          description: The country in ISO-3166 alpha-2 format.
+          example: US
+          minLength: 2
+          maxLength: 2
+        state:
+          type: string
+          description: The two letter state code.
+          example: CA
+        city:
+          type: string
+          description: Name of the city
+          example: San Francisco
+          maxLength: 255
+    ResourceURI:
+      type: string
+      description: URI of the resource.
+      readOnly: true
+    BadRequestError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Dl number 'F211165' does not match the license number format in CA
+    ResourceId:
+      type: string
+      example: e44aa283528e6fde7d542194
+      readOnly: true
+      description: ID of the resource.
+    UnauthorizedError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad authentication error
+    PreExistingAdverseActionError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Report has a pre-existing adverse action. See https://docs.checkr.com/#operation/updateReport
+  responses:
+    PreExistingAdverseActionError:
+      description: Pre-existing Adverse Action
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PreExistingAdverseActionError'
+    PackageNotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PackageNotFoundError'
+    ReportUpdated:
+      description: Report was successfully updated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Report'
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestError'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+    ReportCreated:
+      description: Report was successfully created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Report'
+    Report:
+      description: Report details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Report'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+  requestBodies:
+    ReportCreate:
+      content:
+        application/json:
+          schema:
+            allOf:
+            - type: object
+              properties:
+                candidate_id:
+                  type: string
+                  description: ID of the Candidate screened.
+                  example: e44aa283528e6fde7d542194
+                package:
+                  type: string
+                  description: '`slug` of the associated package.
+
+                    Example: `driver_pro`
+
+                    '
+                node:
+                  type: string
+                  description: '<font color="red">Required</font> for hierarchy-enabled accounts.
+
+
+                    `custom_id` of the associated node.
+
+                    '
+                self_disclosures:
+                  type: array
+                  description: 'Array of SelfDisclosures
+
+
+                    **Note:** Self Disclosures may not be added, updated, or deleted after a Report has been created. The information provided in a Self Disclosure will not be included in the completed Report, and may be retrieved using [GET](#operation/getReport) `/v1/reports/{id}?include=documents`. See the [Documents](#tag/Documents) resource for more information.
+
+
+                    Removing the requirement for the description, date, and location parameters greatly reduces the value of Self Disclosures. If your system mandates that these parameters be optional, work with your Checkr Customer Success Manager to disable the requirement.
+
+                    '
+                  items:
+                    $ref: '#/components/schemas/SelfDisclosure'
+                work_locations:
+                  type: array
+                  description: '<font color="red">Required</font> for hierarchy-enabled accounts.
+
+
+                    Array of locations described using country, state, and city. When country is not specified defaults to US. State is required for US candidates. Country is required for non-US candidates.
+
+                    '
+                  items:
+                    $ref: '#/components/schemas/WorkLocation'
+                tags:
+                  type: array
+                  description: Array of tags for the Report.
+                  items:
+                    type: string
+            - required:
+              - package
+              - candidate_id
+      required: true
   securitySchemes:
-    basicAuth:
+    basic_auth:
       type: http
       scheme: basic
-      description: HTTP Basic auth with your secret API key as the username and an empty password. Checkr Partner integrations authenticate on behalf of customer accounts using OAuth instead.
+x-tagGroups:
+- name: Resources
+  tags:
+  - Account
+  - Users
+  - Hierarchy (Enabled by request)
+  - Nodes
+  - Candidates
+  - Reports
+  - Packages
+  - Invitations
+  - Geos
+  - Programs
+  - Assessments
+  - Subscriptions
+  - Continuous Checks
+  - Adverse Actions
+  - Adverse Items
+  - Verifications
+  - Documents
+  - Driver Licenses
+  - Professional Licenses
+  - Schools
+  - Employers
+  - Counties
+  - Report Tags
+  - Report Addresses
+  - Report ETA
+  - Candidate Stories
+  - SSN
+  - Webhooks
+  - Candidate Postal Address
+- name: Screenings
+  tags:
+  - SSN Trace
+  - Sex Offender Registry Search
+  - Global Watchlist Search
+  - National Criminal Search
+  - Federal Criminal Search
+  - Federal District Criminal Search
+  - Federal Civil Search
+  - Federal District Civil Search
+  - County Criminal Search
+  - State Criminal Search
+  - Motor Vehicle Report
+  - Drug & Alcohol Clearinghouse Search
+  - Education Verification
+  - Employment Verification
+  - Personal Reference Verification
+  - Professional Reference Verification
+  - Professional License Verification
+  - International Adverse Media Search
+  - International Criminal Search
+  - International Education Verification
+  - International Employment Verification
+  - International Global Watchlist Search
+  - International Identity Document Validation
+  - International Motor Vehicle Report
+  - FACIS Search
+- name: Form I-9
+  tags:
+  - Getting Started
+  - Forms I-9
+  - Worksites
