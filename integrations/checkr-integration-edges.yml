@@ -6,11 +6,42 @@ checked:
 - https://fivetran.com/docs/connectors/partner-built-program
 - paychex-developer/integrations/paychex-developer-integration-edges.yml
 - workday/integrations/workday-integration-edges.yml
+- https://500.co/api/startups
+- https://500.co/companies
+- https://www.antler.co/portfolio
+- https://www.techstars.com/portfolio
+- https://www.ycombinator.com/companies
 source:
 - bamboohr/integrations/bamboohr-integration-edges.yml
 - paychex-developer/integrations/paychex-developer-integration-edges.yml
 - workday/integrations/workday-integration-edges.yml
 edges:
+- partner_name: Fivetran
+  partner: fivetran
+  partner_match: aggregator
+  type: marketplace
+  marketplace: fivetran-connectors
+  channel: elt-connector
+  relationship: ipaas-bridge
+  direction: third-party
+  evidence: https://fivetran.com/docs/connectors/applications/checkr
+  category: null
+  contract_reference:
+    register: Fivetran connectors (fivetran.com/docs/connectors, docs-sitemap.xml + Partner-Built program)
+    spec_file: null
+    role: elt-connector:fivetran
+    registered_name: Checkr
+    matched_domain: checkr.com
+    matched_by: domain
+    detected_by: sweep-data-integration.py
+    detected: '2026-10-18'
+    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
+    connector_paths:
+    - connectors/applications/checkr
+    vendor_link: https://checkr.com/
+    builder: Fivetran
+  detected_by: sweep-data-integration.py
+  first_seen: '2026-10-18'
 - partner_name: BambooHR (own)
   partner: bamboohr
   partner_match: mirror
@@ -45,7 +76,7 @@ edges:
   listing_count: 2
   detected: '2026-10-14'
   detected_by: mirror-platform-listings.py
-  category: Paychex Platform
+  category: 1-19 Employees
   badges:
   - AI-Enabled
 - partner_name: Workday (own)
@@ -67,29 +98,32 @@ edges:
   category: Region & Country
   badges:
   - Design Approved
-- partner_name: Fivetran
-  partner: fivetran
-  partner_match: aggregator
-  type: marketplace
-  marketplace: fivetran-connectors
-  channel: elt-connector
-  relationship: ipaas-bridge
-  direction: third-party
-  evidence: https://fivetran.com/docs/connectors/applications/checkr
-  category: null
+- partner_name: Y Combinator
+  partner: y-combinator
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://www.ycombinator.com/companies/checkr
+  category: accelerator portfolio participation
   contract_reference:
-    register: Fivetran connectors (fivetran.com/docs/connectors, docs-sitemap.xml + Partner-Built program)
+    register: Y Combinator company directory (ycombinator.com/companies/<slug>)
+    standard: null
     spec_file: null
-    role: elt-connector:fivetran
+    role: accelerator-portfolio-company
     registered_name: Checkr
+    register_id: https://www.ycombinator.com/companies/checkr
+    register_country: US
+    register_website: http://www.checkr.com
     matched_domain: checkr.com
     matched_by: domain
-    detected_by: sweep-data-integration.py
-    detected: '2026-10-18'
-    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
-    connector_paths:
-    - connectors/applications/checkr
-    vendor_link: https://checkr.com/
-    builder: Fivetran
-  detected_by: sweep-data-integration.py
-  first_seen: '2026-10-18'
+    signal_note: 'participation only: the accelerator''s own portfolio register lists the company (cohort / investment);
+      an ownership and participation record, not conformance or certification'
+    detected_by: sweep-accelerator-portfolios.py
+    detected: '2026-10-21'
+    batch: Summer 2014
+    year: '2014'
+    status: Active
+  detected_by: sweep-accelerator-portfolios.py
+  first_seen: '2026-10-21'
