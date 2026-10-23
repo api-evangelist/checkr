@@ -631,3 +631,9 @@ x-tagGroups:
   - Getting Started
   - Forms I-9
   - Worksites
+x-provenance:
+  method: harvested
+  publisher: Checkr
+  source: https://api.redocly.com/registry/bundle/checkr/Checkr%20Public%20API/v1/openapi.yaml
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
