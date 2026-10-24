@@ -316,6 +316,8 @@ apis:
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
   tags:
+  - Assessment
+  tags_raw:
   - Assessments
   properties:
   - type: OpenAPI
@@ -388,6 +390,8 @@ apis:
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
   tags:
+  - counties
+  tags_raw:
   - Counties
   properties:
   - type: OpenAPI
@@ -1057,6 +1061,8 @@ apis:
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
   tags:
+  - Node
+  tags_raw:
   - Nodes
   properties:
   - type: OpenAPI
@@ -1423,6 +1429,8 @@ apis:
   humanURL: https://docs.checkr.com/
   baseURL: https://api.checkr.com/v1
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
