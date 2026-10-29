@@ -1,4 +1,4 @@
-# Checkr (checkr)
+# Checkr
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,138 +64,153 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Checkr is a technology-driven background check platform for employment screening. Its REST API lets employers, staffing firms, and platform partners run compliant background checks programmatically - creating candidates, sending invitations, ordering packages, and retrieving reports composed of individual screenings (SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, and education/employment verifications). The API also covers adverse action workflows, subscriptions and continuous checks, node/hierarchy and geo account structure, documents, Form I-9, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with a secret API key; Checkr Partner integrations use OAuth.
+Checkr is a technology-driven background check platform for employment screening. Its REST API lets employers, staffing firms, and platform partners run compliant background checks programmatically - creating candidates, sending invitations, ordering packages, and retrieving reports composed of individual screenings (SSN trace, county/state/national/federal criminal searches, sex offender registry, motor vehicle records, education and employment verifications, and more). The API also covers adverse action workflows, continuous checks and subscriptions, node/hierarchy and geo account structure, Form I-9, documents, and webhooks for event-driven report status updates. Authentication is HTTP Basic auth with a secret API key, with OAuth for Checkr Partner integrations.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/checkr/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/checkr/refs/heads/main/apis.yml)
+**Areas:** Background Checks · Employment Screening · Compliance · Human Resources · Identity Verification · Criminal Records · Recruiting
 
-**Base URL:** `https://api.checkr.com/v1`
+## Checkr on APIs.io
 
-## Tags
+Everything profiled for Checkr is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/checkr/](https://apis.io/providers/checkr/)** — or go straight to one of the APIs or properties below.
 
-- Background Checks
-- Employment Screening
-- Compliance
-- HR Tech
-- Identity Verification
-- Criminal Records
+### APIs (14)
 
-## Timestamps
+- [Checkr Account API](https://apis.io/apis/checkr/checkr-account-api/) — Account and user metadata.
+- [Checkr Adverse Actions API](https://apis.io/apis/checkr/checkr-adverse-actions-api/) — FCRA adverse action workflows against a report.
+- [Checkr Candidates API](https://apis.io/apis/checkr/checkr-candidates-api/) — Candidate records that background checks are run against.
+- [Checkr Continuous Checks API](https://apis.io/apis/checkr/checkr-continuous-checks-api/) — Ongoing monitoring for new records.
+- [Checkr Documents API](https://apis.io/apis/checkr/checkr-documents-api/) — Files attached to a candidate.
+- [Checkr Geos API](https://apis.io/apis/checkr/checkr-geos-api/) — State/locale definitions scoping pricing and compliance.
+- [Checkr Invitations API](https://apis.io/apis/checkr/checkr-invitations-api/) — Hosted invitations for candidates to submit their own information.
+- [Checkr Nodes and Hierarchy API](https://apis.io/apis/checkr/checkr-nodes-and-hierarchy-api/) — Tree of nodes modeling account/organization structure.
+- [Checkr Packages API](https://apis.io/apis/checkr/checkr-packages-api/) — Bundles of screenings and the programs that group them.
+- [Checkr Reports API](https://apis.io/apis/checkr/checkr-reports-api/) — The container aggregating a candidate's screenings and result.
+- [Checkr Screenings API](https://apis.io/apis/checkr/checkr-screenings-api/) — Individual screening components nested under a report.
+- [Checkr Subscriptions API](https://apis.io/apis/checkr/checkr-subscriptions-api/) — Recurring re-runs of a package for a candidate.
+- [Checkr Verifications API](https://apis.io/apis/checkr/checkr-verifications-api/) — Education and employment verification screenings.
+- [Checkr Webhooks API](https://apis.io/apis/checkr/checkr-webhooks-api/) — Event notification subscriptions.
 
-- **Created:** 2026-07-03
-- **Modified:** 2026-07-03
+### Published properties
 
-## APIs
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-### Checkr Candidates API
+#### MCP servers (1)
 
-Create, list, retrieve, and update the candidate records that background checks are run against, and request PII removal. Candidates hold the personal information (name, DOB, SSN, addresses, driver license, work authorization) used to order reports and screenings.
+Model Context Protocol servers that expose the API to agents.
 
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
+- [checkr](https://apis.io/servers/checkr/checkr/)
 
-### Checkr Invitations API
+#### Agentic access (1)
 
-Send candidates a hosted invitation to submit their own information and consent, then create, list, retrieve, and cancel those invitations. Invitations order a package once the candidate completes the flow, removing the need to collect PII directly.
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
+- [Checkr Agentic Access](https://apis.io/agentic-access/checkr/checkr-agentic-access/)
 
-### Checkr Reports API
+#### Collections (15)
 
-Create, retrieve, update/upgrade, complete, and review reports - the top-level container for a candidate's background check that aggregates individual screenings, addresses, documents, an ETA, and an overall assessment result (clear/consider).
+Postman and Open Collection request collections.
 
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
+- [Checkr API](https://apis.io/collections/checkr/open-checkr/)
+- [Checkr Account API](https://apis.io/collections/checkr/open-checkr-account-api/)
+- [Checkr Account Adverse Actions API](https://apis.io/collections/checkr/open-checkr-adverse-actions-api/)
+- [Checkr Account Candidates API](https://apis.io/collections/checkr/open-checkr-candidates-api/)
+- [Checkr Account Continuous Checks API](https://apis.io/collections/checkr/open-checkr-continuous-checks-api/)
+- [Checkr Account Documents API](https://apis.io/collections/checkr/open-checkr-documents-api/)
+- [Checkr Account Geos API](https://apis.io/collections/checkr/open-checkr-geos-api/)
+- [Checkr Account Invitations API](https://apis.io/collections/checkr/open-checkr-invitations-api/)
+- [Checkr Account Nodes and Hierarchy API](https://apis.io/collections/checkr/open-checkr-nodes-and-hierarchy-api/)
+- [Checkr Account Packages API](https://apis.io/collections/checkr/open-checkr-packages-api/)
+- [Checkr Account Reports API](https://apis.io/collections/checkr/open-checkr-reports-api/)
+- [Checkr Account Screenings API](https://apis.io/collections/checkr/open-checkr-screenings-api/)
+- [Checkr Account Subscriptions API](https://apis.io/collections/checkr/open-checkr-subscriptions-api/)
+- [Checkr Account Verifications API](https://apis.io/collections/checkr/open-checkr-verifications-api/)
+- [Checkr Account Webhooks API](https://apis.io/collections/checkr/open-checkr-webhooks-api/)
 
-### Checkr Screenings API
+#### Security (3)
 
-Retrieve the individual screening components nested under a report - SSN trace, county/state/national/federal criminal searches, sex offender registry search, global watchlist, and motor vehicle report - each with its own status and records.
+Authentication, trust centre, and vulnerability disclosure.
 
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
+- [Checkr Authentication](https://apis.io/security/checkr/checkr-authentication/)
+- [Checkr Domain Security](https://apis.io/security/checkr/checkr-domain-security/)
+- [Checkr Trust Center](https://apis.io/security/checkr/checkr-trust-center/)
 
-### Checkr Verifications API
+#### Plans and pricing (1)
 
-List and retrieve education and employment verification screenings for a report, plus manage the supporting candidate-provided schools, employers, driver licenses, and professional licenses used to verify history.
+Published plans, tiers and prices.
 
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
+- [Checkr Plans Pricing](https://apis.io/plans/checkr/checkr-plans-pricing/)
 
-### Checkr Packages API
+#### Rate limits (1)
 
-List and retrieve the packages (bundles of screenings such as Basic+, Essential, and Professional) and programs configured on your account that determine which screenings a report includes and what it costs.
+Published request limits.
 
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
+- [Checkr Rate Limits](https://apis.io/rate-limits/checkr/checkr-rate-limits/)
 
-### Checkr Documents API
+#### FinOps (1)
 
-Upload, list, and retrieve documents attached to a candidate - driver license images, motor vehicle records, and other supporting files required to process or dispute a screening.
+What the API costs to run, by operation.
 
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
+- [Checkr Finops](https://apis.io/finops/checkr/checkr-finops/)
 
-### Checkr Adverse Actions API
+## Where to find this API
 
-Create, list, retrieve, and cancel FCRA-compliant adverse action workflows against a report, including the pre-adverse and post-adverse notice timing required when a hiring decision is based on a background check.
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
-
-### Checkr Subscriptions API
-
-Create, list, retrieve, update, and cancel subscriptions that automatically re-run a package for a candidate on a recurring schedule (for example annual re-screening).
-
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
-
-### Checkr Continuous Checks API
-
-Create, list, retrieve, update, and cancel continuous checks that monitor a candidate on an ongoing basis and surface new criminal or MVR records as they appear, rather than as a one-time point-in-time report.
-
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
-
-### Checkr Nodes and Hierarchy API
-
-Model your organization as a tree of nodes (locations, departments, franchises) via the hierarchy and nodes endpoints, so reports and billing can be segmented and access controlled across a large account.
-
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
-
-### Checkr Geos API
-
-Create, list, retrieve, update, and delete geos - the state/locale definitions that scope package pricing and localized compliance requirements so reports follow the rules of the candidate's work location.
-
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
-
-### Checkr Webhooks API
-
-Register and manage webhook subscriptions that Checkr POSTs event notifications to (report.completed, candidate.created, invitation.completed, and more) over HTTPS or Amazon SNS, giving event-driven updates on long-running screening workflows.
-
-- **Human URL:** [https://docs.checkr.com/](https://docs.checkr.com/)
-- **Base URL:** `https://api.checkr.com/v1`
-
-## Authentication
-
-Checkr uses HTTP Basic auth: pass your **secret API key** as the username with an empty password. Publishable keys are used only with Checkr's client-side JS API. Checkr Partner integrations authenticate on behalf of customer accounts using **OAuth**.
-
-## Rate Limits
-
-The API allows **1200 requests per minute** across all endpoints, with `X-Ratelimit-Limit`, `X-Ratelimit-Remaining`, and `X-Ratelimit-Reset` response headers. Exceeding it returns HTTP 429. POST requests support an `Idempotency-Key` header. List endpoints paginate with `page` and `per_page` (default 25).
-
-## Common Properties
-
-- [GitHub Organization](https://github.com/checkr)
-- [LinkedIn](https://www.linkedin.com/company/checkr)
 - [Website](https://checkr.com)
 - [Documentation](https://docs.checkr.com/)
-- [Plans](plans/checkr-plans-pricing.yml)
-- [Rate Limits](rate-limits/checkr-rate-limits.yml)
-- [Fin Ops](finops/checkr-finops.yml)
+- [Blog](https://checkr.com/blog)
+- [GitHub](https://github.com/checkr)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 30.2** — thin · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 68.3 |
+| Contract quality | 55.2 |
+| Contract governance | 0.0 |
+| Operational transparency | 7.9 |
+| Developer ergonomics | 32.1 |
+| Access clarity | 15.8 |
+
+**Agent readiness 48.1** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | partial |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 16.7** — Employment & Payroll
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/checkr/](https://apis.io/providers/checkr/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Checkr: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/checkr/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
